@@ -55,8 +55,7 @@ close($fh)
 WriteMakefile(
     NAME              => 'BZ::Client',
     VERSION_FROM      => 'lib/BZ/Client.pm', # finds $VERSION
-    PREREQ_PM         => {}, # e.g., Module::Name => 1.1
+    PREREQ_PM         => { 'XML::Parser' => 0, 'XML::Writer' => 0 }, # e.g., Module::Name => 1.1
     ABSTRACT          => 'BZ::Client - A client for the Bugzilla web services API.',
     AUTHOR            => 'Jochen Wiedmann <jochen.wiedmann@gmail.com>',
 );
-

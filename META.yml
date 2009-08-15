@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:                BZ-Client
-version:             1.0
+version:             1.02
 abstract:            BZ::Client - A client for the Bugzilla web services API.
 license:             ~
 author:              
@@ -8,6 +8,8 @@ author:
 generated_by:        ExtUtils::MakeMaker version 6.42
 distribution_type:   module
 requires:     
+    XML::Parser:                   0
+    XML::Writer:                   0
 meta-spec:
     url:     http://module-build.sourceforge.net/META-spec-v1.3.html
     version: 1.3
