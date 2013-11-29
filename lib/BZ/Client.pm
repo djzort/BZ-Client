@@ -112,8 +112,6 @@ sub login($) {
     my $password = $self->password()
       or $self->error('The Bugzilla servers password is not set.');
 
-    $self->log( 'debug', 'Doing cookie stuff' );
-
     my $params = {
         'login'    => $user,
         'password' => $password,
