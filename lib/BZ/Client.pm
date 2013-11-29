@@ -212,8 +212,9 @@ The new method constructs a new instance of BZ::Client. Whenever you
 want to connect to the Bugzilla server, you must first create a
 Bugzilla client. The methods input is a hash of parameters.
 
-Optionally, you can pass in a subref named I<logger> which will be
-fed debugging information as the client works.
+For debuggign, you can pass in a subref named I<logger> which will be
+fed debugging information as the client works. Also the I<logDirectory>
+option is a directory where the raw http content will be dumped.
 
 =over
 
