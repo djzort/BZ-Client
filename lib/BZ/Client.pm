@@ -95,8 +95,8 @@ sub xmlrpc($;$) {
         my $xmlrpc = $self->{'xmlrpc'};
         if ( !$xmlrpc ) {
             my $url = $self->url()
-              || $self->error("The Bugzilla servers URL is not set.");
-            $xmlrpc = BZ::Client::XMLRPC->new( "url" => $url );
+              || $self->error('The Bugzilla servers URL is not set.');
+            $xmlrpc = BZ::Client::XMLRPC->new( 'url' => $url );
             $xmlrpc->logDirectory( $self->logDirectory() );
             $xmlrpc->logger( $self->logger() );
             $self->xmlrpc($xmlrpc);
@@ -108,50 +108,42 @@ sub xmlrpc($;$) {
 sub login($) {
     my $self = shift;
     my $user = $self->user()
-      || $self->error("The Bugzilla servers user name is not set.");
+      or $self->error('The Bugzilla servers user name is not set.');
     my $password = $self->password()
-      || $self->error("The Bugzilla servers password is not set.");
+      or $self->error('The Bugzilla servers password is not set.');
 
-    if ( $self->{'version'} and $self->{'version'} >= 3.6 ) {
-        $self->{payload} = {
-            'Bugzilla_login'    => $user,
-            'Bugzilla_password' => $password,
-        };
+    $self->log( 'debug', 'Doing cookie stuff' );
+
+    my $params = {
+        'login'    => $user,
+        'password' => $password,
+        'remember' => BZ::Client::XMLRPC::boolean->new(0)
+    };
+    my $cookies = HTTP::Cookies->new();
+    my $response = $self->_api_call( 'User.login', $params, $cookies );
+    if ( not defined( $response->{'id'} )
+        or $response->{'id'} !~ m/^\d+$/s )
+    {
+        $self->error('Server did not return a valid user ID.');
     }
-    else {
-
-        my $params = {
-            'login'    => $user,
-            'password' => $password,
-            'remember' => BZ::Client::XMLRPC::boolean->new(0)
-        };
-        my $cookies = HTTP::Cookies->new();
-        my $response = $self->_api_call( 'User.login', $params, $cookies );
-        if ( not defined( $response->{'id'} )
-            or $response->{'id'} !~ m/^\d+$/s )
-        {
-            $self->error('Server did not return a valid user ID.');
-        }
-        $self->{'cookies'} = $cookies;
-
-    }
+    $self->{'cookies'} = $cookies;
 
     return;
 }
 
 sub logout($) {
     my $self    = shift;
-    my $cookies = $self->{"cookies"};
+    my $cookies = $self->{'cookies'};
     if ($cookies) {
-        $self->{"cookies"} = undef;
+        $self->{'cookies'} = undef;
         my $xmlrpc = $self->xmlrpc();
-        $xmlrpc->request( "methodName" => "User.logout", params => [] );
+        $xmlrpc->request( 'methodName' => 'User.logout', params => [] );
     }
 }
 
 sub is_logged_in($) {
     my $self = shift;
-    return $self->{"cookies"} ? 1 : 0;
+    return ( $self->{'cookies'} or $self->{'payload'} ) ? 1 : 0;
 }
 
 sub api_call($$$) {
@@ -163,24 +155,33 @@ sub api_call($$$) {
 }
 
 sub _api_call($$$;$) {
+
     my ( $self, $methodName, $params, $cookies ) = @_;
-    $self->log( "debug",
+
+    $self->log( 'debug',
         "BZ::Client::_api_call, sending request for method $methodName to "
           . $self->url() );
+
     my $xmlrpc = $self->xmlrpc();
+
     if ($cookies) {
         $xmlrpc->user_agent()->cookie_jar($cookies);
     }
+
     my $response =
-      $xmlrpc->request( "methodName" => $methodName, params => [$params] );
-    if ( !$response ) {
-        $self->error("Empty response from server.");
+      $xmlrpc->request( 'methodName' => $methodName, params => [$params] );
+
+    if ( not $response ) {
+        $self->error('Empty response from server.');
     }
-    if ( ref($response) ne "HASH" ) {
+
+    if ( ref($response) ne 'HASH' ) {
         $self->error("Invalid response from server: $response");
     }
-    $self->log( "debug",
+
+    $self->log( 'debug',
         "BZ::Client::_api_call, got response for method $methodName" );
+
     return $response;
 }
 

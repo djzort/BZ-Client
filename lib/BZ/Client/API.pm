@@ -1,9 +1,11 @@
+#!/bin/false
+
 #
 # BZ::Client::API - Abstract base class for the clients of the Bugzilla API.
 #
 
 use strict;
-use warnings "all";
+use warnings 'all';
 
 package BZ::Client::API;
 
