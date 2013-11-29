@@ -1,5 +1,12 @@
 Revision history for Perl extension BZ::Client.
 
+1.04 Mon Aug 22 19:23:00 2011
+    - Added support for dateTime via instances of DateTime
+
+1.03 Wed Feb 03 13:22:00 2010
+    - Added URI as a prerequisite to Makefile.PL.
+    - Fixed missing $client in Bug.pm (RT ticket 54227)
+
 1.02 Sat Aug 15 15:31:00 2009
     - Added LICENSE file to the distribution.
 

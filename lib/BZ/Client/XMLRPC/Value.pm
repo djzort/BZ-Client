@@ -9,6 +9,7 @@ use warnings "all";
 use BZ::Client::XMLRPC::Handler();
 use BZ::Client::XMLRPC::Struct();
 use BZ::Client::XMLRPC::Array();
+use DateTime::Format::ISO8601();
 
 our $VERSION = 1.0;
 our @ISA = qw(BZ::Client::XMLRPC::Handler);
@@ -64,10 +65,14 @@ sub end($$) {
             $self->{'result'} = $content;
         }
     } elsif ($l == 2) {
-        if (defined($self->{'level1_elem'})) {
+        my $name = $name;
+        if (defined($name)) {
             $self->{'result'} = $self->{'level1_content'};
             $self->{'level1_content'} = undef;
             $self->{'level1_elem'} = undef;
+            if ("dateTime.iso8601" eq $name) {
+               $self->{'result'} = DateTime::Format::ISO8601->parse_datetime( $self->{'result'} );
+            }            
         }
     }
     return $self->SUPER::end($name);

@@ -30,7 +30,7 @@ sub get($$;$) {
     $client->log("debug", "BZ::Client::Bug::get: Asking for " . (ref($ids) eq "ARRAY" ? join(",", @$ids) : $ids));
     my $params = { ids => $ids };
     $params->{"permissive"} = BZ::Client::XMLRPC::boolean::TRUE() if $permissive;
-    my $result = $class->api_call("Bug.get", $params);
+    my $result = $class->api_call($client, "Bug.get", $params);
     my $bugs = $result->{"bugs"};
     if (!$bugs  ||  "ARRAY" ne ref($bugs)) {
         $class->error($client, "Invalid reply by server, expected array of bugs.");

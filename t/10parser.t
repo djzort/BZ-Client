@@ -69,6 +69,7 @@ sub TestStrings() {
                 <data>
                   <value><string>South Dakota</string></value>
                   <value>North Dakota</value>
+                  <value><dateTime.iso8601>2011-06-04T20:15:17Z</dateTime.iso8601></value>
                 </data>
               </array>
             </value>
@@ -80,8 +81,8 @@ EOF
     if (!$result  ||  ref($result) ne "ARRAY") {
 	return "Expected array, got " . (defined($result) ? $result : "undef");
     }
-    if (@$result != 2) {
-	return "Expected 2 result elements, got " . scalar(@$result);
+    if (@$result != 3) {
+	return "Expected 3 result elements, got " . scalar(@$result);
     }
     my $res0 = $result->[0];
     if (!$res0  ||  $res0 ne "South Dakota") {
@@ -91,6 +92,32 @@ EOF
     if (!$res1  ||  $res1 ne "North Dakota") {
 	return "Expected first result element to be 'North Dakota', got " . (defined($res0) ? "'$res0'" : "undef");
     }
+    my $res2 = $result->[2];
+    if ("DateTime" ne ref($res2)){
+      return "Expected DateTime, got ". ref($res2);
+    } 
+    if ($res2->year != 2011){
+      return "Expected year 2022, got " . $res2-> year();
+    }
+    if ($res2->month != 6){
+      return "Expected month 6, got " . $res2->month();
+    }
+    if ($res2->day != 4){
+      return "Expected day 4, got " . $res2->day();
+    }
+    if ($res2->hour != 20){
+      return "Expected hour 20, got " . $res2->hour();
+    }
+    if ($res2->minute != 15){
+      return "Expected minute 15, got " . $res2->minute();
+    }
+    if ($res2-> second != 17){
+      return "Expectead second 17, got " . $res2->second();
+    }
+    if ($res2->time_zone->name() ne 'UTC'){
+      return "Expectead timezone UTC, got " . $res2->time_zone->name();
+    }
+    
     return undef;
 }
 

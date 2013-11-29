@@ -4,13 +4,28 @@ use strict;
 use warnings "all";
 
 use BZ::Client::XMLRPC();
+use DateTime();
 
 use Test;
+
+my $tz =DateTime::TimeZone->new(name => 'CET');
+die 'Unable to create CET timezone' unless $tz;
+my $now = DateTime->new(
+           year       => 2011,
+           month      => 9,
+           day        => 19,
+           hour       => 19,
+           minute     => 9,
+           second     => 3,
+           nanosecond => 500000000,
+           time_zone  => $tz,
+      );
 
 sub TestBasic() {
     my $xmlrpc = BZ::Client::XMLRPC->new();
     my $input = [ "123", BZ::Client::XMLRPC::int->new(345),
                   BZ::Client::XMLRPC::double->new(4.6), [ "a", "b", "c" ],
+                  scalar($now),
         { "a" => BZ::Client::XMLRPC::int->new(0), "b" => "xyz" } ];
     my $contents = $xmlrpc->create_request("someMethod", $input);
     my $expect =
@@ -31,6 +46,7 @@ sub TestBasic() {
       .       "</array>"
       .     "</value>"
       .   "</param>"
+      .   "<param><value><dateTime.iso8601>2011-09-19T17:09:03Z</dateTime.iso8601></value></param>"
       .   "<param>"
       .     "<value>"
       .       "<struct>"

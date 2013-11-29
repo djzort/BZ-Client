@@ -10,9 +10,14 @@ package BZ::Client::XMLRPC;
 use LWP();
 use XML::Writer();
 use BZ::Client::XMLRPC::Parser();
+use DateTime::Format::Strptime();
+use DateTime::TimeZone();
 
 our $VERSION = 1.0;
 our $counter;
+our $fmt = DateTime::Format::Strptime->new(pattern=> '%C%Y-%m-%dT%T', time_zone=>'UTC');
+our $tz = DateTime::TimeZone->new(name => 'UTC');
+
 
 sub new($%) {
     my $class = shift;
@@ -96,6 +101,15 @@ sub value($$$) {
         $writer->startTag("double");
         $writer->characters($$value);
         $writer->endTag("double");
+        $writer->endTag("value");
+    } elsif (ref($value) eq "DateTime") {
+        my $clone = $value->clone();
+        $clone->set_time_zone($tz);
+        $clone->set_formatter($fmt);
+        $writer->startTag("value");
+        $writer->startTag("dateTime.iso8601");
+        $writer->characters($clone->iso8601(). "Z");
+        $writer->endTag("dateTime.iso8601");
         $writer->endTag("value");
     } else {
         $writer->startTag("value");
