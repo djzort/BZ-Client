@@ -1,3 +1,5 @@
+#!/bin/false
+
 #
 # BZ::Client.pm - Web services client for the Bugzilla server
 #
@@ -7,13 +9,12 @@ package BZ::Client;
 use BZ::Client::XMLRPC();
 use HTTP::Cookies();
 
-our $VERSION = '1.04';
-
+our $VERSION = '1.05';
 
 sub new($%) {
     my $class = shift;
-    my $self = { @_ };
-    bless($self, ref($class) || $class);
+    my $self  = {@_};
+    bless( $self, ref($class) || $class );
     return $self;
 }
 
@@ -21,7 +22,8 @@ sub url($;$) {
     my $self = shift;
     if (@_) {
         $self->{'url'} = shift;
-    } else {
+    }
+    else {
         return $self->{'url'};
     }
 }
@@ -30,7 +32,8 @@ sub user($;$) {
     my $self = shift;
     if (@_) {
         $self->{'user'} = shift;
-    } else {
+    }
+    else {
         return $self->{'user'};
     }
 }
@@ -39,41 +42,46 @@ sub password($;$) {
     my $self = shift;
     if (@_) {
         $self->{'password'} = shift;
-    } else {
+    }
+    else {
         return $self->{'password'};
     }
 }
 
 sub error($$;$$) {
-    my($self, $message, $http_code, $xmlrpc_code) = @_;
+    my ( $self, $message, $http_code, $xmlrpc_code ) = @_;
     require BZ::Client::Exception;
-    BZ::Client::Exception->throw(message => $message,
-                                 http_code => $http_code,
-                                 xmlrpc_code => $xmlrpc_code);
+    BZ::Client::Exception->throw(
+        message     => $message,
+        http_code   => $http_code,
+        xmlrpc_code => $xmlrpc_code
+    );
 }
 
 sub log($$$) {
-    my($self, $level, $msg) = @_;
+    my ( $self, $level, $msg ) = @_;
     my $logger = $self->logger();
     if ($logger) {
-        &$logger($level, $msg);
+        &$logger( $level, $msg );
     }
 }
 
 sub logger($;$) {
-    my($self) = shift;
+    my ($self) = shift;
     if (@_) {
         $self->{'logger'} = shift;
-    } else {
+    }
+    else {
         return $self->{'logger'};
     }
 }
 
 sub logDirectory($;$) {
-    my($self) = shift;
+    my ($self) = shift;
     if (@_) {
         $self->{'logDirectory'} = shift;
-    } else {
+    }
+    else {
         return $self->{'logDirectory'};
     }
 }
@@ -82,13 +90,15 @@ sub xmlrpc($;$) {
     my $self = shift;
     if (@_) {
         $self->{'xmlrpc'} = shift;
-    } else {
+    }
+    else {
         my $xmlrpc = $self->{'xmlrpc'};
-        if (!$xmlrpc) {
-            my $url = $self->url() || $self->error("The Bugzilla servers URL is not set.");
-            $xmlrpc = BZ::Client::XMLRPC->new("url" => $url);
-            $xmlrpc->logDirectory($self->logDirectory());
-            $xmlrpc->logger($self->logger());
+        if ( !$xmlrpc ) {
+            my $url = $self->url()
+              || $self->error("The Bugzilla servers URL is not set.");
+            $xmlrpc = BZ::Client::XMLRPC->new( "url" => $url );
+            $xmlrpc->logDirectory( $self->logDirectory() );
+            $xmlrpc->logger( $self->logger() );
             $self->xmlrpc($xmlrpc);
         }
         return $xmlrpc;
@@ -97,28 +107,45 @@ sub xmlrpc($;$) {
 
 sub login($) {
     my $self = shift;
-    my $user = $self->user() || $self->error("The Bugzilla servers user name is not set.");
-    my $password = $self->password() || $self->error("The Bugzilla servers password is not set.");
+    my $user = $self->user()
+      || $self->error("The Bugzilla servers user name is not set.");
+    my $password = $self->password()
+      || $self->error("The Bugzilla servers password is not set.");
 
-    my $params = { "login" => $user,
-                   "password" => $password,
-                   "remember" => BZ::Client::XMLRPC::boolean->new(0) };
-    my $cookies = HTTP::Cookies->new();
-    my $response = $self->_api_call("User.login", $params, $cookies);
-    if (!defined($response->{'id'})  ||  $response->{'id'} !~ /^\d+$/s) {
-        $self->error("Server did not return a valid user ID.");
+    if ( $self->{'version'} and $self->{'version'} >= 3.6 ) {
+        $self->{payload} = {
+            'Bugzilla_login'    => $user,
+            'Bugzilla_password' => $password,
+        };
     }
-    $self->{"cookies"} = $cookies;
+    else {
+
+        my $params = {
+            'login'    => $user,
+            'password' => $password,
+            'remember' => BZ::Client::XMLRPC::boolean->new(0)
+        };
+        my $cookies = HTTP::Cookies->new();
+        my $response = $self->_api_call( 'User.login', $params, $cookies );
+        if ( not defined( $response->{'id'} )
+            or $response->{'id'} !~ m/^\d+$/s )
+        {
+            $self->error('Server did not return a valid user ID.');
+        }
+        $self->{'cookies'} = $cookies;
+
+    }
+
     return;
 }
 
 sub logout($) {
-    my $self = shift;
+    my $self    = shift;
     my $cookies = $self->{"cookies"};
     if ($cookies) {
         $self->{"cookies"} = undef;
         my $xmlrpc = $self->xmlrpc();
-        $xmlrpc->request("methodName" => "User.logout", params => [] );
+        $xmlrpc->request( "methodName" => "User.logout", params => [] );
     }
 }
 
@@ -128,28 +155,32 @@ sub is_logged_in($) {
 }
 
 sub api_call($$$) {
-    my($self, $methodName, $params) = @_;
-    if (!$self->is_logged_in()) {
+    my ( $self, $methodName, $params ) = @_;
+    if ( !$self->is_logged_in() ) {
         $self->login();
     }
-    return $self->_api_call($methodName, $params);
+    return $self->_api_call( $methodName, $params );
 }
 
 sub _api_call($$$;$) {
-    my($self, $methodName, $params, $cookies) = @_;
-    $self->log("debug", "BZ::Client::_api_call, sending request for method $methodName to " . $self->url());
+    my ( $self, $methodName, $params, $cookies ) = @_;
+    $self->log( "debug",
+        "BZ::Client::_api_call, sending request for method $methodName to "
+          . $self->url() );
     my $xmlrpc = $self->xmlrpc();
     if ($cookies) {
         $xmlrpc->user_agent()->cookie_jar($cookies);
     }
-    my $response = $xmlrpc->request("methodName" => $methodName, params => [ $params ] );
-    if (!$response) {
+    my $response =
+      $xmlrpc->request( "methodName" => $methodName, params => [$params] );
+    if ( !$response ) {
         $self->error("Empty response from server.");
     }
-    if (ref($response) ne "HASH") {
+    if ( ref($response) ne "HASH" ) {
         $self->error("Invalid response from server: $response");
     }
-    $self->log("debug", "BZ::Client::_api_call, got response for method $methodName");
+    $self->log( "debug",
+        "BZ::Client::_api_call, got response for method $methodName" );
     return $response;
 }
 
@@ -181,6 +212,9 @@ This section lists the class methods of BZ::Client.
 The new method constructs a new instance of BZ::Client. Whenever you
 want to connect to the Bugzilla server, you must first create a
 Bugzilla client. The methods input is a hash of parameters.
+
+Optionally, you can pass in a subref named I<logger> which will be
+fed debugging information as the client works.
 
 =over
 
@@ -242,4 +276,4 @@ hash ref of named result objects.
 =head1 SEE ALSO
 
   L<BZ::Client::Exception>
-  
+

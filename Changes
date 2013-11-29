@@ -1,5 +1,8 @@
 Revision history for Perl extension BZ::Client.
 
+1.05 Fri Nov 29 14:11:00 2013
+    - Applied patch from http://hg.mozilla.org/webtools/bzapi/raw-file/24eba717cf5b/patches/xmlrpc-fix.diff
+
 1.04 Mon Aug 22 19:23:00 2011
     - Added support for dateTime via instances of DateTime
 

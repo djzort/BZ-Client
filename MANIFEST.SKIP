@@ -6,4 +6,5 @@
 ^Makefile.old$
 ^pm_to_blib$
 ^BZ-Client-\d+.*\.tar\.gz$
+^.git\/
 

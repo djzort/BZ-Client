@@ -28,11 +28,11 @@ USAGE
 
 my($testUrl, $testUser, $testPassword, $logDirectory);
 Getopt::Long::GetOptions(
-    "help" => \&Usage,
-    "logDirectory=s" => \$logDirectory,
-    "testUrl=s" => \$testUrl,
-    "testUser=s" => \$testUser,
-    "testPassword=s" => \$testPassword
+    'help' => \&Usage,
+    'logDirectory=s' => \$logDirectory,
+    'testUrl=s' => \$testUrl,
+    'testUser=s' => \$testUser,
+    'testPassword=s' => \$testPassword
     ) || die Usage();
 
 my $config = {
@@ -43,13 +43,13 @@ my $config = {
 };
 
 my $configFile = 't/config.pl';
-open(my $fh, ">", $configFile)
+open(my $fh, '>', $configFile)
     or die "Failed to create $configFile: $!";
 (print $fh Data::Dumper->new([$config])->Indent(1)->Terse(1)->Dump())
     or die "Failed to write to $configFile: $!";
 close($fh)
     or die "Failed to close $configFile: $!";
-    
+
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
 WriteMakefile(

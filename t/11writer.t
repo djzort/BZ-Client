@@ -8,7 +8,7 @@ use DateTime();
 
 use Test;
 
-my $tz =DateTime::TimeZone->new(name => 'CET');
+my $tz = DateTime::TimeZone->new(name => 'CET');
 die 'Unable to create CET timezone' unless $tz;
 my $now = DateTime->new(
            year       => 2011,
@@ -23,11 +23,11 @@ my $now = DateTime->new(
 
 sub TestBasic() {
     my $xmlrpc = BZ::Client::XMLRPC->new();
-    my $input = [ "123", BZ::Client::XMLRPC::int->new(345),
-                  BZ::Client::XMLRPC::double->new(4.6), [ "a", "b", "c" ],
+    my $input = [ '123', BZ::Client::XMLRPC::int->new(345),
+                  BZ::Client::XMLRPC::double->new(4.6), [ 'a', 'b', 'c' ],
                   scalar($now),
-        { "a" => BZ::Client::XMLRPC::int->new(0), "b" => "xyz" } ];
-    my $contents = $xmlrpc->create_request("someMethod", $input);
+                  { 'a' => BZ::Client::XMLRPC::int->new(0), 'b' => 'xyz' } ];
+    my $contents = $xmlrpc->create_request('someMethod', $input);
     my $expect =
       "<methodCall>"
       . "<methodName>someMethod</methodName>"
@@ -62,7 +62,7 @@ sub TestBasic() {
       .     "</value>"
       .   "</param>"
       . "</params>"
-      ."</methodCall>\n"; 
+      ."</methodCall>\n";
     if ($contents ne $expect) {
         print STDERR "Expect: $expect\n";
         print STDERR "Got:    $contents\n";
@@ -73,8 +73,8 @@ sub TestBasic() {
 
 sub TestGetProducts() {
     my $xmlrpc = BZ::Client::XMLRPC->new();
-    my $input = [ { "ids" => [ "0", "1", "2" ] } ];
-    my $contents = $xmlrpc->create_request("Product.get", $input);
+    my $input = [ { 'ids' => [ '0', '1', '2' ] } ];
+    my $contents = $xmlrpc->create_request('Product.get', $input);
     my $expect =
       "<methodCall>"
       . "<methodName>Product.get</methodName>"
@@ -90,7 +90,7 @@ sub TestGetProducts() {
       .     "</value>"
       .   "</param>"
       . "</params>"
-      ."</methodCall>\n"; 
+      ."</methodCall>\n";
     if ($contents ne $expect) {
         print STDERR "Expect: $expect\n";
         print STDERR "Got:    $contents\n";
@@ -100,6 +100,6 @@ sub TestGetProducts() {
 }
 
 plan(tests => 2);
-ok(TestBasic(), 1, "TestBasic");
-ok(TestGetProducts(), 1, "TestGetProducts");
+ok(TestBasic(), 1, 'TestBasic');
+ok(TestGetProducts(), 1, 'TestGetProducts');
 

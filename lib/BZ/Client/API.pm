@@ -34,4 +34,4 @@ are subclassing this one, in order to inherit common functionality.
 =head1 SEE ALSO
 
   L<BZ::Client>
- 
+

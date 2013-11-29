@@ -1,9 +1,11 @@
+#!/bin/false
+
 #
 #  BZ::Client::Test - Module for writing integration tests
 #
 
 use strict;
-use warnings "all";
+use warnings 'all';
 
 package BZ::Client::Test;
 
@@ -15,7 +17,7 @@ sub new($;@) {
     my $self;
     if (@_ == 1) {
         my $files = shift;
-        foreach my $f (@$files) {
+        for my $f (@$files) {
             if (-f $f) {
                 my $hash;
                 eval {
@@ -24,7 +26,7 @@ sub new($;@) {
                 if ($@) {
                     die "Failed to load configuration file $f: $@";
                 }
-                if (!$hash  ||  ref($hash) ne "HASH") {
+                if (!$hash  ||  ref($hash) ne 'HASH') {
                     die "Configuration file $f didn't return a HASH value.";
                 }
                 # Create a copy of $hash

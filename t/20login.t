@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 use strict;
-use warnings "all";
+use warnings 'all';
 
 use BZ::Client::Test();
 use Test;
@@ -19,10 +19,10 @@ sub TestBasic() {
     };
     if ($@) {
         my $err = $@;
-        if (ref($err) eq "BZ::Client::Exception") {
-            print STDERR "Error: " . (defined($err->http_code()) ? $err->http_code() : "undef")
-                . ", " . (defined($err->xmlrpc_code()) ? $err->xmlrpc_code() : "undef")
-                . ", " . (defined($err->message()) ? $err->message() : "undef") . "\n";
+        if (ref($err) eq 'BZ::Client::Exception') {
+            print STDERR 'Error: ' . (defined($err->http_code()) ? $err->http_code() : 'undef')
+                . ', ' . (defined($err->xmlrpc_code()) ? $err->xmlrpc_code() : 'undef')
+                . ', ' . (defined($err->message()) ? $err->message() : 'undef') . "\n";
         } else {
             print STDERR "Error $err\n";
         }
@@ -36,10 +36,10 @@ sub TestBasic() {
     };
     if ($@) {
         my $err = $@;
-        if (ref($err) eq "BZ::Client::Exception") {
-            print STDERR "Error: " . (defined($err->http_code()) ? $err->http_code() : "undef")
-                . ", " . (defined($err->xmlrpc_code()) ? $err->xmlrpc_code() : "undef")
-                . ", " . (defined($err->message()) ? $err->message() : "undef") . "\n";
+        if (ref($err) eq 'BZ::Client::Exception') {
+            print STDERR 'Error: ' . (defined($err->http_code()) ? $err->http_code() : 'undef')
+                . ', ' . (defined($err->xmlrpc_code()) ? $err->xmlrpc_code() : 'undef')
+                . ', ' . (defined($err->message()) ? $err->message() : 'undef') . "\n";
         } else {
             print STDERR "Error $err\n";
         }
@@ -53,12 +53,12 @@ sub TestBasic() {
 
 plan(tests => 1);
 
-$tester = BZ::Client::Test->new(["config.pl", "t/config.pl"]);
+$tester = BZ::Client::Test->new(['config.pl', 't/config.pl']);
 my $skipping;
 if ($tester->isSkippingIntegrationTests()) {
-    $skipping = "No Bugzilla server configured, skipping";
+    $skipping = 'No Bugzilla server configured, skipping';
 } else {
     $skipping = 0;
 }
-skip($skipping, \&TestBasic, 1, "TestBasic");
+skip($skipping, \&TestBasic, 1, 'TestBasic');
 
