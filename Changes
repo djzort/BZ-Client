@@ -1,5 +1,7 @@
 Revision history for Perl extension BZ::Client.
 
+    - BZ::Client::Bugs - now uses wantarray
+
 1.06 Thu Dec 12 14:06:00 2013
     - Applied patch from https://rt.cpan.org/Public/Bug/Display.html?id=78467, needs a test.
     - Applied patch from https://rt.cpan.org/Ticket/Display.html?id=78694, needs a test.

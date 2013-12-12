@@ -1,9 +1,11 @@
+#!/bin/false
+
 #
 # BZ::Client::Bug - Client side representation of a bug in Bugzilla
 #
 
 use strict;
-use warnings "all";
+use warnings 'all';
 
 package BZ::Client::Bug;
 
@@ -14,58 +16,58 @@ our @ISA = qw(BZ::Client::API);
 
 sub legal_values($$$) {
     my($class, $client, $field) = @_;
-    $client->log("debug", "BZ::Client::Bug::legal_values: Asking for $field");
-    my $params = { "field" => $field };
-    my $result = $class->api_call($client, "Bug.legal_values", $params);
-    my $values = $result->{"values"};
-    if (!$values  ||  "ARRAY" ne ref($values)) {
+    $client->log('debug', "BZ::Client::Bug::legal_values: Asking for $field");
+    my $params = { 'field' => $field };
+    my $result = $class->api_call($client, 'Bug.legal_values', $params);
+    my $values = $result->{'values'};
+    if (!$values  ||  'ARRAY' ne ref($values)) {
         $class->error($client, "Invalid reply by server, expected array of values.");
     }
-    $client->log("debug", "BZ::Client::Bug::legal_values: Got " . join(",", @$values));
+    $client->log('debug', 'BZ::Client::Bug::legal_values: Got ' . join(',', @$values));
     return $values;
 }
 
 sub get($$;$) {
     my($class, $client, $ids, $permissive) = @_;
-    $client->log("debug", "BZ::Client::Bug::get: Asking for " . (ref($ids) eq "ARRAY" ? join(",", @$ids) : $ids));
+    $client->log('debug', 'BZ::Client::Bug::get: Asking for ' . (ref($ids) eq 'ARRAY' ? join(',', @$ids) : $ids));
     my $params = { ids => $ids };
-    $params->{"permissive"} = BZ::Client::XMLRPC::boolean::TRUE() if $permissive;
-    my $result = $class->api_call($client, "Bug.get", $params);
-    my $bugs = $result->{"bugs"};
-    if (!$bugs  ||  "ARRAY" ne ref($bugs)) {
-        $class->error($client, "Invalid reply by server, expected array of bugs.");
+    $params->{'permissive'} = BZ::Client::XMLRPC::boolean::TRUE() if $permissive;
+    my $result = $class->api_call($client, 'Bug.get', $params);
+    my $bugs = $result->{'bugs'};
+    if (!$bugs  ||  'ARRAY' ne ref($bugs)) {
+        $class->error($client, 'Invalid reply by server, expected array of bugs.');
     }
     my @result;
-    foreach my $bug (@$bugs) {
+    for my $bug (@$bugs) {
         push(@result, BZ::Client::Bug->new(%$bug));
     }
-    $client->log("debug", "BZ::Client::Bug::get: Got " . scalar(@result));
-    return \@result;
+    $client->log('debug', 'BZ::Client::Bug::get: Got ' . scalar(@result));
+    return wantarray ? @result : \@result;
 }
 
 sub search($$$) {
     my($class, $client, $params) = @_;
-    $client->log("debug", "BZ::Client::Bug::search: Searching");
-    my $result = $class->api_call($client, "Bug.search", $params);
-    my $bugs = $result->{"bugs"};
-    if (!$bugs  ||  "ARRAY" ne ref($bugs)) {
-        $class->error($client, "Invalid reply by server, expected array of bugs.");
+    $client->log('debug', 'BZ::Client::Bug::search: Searching');
+    my $result = $class->api_call($client, 'Bug.search', $params);
+    my $bugs = $result->{'bugs'};
+    if (!$bugs  ||  'ARRAY' ne ref($bugs)) {
+        $class->error($client, 'Invalid reply by server, expected array of bugs.');
     }
     my @result;
-    foreach my $bug (@$bugs) {
+    for my $bug (@$bugs) {
         push(@result, BZ::Client::Bug->new(%$bug));
     }
-    $client->log("debug", "BZ::Client::Bug::search: Got " . scalar(@result));
-    return \@result;
+    $client->log('debug', 'BZ::Client::Bug::search: Got ' . scalar(@result));
+    return wantarray ? @result : \@result;
 }
 
 sub create($$$) {
     my($class, $client, $params) = @_;
-    $client->log("debug", "BZ::Client::Bug::create: Creating");
+    $client->log('debug', 'BZ::Client::Bug::create: Creating');
     my $result = $class->api_call($client, "Bug.create", $params);
     my $id = $result->{"id"};
     if (!$id) {
-        $class->error($client, "Invalid reply by server, expected bug ID.");
+        $class->error($client, 'Invalid reply by server, expected bug ID.');
     }
     return $id;
 }
@@ -80,135 +82,135 @@ sub new($@) {
 sub id($;$) {
     my $self = shift;
     if (@_) {
-        $self->{"id"} = shift;
+        $self->{'id'} = shift;
     } else {
-        return $self->{"id"}
+        return $self->{'id'}
     }
 }
 
 sub alias($;$) {
     my $self = shift;
     if (@_) {
-        $self->{"alias"} = shift;
+        $self->{'alias'} = shift;
     } else {
-        return $self->{"alias"}
+        return $self->{'alias'}
     }
 }
 
 sub assigned_to($;$) {
     my $self = shift;
     if (@_) {
-        $self->{"assigned_to"} = shift;
+        $self->{'assigned_to'} = shift;
     } else {
-        return $self->{"assigned_to"}
+        return $self->{'assigned_to'}
     }
 }
 
 sub component($;$) {
     my $self = shift;
     if (@_) {
-        $self->{"component"} = shift;
+        $self->{'component'} = shift;
     } else {
-        return $self->{"component"}
+        return $self->{'component'}
     }
 }
 
 sub creation_time($;$) {
     my $self = shift;
     if (@_) {
-        $self->{"creation_time"} = shift;
+        $self->{'creation_time'} = shift;
     } else {
-        return $self->{"creation_time"}
+        return $self->{'creation_time'}
     }
 }
 
 sub dupe_of($;$) {
     my $self = shift;
     if (@_) {
-        $self->{"dupe_of"} = shift;
+        $self->{'dupe_of'} = shift;
     } else {
-        return $self->{"dupe_of"}
+        return $self->{'dupe_of'}
     }
 }
 
 sub internals($;$) {
     my $self = shift;
     if (@_) {
-        $self->{"internals"} = shift;
+        $self->{'internals'} = shift;
     } else {
-        return $self->{"internals"}
+        return $self->{'internals'}
     }
 }
 
 sub is_open($;$) {
     my $self = shift;
     if (@_) {
-        $self->{"is_open"} = shift;
+        $self->{'is_open'} = shift;
     } else {
-        return $self->{"is_open"}
+        return $self->{'is_open'}
     }
 }
 
 sub last_change_time($;$) {
     my $self = shift;
     if (@_) {
-        $self->{"last_change_time"} = shift;
+        $self->{'last_change_time'} = shift;
     } else {
-        return $self->{"last_change_time"}
+        return $self->{'last_change_time'}
     }
 }
 
 sub priority($;$) {
     my $self = shift;
     if (@_) {
-        $self->{"priority"} = shift;
+        $self->{'priority'} = shift;
     } else {
-        return $self->{"priority"}
+        return $self->{'priority'}
     }
 }
 
 sub product($;$) {
     my $self = shift;
     if (@_) {
-        $self->{"product"} = shift;
+        $self->{'product'} = shift;
     } else {
-        return $self->{"product"}
+        return $self->{'product'}
     }
 }
 
 sub resolution($;$) {
     my $self = shift;
     if (@_) {
-        $self->{"resolution"} = shift;
+        $self->{'resolution'} = shift;
     } else {
-        return $self->{"resolution"}
+        return $self->{'resolution'}
     }
 }
 
 sub severity($;$) {
     my $self = shift;
     if (@_) {
-        $self->{"severity"} = shift;
+        $self->{'severity'} = shift;
     } else {
-        return $self->{"severity"}
+        return $self->{'severity'}
     }
 }
 
 sub status($;$) {
     my $self = shift;
     if (@_) {
-        $self->{"status"} = shift;
+        $self->{'status'} = shift;
     } else {
-        return $self->{"status"}
+        return $self->{'status'}
     }
 }
 
 sub summary($;$) {
     my $self = shift;
     if (@_) {
-        $self->{"summary"} = shift;
+        $self->{'summary'} = shift;
     } else {
-        return $self->{"summary"}
+        return $self->{'summary'}
     }
 }
 
@@ -218,7 +220,7 @@ sub summary($;$) {
 
 =head1 NAME
 
-  BZ::Client::Bug - Client side representation of a bug in Bugzilla 
+  BZ::Client::Bug - Client side representation of a bug in Bugzilla
 
 This class provides methods for accessing and managing bugs in Bugzilla.
 
@@ -367,4 +369,3 @@ Gets or sets the summary of this bug.
 =head1 SEE ALSO
 
   L<BZ::Client>, L<BZ::Client::API>
- 
