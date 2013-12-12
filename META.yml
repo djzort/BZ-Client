@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               BZ-Client
-version:            1.04
+version:            1.06
 abstract:           BZ::Client - A client for the Bugzilla web services API.
 author:
     - Jochen Wiedmann <jochen.wiedmann@gmail.com>
