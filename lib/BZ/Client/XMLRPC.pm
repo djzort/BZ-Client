@@ -16,7 +16,7 @@ use BZ::Client::XMLRPC::Parser();
 use DateTime::Format::Strptime();
 use DateTime::TimeZone();
 
-our $VERSION = 1.01;
+our $VERSION = 1.02;
 our $counter;
 our $fmt = DateTime::Format::Strptime->new(pattern=> '%C%Y-%m-%dT%T', time_zone=>'UTC');
 our $tz = DateTime::TimeZone->new(name => 'UTC');
@@ -144,7 +144,7 @@ sub get_response($$) {
     my($self, $contents) = @_;
     return _get_response($self, { 'url' => $self->url() . '/xmlrpc.cgi',
                                   'contentType' => 'text/xml',
-                                  'contents' => $contents });
+                                  'contents' => encode_utf8($contents) });
 }
 
 sub _get_response($$) {
