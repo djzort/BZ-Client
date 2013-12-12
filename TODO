@@ -1,0 +1,3 @@
+Add bug comments stuff ie.
+my $resp = $bz->api_call('Bug.comments', { ids => [ 52053 ] });
+and add_comments
