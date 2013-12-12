@@ -48,7 +48,7 @@ sub parse_error($) {
 
 sub TestBasic() {
     my $doc = <<"EOF";
-<methodResponse> 
+<methodResponse>
     <params>
         <param>
             <value><string>South Dakota</string></value>
@@ -61,7 +61,7 @@ EOF
 
 sub TestStrings() {
     my $doc = <<"EOF";
-<methodResponse> 
+<methodResponse>
     <params>
         <param>
             <value>
@@ -95,7 +95,7 @@ EOF
     my $res2 = $result->[2];
     if ("DateTime" ne ref($res2)){
       return "Expected DateTime, got ". ref($res2);
-    } 
+    }
     if ($res2->year != 2011){
       return "Expected year 2022, got " . $res2-> year();
     }
@@ -117,13 +117,13 @@ EOF
     if ($res2->time_zone->name() ne 'UTC'){
       return "Expectead timezone UTC, got " . $res2->time_zone->name();
     }
-    
+
     return undef;
 }
 
 sub TestStructure() {
     my $doc = <<"EOF";
-<methodResponse> 
+<methodResponse>
   <params>
     <param>
       <value>
@@ -162,7 +162,7 @@ EOF
 
 sub TestFault() {
     my $doc = <<"EOF";
-<methodResponse> 
+<methodResponse>
   <fault>
     <value>
       <struct>
