@@ -9,7 +9,7 @@ package BZ::Client;
 use BZ::Client::XMLRPC();
 use HTTP::Cookies();
 
-our $VERSION = '1.06';
+our $VERSION = '1.061';
 
 sub new($%) {
     my $class = shift;
@@ -185,6 +185,8 @@ sub _api_call($$$;$) {
 
 1;
 
+__END__
+
 =pod
 
 =head1 NAME
@@ -275,5 +277,6 @@ hash ref of named result objects.
 
 =head1 SEE ALSO
 
-  L<BZ::Client::Exception>
+L<BZ::Client::Exception>
 
+=cut
