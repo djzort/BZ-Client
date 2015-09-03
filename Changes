@@ -1,5 +1,6 @@
 Revision history for Perl extension BZ::Client.
 
+1.062_2 Thu Sep 03 21:48:00 2015
     - Make PodWeaver do stuff
 
 1.062_1 Thu Sep 03 20:20:00 2015
