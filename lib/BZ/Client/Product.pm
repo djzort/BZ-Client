@@ -9,7 +9,6 @@ package BZ::Client::Product;
 
 use BZ::Client::API();
 
-our $VERSION = 1.0;
 our @ISA = qw(BZ::Client::API);
 
 sub get_selectable_products($$) {
@@ -112,11 +111,10 @@ sub internals($;$) {
 
 =head1 NAME
 
-  BZ::Client::Product - Client side representation of a product in Bugzilla 
+  BZ::Client::Product - Client side representation of a product in Bugzilla
 
 This class provides methods for accessing and managing products in Bugzilla. Instances
 of this class are returned by L<BZ::Client::Product::get>.
-
 
 =head1 SYNOPSIS
 
@@ -145,7 +143,7 @@ Returns a list of the ids of the products the user can enter bugs against.
 =head2 get_accessible_products
 
   my @products = BZ::Client::Product->get_selectable_products($client);
-  
+
 Returns a list of the ids of the products the user can search or enter bugs against.
 
 =head2 get
@@ -192,4 +190,4 @@ Gets or sets the products description.
 
   L<BZ::Client>, L<BZ::Client::API>
 
- 
+
