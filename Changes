@@ -1,13 +1,12 @@
 Revision history for Perl extension BZ::Client.
 
-1.062_2 Thu Sep 03 21:48:00 2015
+1.063 Thu Sep 03 21:48:00 2015
     - Make PodWeaver do stuff
-
-1.062_1 Thu Sep 03 20:20:00 2015
     - Strip out subroutine prototypes
     - Strip out $VERSION's so dzil can do it
     - Whitespace fixes all over
     - Use dist::zilla
+    - Lots and lots of pod and tiny code style tweaks
 
 1.061 Wed Apr 22 13:43:00 2015
 
