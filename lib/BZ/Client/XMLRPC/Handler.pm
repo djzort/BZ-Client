@@ -1,8 +1,8 @@
-#
-# BZ::Client::XMLRPC::Handler - Abstract event handler for parsing an XML-RPC response.
-#
+#!/bin/false
+# PODNAME: BZ::Client::XMLRPC::Handler
+# ABSTRACT: Abstract event handler for parsing an XML-RPC response.
 use strict;
-use warnings "all";
+use warnings 'all';
 
 package BZ::Client::XMLRPC::Handler;
 
@@ -11,7 +11,7 @@ sub new {
     my $self = { @_ };
     $self->{'level'} = 0;
     bless($self, ref($class) || $class);
-    return $self;
+    return $self
 }
 
 sub init {
@@ -40,13 +40,13 @@ sub level {
 sub inc_level {
     my $self = shift;
     my $res = $self->{'level'}++;
-    return $res;
+    return $res
 }
 
 sub dec_level {
     my $self = shift;
     my $res = --$self->{'level'};
-    return $res;
+    return $res
 }
 
 sub error {
@@ -62,12 +62,13 @@ sub characters {
 }
 
 sub end {
-    my($self,$name) = @_;
+    # my($self,$name) = @_;
+    my $self = shift;
     my $l = $self->dec_level();
     if ($l == 0) {
         $self->parser()->remove($self);
     }
-    return $l;
+    return $l
 }
 
 1;
