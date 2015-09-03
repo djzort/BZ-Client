@@ -118,10 +118,10 @@ of this class are returned by L<BZ::Client::Product::get>.
 
   my $client = BZ::Client->new( url       => $url,
                                 user      => $user,
-                                password  => $password);
+                                password  => $password );
 
-  my $ids = BZ::Client::Product->get_accessible_products($client);
-  my $products = BZ::Client::Product->get($client, $ids);
+  my $ids = BZ::Client::Product->get_accessible_products( $client );
+  my $products = BZ::Client::Product->get( $client, $ids );
 
 =head1 CLASS METHODS
 
@@ -129,19 +129,19 @@ This section lists the class methods, which are available in this module.
 
 =head2 get_selectable_products
 
-  my @products = BZ::Client::Product->get_selectable_products($client);
+  my @products = BZ::Client::Product->get_selectable_products( $client );
 
 Returns a list of the ids of the products the user can search on.
 
 =head2 get_enterable_products
 
-  my @products = BZ::Client::Product->get_selectable_products($client);
+  my @products = BZ::Client::Product->get_selectable_products( $client );
 
 Returns a list of the ids of the products the user can enter bugs against.
 
 =head2 get_accessible_products
 
-  my @products = BZ::Client::Product->get_selectable_products($client);
+  my @products = BZ::Client::Product->get_selectable_products( $client );
 
 Returns a list of the ids of the products the user can search or enter bugs against.
 
@@ -156,7 +156,7 @@ mentioned in the list @ids.
 
   my $product = BZ::Client->Product->new( id           => $id,
                                           name         => $name,
-                                          description  => $description);
+                                          description  => $description );
 
 Creates a new instance with the given ID, name, and description.
 
@@ -167,26 +167,25 @@ This section lists the modules instance methods.
 =head2 id
 
   my $id = $product->id();
-  $product->id($id);
+  $product->id( $id );
 
 Gets or sets the products ID.
 
 =head2 name
 
   my $name = $product->name();
-  $product->name($name);
+  $product->name( $name );
 
 Gets or sets the products name.
 
 =head2 description
 
   my $description = $product->description();
-  $product->description($description);
+  $product->description( $description );
 
 Gets or sets the products description.
 
 =head1 SEE ALSO
 
   L<BZ::Client>, L<BZ::Client::API>
-
 

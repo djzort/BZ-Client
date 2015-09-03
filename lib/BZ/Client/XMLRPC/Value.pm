@@ -1,17 +1,18 @@
-#
-# BZ::Client::XMLRPC::Value - Event handler for parsing a single XML-RPC value.
-#
+#!/bin/false
+# PODNAME: BZ::Client::XMLRPC::Value
+# ABSTRACT: Event handler for parsing a single XML-RPC value.
+
 use strict;
 use warnings 'all';
 
 package BZ::Client::XMLRPC::Value;
 
-use BZ::Client::XMLRPC::Handler();
-use BZ::Client::XMLRPC::Struct();
-use BZ::Client::XMLRPC::Array();
-use DateTime::Format::ISO8601();
+use BZ::Client::XMLRPC::Handler ();
+use BZ::Client::XMLRPC::Struct ();
+use BZ::Client::XMLRPC::Array ();
+use DateTime::Format::ISO8601 ();
 
-our @ISA     = qw(BZ::Client::XMLRPC::Handler);
+our @ISA = qw(BZ::Client::XMLRPC::Handler);
 
 sub start {
     my ( $self, $name ) = @_;
@@ -43,7 +44,7 @@ sub start {
             );
             $handler->start($name);
         }
-        elsif ('i4' eq $name
+        elsif ('i4'               eq $name
             || 'int'              eq $name
             || 'string'           eq $name
             || 'double'           eq $name
@@ -52,7 +53,7 @@ sub start {
             || 'boolean'          eq $name )
         {
             $self->{'level1_elem'}    = $name;
-            $self->{'level1_content'} = "";
+            $self->{'level1_content'} = q();
         }
         else {
             $self->error(
@@ -96,7 +97,7 @@ sub end {
             }
         }
     }
-    return $self->SUPER::end($name);
+    return $self->SUPER::end($name)
 }
 
 sub characters {
@@ -104,13 +105,13 @@ sub characters {
     my $l = $self->level();
     if ( $l == 1 ) {
         $self->{'level0_content'} .= $text;
-        return;
+        return
     }
     elsif ( $l == 2 ) {
         my $l1_elem = $self->{'level1_elem'};
         if ( defined($l1_elem) ) {
             $self->{'level1_content'} .= $text;
-            return;
+            return
         }
     }
     $self->SUPER::characters($text);
@@ -119,8 +120,8 @@ sub characters {
 sub result {
     my $self = shift;
     my $res = $self->{'result'};
-    $res = defined($res) ? $res : "";
-    return $res;
+    $res = defined($res) ? $res : q();
+    return $res
 }
 
 1;

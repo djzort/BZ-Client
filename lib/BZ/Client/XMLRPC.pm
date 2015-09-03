@@ -15,8 +15,8 @@ use DateTime::Format::Strptime();
 use DateTime::TimeZone();
 
 our $counter;
-our $fmt = DateTime::Format::Strptime->new(pattern=> '%C%Y-%m-%dT%T', time_zone=>'UTC');
-our $tz = DateTime::TimeZone->new(name => 'UTC');
+our $fmt = DateTime::Format::Strptime->new( pattern=> '%C%Y-%m-%dT%T', time_zone => 'UTC' );
+our $tz = DateTime::TimeZone->new( name => 'UTC' );
 
 
 sub new {
@@ -296,8 +296,8 @@ __END__
 
 =head1 SYNOPSIS
 
-  my $xmlrpc = BZ::Client::XMLRPC->new('url' => $url);
-  my $result = $xmlrpc->request('methodName' => $methodName, 'params' => $params);
+  my $xmlrpc = BZ::Client::XMLRPC->new( url => $url);
+  my $result = $xmlrpc->request( methodName => $methodName, params => $params);
 
 An instance of BZ::Client::XMLRPC is able to perform XML-RPC calls against the
 given URL. A request is performed by passing the method name and the method
@@ -309,7 +309,7 @@ This section lists the possible class methods.
 
 =head2 new
 
-  my $xmlrpc = BZ::Client::XMLRPC->new('url' => $url);
+  my $xmlrpc = BZ::Client::XMLRPC->new( url => $url);
 
 Creates a new instance with the given URL.
 
@@ -320,13 +320,13 @@ This section lists the possible instance methods.
 =head2 url
 
   my $url = $xmlrpc->url();
-  $xmlrpc->url($url);
+  $xmlrpc->url( $url );
 
 Returns or sets the XML-RPC servers URL.
 
 =head2 request
 
-  my $result = $xmlrpc->request('methodName' => $methodName, 'params' => $params);
+  my $result = $xmlrpc->request( methodName => $methodName,  params => $params);
 
 Calls the XML-RPC servers method C<$methodCall>, passing the parameters given by
 C<$params>, an array of parameters. Parameters may be hash refs, array refs, or

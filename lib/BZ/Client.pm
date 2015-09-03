@@ -14,7 +14,7 @@ sub new {
     my $class = shift;
     my $self  = {@_};
     bless( $self, ref($class) || $class );
-    return $self;
+    return $self
 }
 
 sub url {
@@ -125,7 +125,7 @@ sub login {
     }
     $self->{'cookies'} = $cookies;
 
-    return;
+    return
 }
 
 sub logout {
@@ -140,7 +140,7 @@ sub logout {
 
 sub is_logged_in {
     my $self = shift;
-    return ( $self->{'cookies'} or $self->{'payload'} ) ? 1 : 0;
+    return ( $self->{'cookies'} or $self->{'payload'} ) ? 1 : 0
 }
 
 sub api_call {
@@ -148,7 +148,7 @@ sub api_call {
     if ( !$self->is_logged_in() ) {
         $self->login();
     }
-    return $self->_api_call( $methodName, $params );
+    return $self->_api_call( $methodName, $params )
 }
 
 sub _api_call {
@@ -179,7 +179,7 @@ sub _api_call {
     $self->log( 'debug',
         "BZ::Client::_api_call, got response for method $methodName" );
 
-    return $response;
+    return $response
 }
 
 1;
@@ -190,9 +190,9 @@ __END__
 
 =head1 SYNOPSIS
 
-  my $client = BZ::Client->new("url" => $url,
-                               "user" => $user,
-                               "password" => $password);
+  my $client = BZ::Client->new( url      => $url,
+                                user     => $user,
+                                password => $password );
   $client->login();
 
 =head1 CLASS METHODS
@@ -201,9 +201,9 @@ This section lists the class methods of BZ::Client.
 
 =head1 new
 
-  my $client = BZ::Client->new("url" => $url,
-                               "user" => $user,
-                               "password" => $password);
+  my $client = BZ::Client->new( url      => $url,
+                                user     => $user,
+                                password => $password );
 
 The new method constructs a new instance of BZ::Client. Whenever you
 want to connect to the Bugzilla server, you must first create a
@@ -238,14 +238,14 @@ perform.
 =head2 url
 
   my $url = $client->url();
-  $client->url($url);
+  $client->url( $url );
 
 Returns or sets the Bugzilla servers URL.
 
 =head2 user
 
   my $user = $client->user();
-  $client->user($user);
+  $client->user( $user );
 
 Returns or sets the user name to use when logging in to the Bugzilla
 server. Typically, this will be your email address.
@@ -253,7 +253,7 @@ server. Typically, this will be your email address.
 =head2 password
 
   my $password = $client->password();
-  $client->password($password);
+  $client->password( $password );
 
 Returns or sets the password to use when logging in to the Bugzilla server.
 
@@ -264,7 +264,7 @@ explicitly: It is done automatically, whenever required.
 
 =head2 api_call
 
-  my $response = $client->api_call($methodName, $params);
+  my $response = $client->api_call( $methodName, $params );
 
 Used by subclasses of L<BZ::Client::API> to invoke methods of the Bugzilla
 API. Takes a method name and a hash ref of parameters as input. Returns a
