@@ -57,11 +57,11 @@ servers installation.
 
   my $client = BZ::Client->new( url      => $url,
                                 user     => $user,
-                                password => $password);
+                                password => $password );
 
-  my $extensions = BZ::Client::Bugzilla->extensions($client);
-  my $time = BZ::Client::Bugzilla->time($client);
-  my $version = BZ::Client::Bugzilla->version($client);
+  my $extensions = BZ::Client::Bugzilla->extensions( $client );
+  my $time = BZ::Client::Bugzilla->time( $client );
+  my $version = BZ::Client::Bugzilla->version( $client );
 
 =head1 CLASS METHODS
 
@@ -69,26 +69,26 @@ This section lists the class methods, which are available in this module.
 
 =head2 extensions
 
-  my $extensions = BZ::Client::Bugzilla->extensions($client);
+  my $extensions = BZ::Client::Bugzilla->extensions( $client );
 
 Returns a hash ref with information about the Bugzilla servers extensions.
 
 =head2 time
 
-  my $time = BZ::Client::Bugzilla->time($client);
+  my $time = BZ::Client::Bugzilla->time( $client );
 
 Returns a hash ref with information about the Bugzilla servers local time.
 
 =head2 timezone
 
-  my $timezone = BZ::Client::Bugzilla->timezone($client);
+  my $timezone = BZ::Client::Bugzilla->timezone( $client );
 
 Returns the Bugzilla servers timezone as a numeric value. This method
 is deprecated: Use L</time> instead.
 
 =head2 version
 
-  my $version = BZ::Client::Bugzilla->version($client);
+  my $version = BZ::Client::Bugzilla->version( $client );
 
 Returns the Bugzilla servers version.
 

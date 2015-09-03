@@ -104,7 +104,8 @@ __END__
   my $skipping = $tester->isSkippingIntegrationTests();
   if ($skipping) {
     # Skip integration tests
-  } else {
+  }
+  else {
     my $client = $tester->client();
     # Run the tests, using the given client.
   }
@@ -143,7 +144,7 @@ an undefined value.
 =head2 testUrl
 
   my $url = $tester->testUrl();
-  $tester->testUrl($url);
+  $tester->testUrl( $url );
 
 Gets or sets the Bugzilla servers URL. This is also used to
 determine, whether the tester is able to run integration tests
@@ -153,14 +154,14 @@ be skipped.
 =head2 testUser
 
   my $user = $tester->testUser();
-  $tester->testUser($user);
+  $tester->testUser( $user );
 
 Gets or sets the Bugzilla servers user.
 
 =head2 testPassword
 
   my $password = $tester->testPassword();
-  $tester->testPassword($password);
+  $tester->testPassword( $password );
 
 Gets or sets the Bugzilla servers password.
 

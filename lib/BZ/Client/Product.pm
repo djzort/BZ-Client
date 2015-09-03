@@ -147,7 +147,7 @@ Returns a list of the ids of the products the user can search or enter bugs agai
 
 =head2 get
 
-  my @products = BZ::Client::Product->get($client, \@ids);
+  my @products = BZ::Client::Product->get( $client, \@ids );
 
 Returns a list of BZ::Client::Product instances with the product ID's
 mentioned in the list @ids.
