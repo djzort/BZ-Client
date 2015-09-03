@@ -1,9 +1,6 @@
 #!/bin/false
-# ABSTRACT: BZ::Client - A client for the Bugzilla web services API.
-
-#
-# BZ::Client.pm - Web services client for the Bugzilla server
-#
+# ABSTRACT: A client for the Bugzilla web services API.
+# PODNAME: BZ::Client
 
 use strict;
 use warnings 'all';
@@ -190,10 +187,6 @@ sub _api_call {
 __END__
 
 =pod
-
-=head1 NAME
-
-  BZ::Client - A client for the Bugzilla web services API.
 
 =head1 SYNOPSIS
 

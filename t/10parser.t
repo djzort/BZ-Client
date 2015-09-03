@@ -79,18 +79,18 @@ sub TestStrings() {
 EOF
     my $result = parse($doc);
     if (!$result  ||  ref($result) ne "ARRAY") {
-	return "Expected array, got " . (defined($result) ? $result : "undef");
+        return "Expected array, got " . (defined($result) ? $result : "undef");
     }
     if (@$result != 3) {
-	return "Expected 3 result elements, got " . scalar(@$result);
+        return "Expected 3 result elements, got " . scalar(@$result);
     }
     my $res0 = $result->[0];
     if (!$res0  ||  $res0 ne "South Dakota") {
-	return "Expected first result element to be 'South Dakota', got " . (defined($res0) ? "'$res0'" : "undef");
+        return "Expected first result element to be 'South Dakota', got " . (defined($res0) ? "'$res0'" : "undef");
     }
     my $res1 = $result->[1];
     if (!$res1  ||  $res1 ne "North Dakota") {
-	return "Expected first result element to be 'North Dakota', got " . (defined($res0) ? "'$res0'" : "undef");
+        return "Expected first result element to be 'North Dakota', got " . (defined($res0) ? "'$res0'" : "undef");
     }
     my $res2 = $result->[2];
     if ("DateTime" ne ref($res2)){
@@ -144,10 +144,10 @@ sub TestStructure() {
 EOF
     my $result = parse($doc);
     if (!$result || ref($result) ne "HASH") {
-	return "Expected hash, got " . (defined($result) ? $result : "undef");
+        return "Expected hash, got " . (defined($result) ? $result : "undef");
     }
     if ((keys %$result) != 2) {
-	return "Expected 2 result members, got " . scalar(keys %$result);
+        return "Expected 2 result members, got " . scalar(keys %$result);
     }
     my $res0 = $result->{"foo"};
     if (!$res0  ||  $res0 ne "bar") {
@@ -186,7 +186,7 @@ EOF
     }
     my $message = $result->message();
     if (!defined($message)  ||  $message ne "Some problem occurred") {
-	return "Expected faultString 'Some problem occurred', got " . (defined($message) ? "'$message'" : "undef");
+        return "Expected faultString 'Some problem occurred', got " . (defined($message) ? "'$message'" : "undef");
     }
     my $http_code = $result->http_code();
     if (defined($http_code)) {
@@ -214,10 +214,10 @@ sub TestLogin() {
 EOF
     my $result = parse($doc);
     if (!$result || ref($result) ne "HASH") {
-	return "Expected hash, got " . (defined($result) ? $result : "undef");
+        return "Expected hash, got " . (defined($result) ? $result : "undef");
     }
     if ((keys %$result) != 1) {
-	return "Expected 1 result member, got " . scalar(keys %$result);
+        return "Expected 1 result member, got " . scalar(keys %$result);
     }
     my $res0 = $result->{"id"};
     if (!$res0  ||  $res0 ne "1") {

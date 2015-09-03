@@ -1,9 +1,9 @@
-#
-# BZ::Client::Product - Client side representation of a product in Bugzilla
-#
+#!/bin/false
+# PODNAME: BZ::Client::Product
+# ABSTRACT: Client side representation of a product in Bugzilla
 
 use strict;
-use warnings "all";
+use warnings 'all';
 
 package BZ::Client::Product;
 
@@ -13,114 +13,113 @@ our @ISA = qw(BZ::Client::API);
 
 sub get_selectable_products {
     my($class, $client) = @_;
-    $client->log("debug", "BZ::Client::Product::get_selectable_products: Asking");
-    my $result = $class->get_list("Product.get_selectable_products", $client);
-    $client->log("debug", "BZ::Client::Product::get_selectable_products: Got " . @$result);
-    return $result;
+    $client->log('debug', 'BZ::Client::Product::get_selectable_products: Asking');
+    my $result = $class->get_list('Product.get_selectable_products', $client);
+    $client->log('debug', 'BZ::Client::Product::get_selectable_products: Got ' . @$result);
+    return $result
 }
 
 sub get_enterable_products {
     my($class, $client) = @_;
-    $client->log("debug", "BZ::Client::Product::get_enterable_products: Asking");
-    my $result = $class->get_list("Product.get_enterable_products", $client);
-    $client->log("debug", "BZ::Client::Product::get_enterable_products: Got " . @$result);
-    return $result;
+    $client->log('debug', 'BZ::Client::Product::get_enterable_products: Asking');
+    my $result = $class->get_list('Product.get_enterable_products', $client);
+    $client->log('debug', 'BZ::Client::Product::get_enterable_products: Got ' . @$result);
+    return $result
 }
 
 sub get_accessible_products {
     my($class, $client) = @_;
-    $client->log("debug", "BZ::Client::Product::get_accessible_products: Asking");
+    $client->log('debug', 'BZ::Client::Product::get_accessible_products: Asking');
     my $result = $class->get_list("Product.get_accessible_products", $client);
-    $client->log("debug", "BZ::Client::Product::get_accessible_products: Got " . @$result);
-    return $result;
+    $client->log('debug', 'BZ::Client::Product::get_accessible_products: Got ' . @$result);
+    return $result
 }
 
 sub get_list {
     my($class, $methodName, $client) = @_;
     my $result = $class->api_call($client, $methodName, {});
-    my $ids = $result->{"ids"};
-    if (!$ids  ||  "ARRAY" ne ref($ids)) {
-        $class->error($client, "Invalid reply by server, expected array of ids.");
+    my $ids = $result->{'ids'};
+    if (!$ids  ||  'ARRAY' ne ref($ids)) {
+        $class->error($client, 'Invalid reply by server, expected array of ids.');
     }
-    return $ids;
+    return $ids
 }
 
 sub get {
     my($class, $client, $ids) = @_;
-    my $result = $class->api_call($client, "Product.get", { "ids" => $ids });
-    my $products = $result->{"products"};
-    if (!$products  ||  "ARRAY" ne ref($products)) {
-        $class->error($client, "Invalid reply by server, expected array of products.");
+    my $result = $class->api_call($client, 'Product.get', { 'ids' => $ids });
+    my $products = $result->{'products'};
+    if (!$products  ||  'ARRAY' ne ref($products)) {
+        $class->error($client, 'Invalid reply by server, expected array of products.');
     }
     my @result;
-    foreach my $product (@$products) {
-        push(@result, $class->new(id => $product->{"id"},
-                                  name => $product->{"name"},
-                                  description => $product->{"description"},
-                                  internals => $product->{"internals"}));
+    for my $product (@$products) {
+        push(@result, $class->new(id => $product->{'id'},
+                                  name => $product->{'name'},
+                                  description => $product->{'description'},
+                                  internals => $product->{'internals'}));
     }
-    return \@result;
+    return \@result
 }
 
 sub new {
     my $class = shift;
     my $self = { @_ };
     bless($self, ref($class) || $class);
-    return $self;
+    return $self
 }
 
 sub id {
     my $self = shift;
     if (@_) {
-        $self->{"id"} = shift;
+        $self->{'id'} = shift;
     } else {
-        return $self->{"id"};
+        return $self->{'id'};
     }
 }
 
 sub name {
     my $self = shift;
     if (@_) {
-        $self->{"name"} = shift;
+        $self->{'name'} = shift;
     } else {
-        return $self->{"name"};
+        return $self->{name};
     }
 }
 
 sub description {
     my $self = shift;
     if (@_) {
-        $self->{"description"} = shift;
+        $self->{'description'} = shift;
     } else {
-        return $self->{"description"};
+        return $self->{'description'};
     }
 }
 
 sub internals {
     my $self = shift;
     if (@_) {
-        $self->{"internals"} = shift;
+        $self->{'internals'} = shift;
     } else {
-        return $self->{"internals"};
+        return $self->{'internals'};
     }
 }
 
 1;
 
-=pod
+__END__
 
-=head1 NAME
+=encoding utf-8
 
-  BZ::Client::Product - Client side representation of a product in Bugzilla
+=head1 SYNOPSIS
 
 This class provides methods for accessing and managing products in Bugzilla. Instances
 of this class are returned by L<BZ::Client::Product::get>.
 
-=head1 SYNOPSIS
+  my $client = BZ::Client->new( url       => $url,
+                                user      => $user,
+                                password  => $password);
 
-  my $client = BZ::Client->new("url" => $url,
-                               "user" => $user,
-                               "password" => $password);
   my $ids = BZ::Client::Product->get_accessible_products($client);
   my $products = BZ::Client::Product->get($client, $ids);
 
@@ -155,9 +154,9 @@ mentioned in the list @ids.
 
 =head2 new
 
-  my $product = BZ::Client->Product->new("id" => $id,
-                                         "name" => $name,
-                                         "description" => $description);
+  my $product = BZ::Client->Product->new( id           => $id,
+                                          name         => $name,
+                                          description  => $description);
 
 Creates a new instance with the given ID, name, and description.
 

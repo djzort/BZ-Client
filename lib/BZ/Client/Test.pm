@@ -1,8 +1,6 @@
 #!/bin/false
-
-#
-#  BZ::Client::Test - Module for writing integration tests
-#
+# PODNAME: BZ::Client::Test
+# ABSTRACT: Module for writing integration tests
 
 use strict;
 use warnings 'all';
@@ -10,7 +8,6 @@ use warnings 'all';
 package BZ::Client::Test;
 
 use BZ::Client();
-
 
 sub new {
     my $class = shift;
@@ -38,7 +35,7 @@ sub new {
         $self = { @_ };
     }
     bless($self, ref($class) || $class);
-    return $self;
+    return $self
 }
 
 sub testUrl {
@@ -80,32 +77,30 @@ sub logDirectory {
 sub client {
     my $self = shift;
     if ($self->isSkippingIntegrationTests()) {
-        die "Unable to create a client, as integration tests are being skipped.";
+        die 'Unable to create a client, as integration tests are being skipped.';
     }
-    return BZ::Client->new("url" => $self->testUrl(),
-                           "user" => $self->testUser(),
-                           "password" => $self->testPassword(),
-                           "logDirectory" => $self->logDirectory());
+    return BZ::Client->new( url  => $self->testUrl(),
+                            user  => $self->testUser(),
+                            password  => $self->testPassword(),
+                            logDirectory  => $self->logDirectory())
 }
 
 sub isSkippingIntegrationTests {
     my $self = shift;
-    return !defined($self->testUrl());
+    return !defined($self->testUrl())
 }
 
 1;
 
-=pod
+__END__
 
-=head1 NAME
-
-  BZ::Client::Test - Module for writing integration tests
+=encoding utf-8
 
 =head1 SYNOPSIS
 
   # Create a new instance, reading configuration from either of
   # the given files.
-  my $tester = BZ::Client::Test->new(["config.pl", "t/config.pl"]);
+  my $tester = BZ::Client::Test->new(['config.pl', 't/config.pl']);
   my $skipping = $tester->isSkippingIntegrationTests();
   if ($skipping) {
     # Skip integration tests
@@ -122,12 +117,12 @@ This section lists the class methods.
 
   # Create a new instance, reading configuration from either of
   # the given files.
-  my $tester = BZ::Client::Test->new(["config.pl", "t/config.pl"]);
+  my $tester = BZ::Client::Test->new(['config.pl', 't/config.pl']);
 
   # Create a new instance, providing configuration explicitly.
-  my $tester = BZ::Client->new("testUrl" => $url,
-                               "testUser" => $user,
-                               "testPassword" => $password);
+  my $tester = BZ::Client->new( 'testUrl'      => $url,
+                                'testUser'     => $user,
+                                'testPassword' => $password);
 
 Creates a new instance with a configuration for running integration
 tests. The configuration can be read from a config file or be

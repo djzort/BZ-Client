@@ -1,8 +1,6 @@
 #!/bin/false
-
-#
-# BZ::Client::XMLRPC.pm - Performs XML-RPC calls on behalf of the client.
-#
+# PODNAME: BZ::Client::XMLRPC
+# ABSTRACT: Performs XML-RPC calls on behalf of the client.
 
 use strict;
 use warnings 'all';
@@ -57,7 +55,7 @@ sub error {
     require BZ::Client::Exception;
     BZ::Client::Exception->throw('message' => $message,
                                  'http_code' => $http_code,
-                                 'xmlrpc_code' => $xmlrpc_code);
+                                 'xmlrpc_code' => $xmlrpc_code)
 }
 
 sub value {
@@ -136,14 +134,14 @@ sub create_request {
     $writer->endTag('params');
     $writer->endTag('methodCall');
     $writer->end();
-    return encode('utf8', $contents);
+    return encode('utf8', $contents)
 }
 
 sub get_response {
     my($self, $contents) = @_;
     return _get_response($self, { 'url' => $self->url() . '/xmlrpc.cgi',
                                   'contentType' => 'text/xml',
-                                  'contents' => encode_utf8($contents) });
+                                  'contents' => encode_utf8($contents) })
 }
 
 sub _get_response {
@@ -216,13 +214,13 @@ sub _get_response {
         }
     }
 
-    return $response;
+    return $response
 }
 
 sub parse_response {
     my($self, $contents) = @_;
     my $parser = BZ::Client::XMLRPC::Parser->new();
-    return $parser->parse($contents);
+    return $parser->parse($contents)
 }
 
 sub request {
@@ -237,7 +235,7 @@ sub request {
     $self->log('debug', "BZ::Client::XMLRPC::request: Sending method $methodName to " . $self->url());
     my $response = $self->get_response($contents);
     $self->log('debug', "BZ::Client::XMLRPC::request: Got result for method $methodName");
-    return $self->parse_response($response);
+    return $self->parse_response($response)
 }
 
 sub log {
@@ -270,14 +268,14 @@ package BZ::Client::XMLRPC::int;
 
 sub new {
     my($class, $value) = @_;
-    return bless(\$value, (ref($class) || $class));
+    return bless(\$value, (ref($class) || $class))
 }
 
 package BZ::Client::XMLRPC::boolean;
 
 sub new {
     my($class, $value) = @_;
-    return bless(\$value, (ref($class) || $class));
+    return bless(\$value, (ref($class) || $class))
 }
 
 use constant TRUE => BZ::Client::XMLRPC::boolean->new(1);
@@ -287,16 +285,14 @@ package BZ::Client::XMLRPC::double;
 
 sub new {
     my($class, $value) = @_;
-    return bless(\$value, (ref($class) || $class));
+    return bless(\$value, (ref($class) || $class))
 }
 
 1;
 
-=pod
+__END__
 
-=head1 NAME
-
-  BZ::Client::XMLRPC - Performs XML-RPC calls on behalf of the client.
+=encoding utf-8
 
 =head1 SYNOPSIS
 

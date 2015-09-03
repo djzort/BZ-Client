@@ -1,9 +1,9 @@
-#
-# BZ::Client::Bugzilla - Provides access to the Bugzilla::Webservices::Bugzilla API
-#
+#!/bin/false
+# PODNAME: BZ::Client::Bugzilla
+# ABSTRACT: Provides access to the Bugzilla::Webservices::Bugzilla API
 
 use strict;
-use warnings "all";
+use warnings 'all';
 
 package BZ::Client::Bugzilla;
 
@@ -14,54 +14,51 @@ our @ISA = qw(BZ::Client::API);
 sub extensions {
     my($class, $client) = @_;
     my $params = {};
-    return $class->api_call($client, "Bugzilla.extensions", $params);
+    return $class->api_call($client, 'Bugzilla.extensions', $params);
 }
 
 sub time {
     my($class, $client) = @_;
     my $params = {};
-    $client->log("debug", "BZ::Client::Bugzilla::time: Asking");
-    my $time = $class->api_call($client, "Bugzilla.time", $params);
-    $client->log("debug", "BZ::Client::Bugzilla::time: Got $time");
-    return $time;
+    $client->log('debug', 'BZ::Client::Bugzilla::time: Asking');
+    my $time = $class->api_call($client, 'Bugzilla.time', $params);
+    $client->log('debug', 'BZ::Client::Bugzilla::time: Got $time');
+    return $time
 }
 
 sub timezone {
     my($class, $client) = @_;
     my $params = {};
-    $client->log("debug", "BZ::Client::Bugzilla::timezone: Asking");
+    $client->log('debug', 'BZ::Client::Bugzilla::timezone: Asking');
     my $timezone = $class->api_call($client, "Bugzilla.timezone", $params);
-    $client->log("debug", "BZ::Client::Bugzilla::time: Got $timezone");
-    return $timezone;
+    $client->log('debug', 'BZ::Client::Bugzilla::time: Got $timezone');
+    return $timezone
 }
 
 sub version {
     my($class, $client) = @_;
     my $params = {};
-    $client->log("debug", "BZ::Client::Bugzilla::version: Asking");
-    my $version = $class->api_call($client, "Bugzilla.version", $params);
-    $client->log("debug", "BZ::Client::Bugzilla::time: Got $version");
-    return $version;
+    $client->log('debug', 'BZ::Client::Bugzilla::version: Asking');
+    my $version = $class->api_call($client, 'Bugzilla.version', $params);
+    $client->log('debug', 'BZ::Client::Bugzilla::time: Got $version');
+    return $version
 }
-
 
 1;
 
-=pod
+__END__
 
-=head1 NAME
+=encoding utf-8
 
-  BZ::Client::Bugzilla - Provides information about the Bugzilla server.
+=head1 SYNOPSIS
 
 This class provides methods for accessing information about the Bugzilla
 servers installation.
 
+  my $client = BZ::Client->new( url      => $url,
+                                user     => $user,
+                                password => $password);
 
-=head1 SYNOPSIS
-
-  my $client = BZ::Client->new("url" => $url,
-                               "user" => $user,
-                               "password" => $password);
   my $extensions = BZ::Client::Bugzilla->extensions($client);
   my $time = BZ::Client::Bugzilla->time($client);
   my $version = BZ::Client::Bugzilla->version($client);

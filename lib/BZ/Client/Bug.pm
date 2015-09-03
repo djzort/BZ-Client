@@ -1,8 +1,6 @@
 #!/bin/false
-
-#
-# BZ::Client::Bug - Client side representation of a bug in Bugzilla
-#
+# PODNAME: BZ::Client::Bug
+# ABSTRACT: Client side representation of a bug in Bugzilla
 
 use strict;
 use warnings 'all';
@@ -20,10 +18,10 @@ sub legal_values {
     my $result = $class->api_call($client, 'Bug.legal_values', $params);
     my $values = $result->{'values'};
     if (!$values  ||  'ARRAY' ne ref($values)) {
-        $class->error($client, "Invalid reply by server, expected array of values.");
+        $class->error($client, 'Invalid reply by server, expected array of values.');
     }
     $client->log('debug', 'BZ::Client::Bug::legal_values: Got ' . join(',', @$values));
-    return $values;
+    return $values
 }
 
 sub get {
@@ -41,7 +39,7 @@ sub get {
         push(@result, BZ::Client::Bug->new(%$bug));
     }
     $client->log('debug', 'BZ::Client::Bug::get: Got ' . scalar(@result));
-    return wantarray ? @result : \@result;
+    return wantarray ? @result : \@result
 }
 
 sub search {
@@ -57,25 +55,25 @@ sub search {
         push(@result, BZ::Client::Bug->new(%$bug));
     }
     $client->log('debug', 'BZ::Client::Bug::search: Got ' . scalar(@result));
-    return wantarray ? @result : \@result;
+    return wantarray ? @result : \@result
 }
 
 sub create {
     my($class, $client, $params) = @_;
     $client->log('debug', 'BZ::Client::Bug::create: Creating');
-    my $result = $class->api_call($client, "Bug.create", $params);
-    my $id = $result->{"id"};
+    my $result = $class->api_call($client, 'Bug.create', $params);
+    my $id = $result->{'id'};
     if (!$id) {
         $class->error($client, 'Invalid reply by server, expected bug ID.');
     }
-    return $id;
+    return $id
 }
 
 sub new {
     my $class = shift;
     my $self = { @_ };
     bless($self, ref($class) || $class);
-    return $self;
+    return $self
 }
 
 sub id {
@@ -215,20 +213,18 @@ sub summary {
 
 1;
 
-=pod
+__END__
 
-=head1 NAME
-
-  BZ::Client::Bug - Client side representation of a bug in Bugzilla
-
-This class provides methods for accessing and managing bugs in Bugzilla.
-
+=encoding utf-8
 
 =head1 SYNOPSIS
 
-  my $client = BZ::Client->new("url" => $url,
-                               "user" => $user,
-                               "password" => $password);
+This class provides methods for accessing and managing bugs in Bugzilla.
+
+  my $client = BZ::Client->new( url      => $url,
+                                user     => $user,
+                                password => $password);
+
   my $bugs = BZ::Client::Bug->get($client, $ids);
 
 =head1 CLASS METHODS
@@ -363,7 +359,6 @@ Gets or sets the current status of the bug.
   $bug->summary($summary);
 
 Gets or sets the summary of this bug.
-
 
 =head1 SEE ALSO
 
