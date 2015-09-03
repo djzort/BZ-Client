@@ -1,23 +1,22 @@
 #
 # BZ::Client::XMLRPC::Array - Event handler for parsing a single XML-RPC array.
 #
-package BZ::Client::XMLRPC::Array;
-
 use strict;
 use warnings "all";
 
+package BZ::Client::XMLRPC::Array;
+
 use BZ::Client::XMLRPC::Handler();
 
-our $VERSION = 1.0;
 our @ISA = qw(BZ::Client::XMLRPC::Handler);
 
-sub init($$) {
+sub init {
     my($self,$parser) = @_;
     $self->SUPER::init($parser);
     $self->{'result'} = [];
 }
 
-sub start($$) {
+sub start {
     my($self,$name) = @_;
     my $l = $self->inc_level();
     if ($l == 0) {
@@ -46,8 +45,8 @@ sub start($$) {
     return $l;
 }
 
-sub result($) {
-    my($self) = shift;
+sub result {
+    my $self = shift;
     return $self->{'result'};
 }
 

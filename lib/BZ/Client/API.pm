@@ -9,14 +9,12 @@ use warnings 'all';
 
 package BZ::Client::API;
 
-our $VERSION = 1.0;
-
-sub api_call($$$$) {
+sub api_call {
     my($class, $client, $methodName, $params) = @_;
     return $client->api_call($methodName, $params);
 }
 
-sub error($$$;$$) {
+sub error {
     my($class, $client, $message, $http_code, $xmlrpc_code) = @_;
     return $client->error($message, $http_code, $xmlrpc_code);
 }

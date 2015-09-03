@@ -12,7 +12,7 @@ package BZ::Client::Test;
 use BZ::Client();
 
 
-sub new($;@) {
+sub new {
     my $class = shift;
     my $self;
     if (@_ == 1) {
@@ -41,7 +41,7 @@ sub new($;@) {
     return $self;
 }
 
-sub testUrl($;$) {
+sub testUrl {
     my $self = shift;
     if (@_) {
         $self->{'testUrl'} = shift;
@@ -50,7 +50,7 @@ sub testUrl($;$) {
     }
 }
 
-sub testUser($;$) {
+sub testUser {
     my $self = shift;
     if (@_) {
         $self->{'testUser'} = shift;
@@ -59,7 +59,7 @@ sub testUser($;$) {
     }
 }
 
-sub testPassword($;$) {
+sub testPassword {
     my $self = shift;
     if (@_) {
         $self->{'testPassword'} = shift;
@@ -68,7 +68,7 @@ sub testPassword($;$) {
     }
 }
 
-sub logDirectory($;$) {
+sub logDirectory {
     my $self = shift;
     if (@_) {
         $self->{'logDirectory'} = shift;
@@ -77,7 +77,7 @@ sub logDirectory($;$) {
     }
 }
 
-sub client($) {
+sub client {
     my $self = shift;
     if ($self->isSkippingIntegrationTests()) {
         die "Unable to create a client, as integration tests are being skipped.";
@@ -88,7 +88,7 @@ sub client($) {
                            "logDirectory" => $self->logDirectory());
 }
 
-sub isSkippingIntegrationTests($) {
+sub isSkippingIntegrationTests {
     my $self = shift;
     return !defined($self->testUrl());
 }

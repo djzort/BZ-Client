@@ -11,7 +11,7 @@ use BZ::Client::API();
 
 our @ISA = qw(BZ::Client::API);
 
-sub get_selectable_products($$) {
+sub get_selectable_products {
     my($class, $client) = @_;
     $client->log("debug", "BZ::Client::Product::get_selectable_products: Asking");
     my $result = $class->get_list("Product.get_selectable_products", $client);
@@ -19,7 +19,7 @@ sub get_selectable_products($$) {
     return $result;
 }
 
-sub get_enterable_products($$) {
+sub get_enterable_products {
     my($class, $client) = @_;
     $client->log("debug", "BZ::Client::Product::get_enterable_products: Asking");
     my $result = $class->get_list("Product.get_enterable_products", $client);
@@ -27,7 +27,7 @@ sub get_enterable_products($$) {
     return $result;
 }
 
-sub get_accessible_products($$) {
+sub get_accessible_products {
     my($class, $client) = @_;
     $client->log("debug", "BZ::Client::Product::get_accessible_products: Asking");
     my $result = $class->get_list("Product.get_accessible_products", $client);
@@ -35,7 +35,7 @@ sub get_accessible_products($$) {
     return $result;
 }
 
-sub get_list($$$) {
+sub get_list {
     my($class, $methodName, $client) = @_;
     my $result = $class->api_call($client, $methodName, {});
     my $ids = $result->{"ids"};
@@ -45,7 +45,7 @@ sub get_list($$$) {
     return $ids;
 }
 
-sub get($$$) {
+sub get {
     my($class, $client, $ids) = @_;
     my $result = $class->api_call($client, "Product.get", { "ids" => $ids });
     my $products = $result->{"products"};
@@ -62,14 +62,14 @@ sub get($$$) {
     return \@result;
 }
 
-sub new($@) {
+sub new {
     my $class = shift;
     my $self = { @_ };
     bless($self, ref($class) || $class);
     return $self;
 }
 
-sub id($;$) {
+sub id {
     my $self = shift;
     if (@_) {
         $self->{"id"} = shift;
@@ -78,7 +78,7 @@ sub id($;$) {
     }
 }
 
-sub name($;$) {
+sub name {
     my $self = shift;
     if (@_) {
         $self->{"name"} = shift;
@@ -87,7 +87,7 @@ sub name($;$) {
     }
 }
 
-sub description($;$) {
+sub description {
     my $self = shift;
     if (@_) {
         $self->{"description"} = shift;
@@ -96,7 +96,7 @@ sub description($;$) {
     }
 }
 
-sub internals($;$) {
+sub internals {
     my $self = shift;
     if (@_) {
         $self->{"internals"} = shift;

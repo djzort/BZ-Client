@@ -1,23 +1,22 @@
 #
 # BZ::Client::XMLRPC::Struct - Event handler for parsing a single XML-RPC struct.
 #
-package BZ::Client::XMLRPC::Struct;
-
 use strict;
 use warnings "all";
 
+package BZ::Client::XMLRPC::Struct;
+
 use BZ::Client::XMLRPC::Handler();
 
-our $VERSION = 1.0;
 our @ISA = qw(BZ::Client::XMLRPC::Handler);
 
-sub init($$) {
+sub init {
     my ($self, $parser) = @_;
     $self->SUPER::init($parser);
     $self->{'result'} = {};
 }
 
-sub start($$) {
+sub start {
     my($self,$name) = @_;
     my $l = $self->inc_level();
     if ($l == 0) {
@@ -51,7 +50,7 @@ sub start($$) {
     }
 }
 
-sub end($$) {
+sub end {
     my($self,$name) = @_;
     my $l = $self->SUPER::end($name);
     if ($l == 2  &&  defined($self->{'parsing_name'})) {
@@ -60,7 +59,7 @@ sub end($$) {
     return $l;
 }
 
-sub characters($$) {
+sub characters {
     my($self, $text) = @_;
     my $l = $self->level();
     if ($l == 3  &&  defined($self->{'parsing_name'})) {
@@ -70,8 +69,8 @@ sub characters($$) {
     }
 }
 
-sub result($) {
-    my($self) = shift;
+sub result {
+    my $self = shift;
     return $self->{'result'};
 }
 

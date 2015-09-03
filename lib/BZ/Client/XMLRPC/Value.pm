@@ -1,20 +1,19 @@
 #
 # BZ::Client::XMLRPC::Value - Event handler for parsing a single XML-RPC value.
 #
-package BZ::Client::XMLRPC::Value;
-
 use strict;
 use warnings 'all';
+
+package BZ::Client::XMLRPC::Value;
 
 use BZ::Client::XMLRPC::Handler();
 use BZ::Client::XMLRPC::Struct();
 use BZ::Client::XMLRPC::Array();
 use DateTime::Format::ISO8601();
 
-our $VERSION = 1.01;
 our @ISA     = qw(BZ::Client::XMLRPC::Handler);
 
-sub start($$) {
+sub start {
     my ( $self, $name ) = @_;
     my $l = $self->inc_level();
     if ( $l == 0 ) {
@@ -66,7 +65,7 @@ sub start($$) {
     }
 }
 
-sub end($$) {
+sub end {
     my ( $self, $name ) = @_;
     my $l = $self->level();
     if ( $l == 1 ) {
@@ -100,7 +99,7 @@ sub end($$) {
     return $self->SUPER::end($name);
 }
 
-sub characters($$) {
+sub characters {
     my ( $self, $text ) = @_;
     my $l = $self->level();
     if ( $l == 1 ) {
@@ -117,8 +116,8 @@ sub characters($$) {
     $self->SUPER::characters($text);
 }
 
-sub result($) {
-    my ($self) = shift;
+sub result {
+    my $self = shift;
     my $res = $self->{'result'};
     $res = defined($res) ? $res : "";
     return $res;

@@ -1,24 +1,26 @@
 #!/bin/false
+# ABSTRACT: BZ::Client - A client for the Bugzilla web services API.
 
 #
 # BZ::Client.pm - Web services client for the Bugzilla server
 #
+
+use strict;
+use warnings 'all';
 
 package BZ::Client;
 
 use BZ::Client::XMLRPC();
 use HTTP::Cookies();
 
-our $VERSION = '1.061';
-
-sub new($%) {
+sub new {
     my $class = shift;
     my $self  = {@_};
     bless( $self, ref($class) || $class );
     return $self;
 }
 
-sub url($;$) {
+sub url {
     my $self = shift;
     if (@_) {
         $self->{'url'} = shift;
@@ -28,7 +30,7 @@ sub url($;$) {
     }
 }
 
-sub user($;$) {
+sub user {
     my $self = shift;
     if (@_) {
         $self->{'user'} = shift;
@@ -38,7 +40,7 @@ sub user($;$) {
     }
 }
 
-sub password($;$) {
+sub password {
     my $self = shift;
     if (@_) {
         $self->{'password'} = shift;
@@ -48,7 +50,7 @@ sub password($;$) {
     }
 }
 
-sub error($$;$$) {
+sub error {
     my ( $self, $message, $http_code, $xmlrpc_code ) = @_;
     require BZ::Client::Exception;
     BZ::Client::Exception->throw(
@@ -58,7 +60,7 @@ sub error($$;$$) {
     );
 }
 
-sub log($$$) {
+sub log {
     my ( $self, $level, $msg ) = @_;
     my $logger = $self->logger();
     if ($logger) {
@@ -66,7 +68,7 @@ sub log($$$) {
     }
 }
 
-sub logger($;$) {
+sub logger {
     my ($self) = shift;
     if (@_) {
         $self->{'logger'} = shift;
@@ -76,7 +78,7 @@ sub logger($;$) {
     }
 }
 
-sub logDirectory($;$) {
+sub logDirectory {
     my ($self) = shift;
     if (@_) {
         $self->{'logDirectory'} = shift;
@@ -86,7 +88,7 @@ sub logDirectory($;$) {
     }
 }
 
-sub xmlrpc($;$) {
+sub xmlrpc {
     my $self = shift;
     if (@_) {
         $self->{'xmlrpc'} = shift;
@@ -105,7 +107,7 @@ sub xmlrpc($;$) {
     }
 }
 
-sub login($) {
+sub login {
     my $self = shift;
     my $user = $self->user()
       or $self->error('The Bugzilla servers user name is not set.');
@@ -129,7 +131,7 @@ sub login($) {
     return;
 }
 
-sub logout($) {
+sub logout {
     my $self    = shift;
     my $cookies = $self->{'cookies'};
     if ($cookies) {
@@ -139,12 +141,12 @@ sub logout($) {
     }
 }
 
-sub is_logged_in($) {
+sub is_logged_in {
     my $self = shift;
     return ( $self->{'cookies'} or $self->{'payload'} ) ? 1 : 0;
 }
 
-sub api_call($$$) {
+sub api_call {
     my ( $self, $methodName, $params ) = @_;
     if ( !$self->is_logged_in() ) {
         $self->login();
@@ -152,7 +154,7 @@ sub api_call($$$) {
     return $self->_api_call( $methodName, $params );
 }
 
-sub _api_call($$$;$) {
+sub _api_call {
 
     my ( $self, $methodName, $params, $cookies ) = @_;
 

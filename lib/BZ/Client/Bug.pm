@@ -11,10 +11,9 @@ package BZ::Client::Bug;
 
 use BZ::Client::API();
 
-our $VERSION = 1.0;
 our @ISA = qw(BZ::Client::API);
 
-sub legal_values($$$) {
+sub legal_values {
     my($class, $client, $field) = @_;
     $client->log('debug', "BZ::Client::Bug::legal_values: Asking for $field");
     my $params = { 'field' => $field };
@@ -27,7 +26,7 @@ sub legal_values($$$) {
     return $values;
 }
 
-sub get($$;$) {
+sub get {
     my($class, $client, $ids, $permissive) = @_;
     $client->log('debug', 'BZ::Client::Bug::get: Asking for ' . (ref($ids) eq 'ARRAY' ? join(',', @$ids) : $ids));
     my $params = { ids => $ids };
@@ -45,7 +44,7 @@ sub get($$;$) {
     return wantarray ? @result : \@result;
 }
 
-sub search($$$) {
+sub search {
     my($class, $client, $params) = @_;
     $client->log('debug', 'BZ::Client::Bug::search: Searching');
     my $result = $class->api_call($client, 'Bug.search', $params);
@@ -61,7 +60,7 @@ sub search($$$) {
     return wantarray ? @result : \@result;
 }
 
-sub create($$$) {
+sub create {
     my($class, $client, $params) = @_;
     $client->log('debug', 'BZ::Client::Bug::create: Creating');
     my $result = $class->api_call($client, "Bug.create", $params);
@@ -72,14 +71,14 @@ sub create($$$) {
     return $id;
 }
 
-sub new($@) {
+sub new {
     my $class = shift;
     my $self = { @_ };
     bless($self, ref($class) || $class);
     return $self;
 }
 
-sub id($;$) {
+sub id {
     my $self = shift;
     if (@_) {
         $self->{'id'} = shift;
@@ -88,7 +87,7 @@ sub id($;$) {
     }
 }
 
-sub alias($;$) {
+sub alias {
     my $self = shift;
     if (@_) {
         $self->{'alias'} = shift;
@@ -97,7 +96,7 @@ sub alias($;$) {
     }
 }
 
-sub assigned_to($;$) {
+sub assigned_to {
     my $self = shift;
     if (@_) {
         $self->{'assigned_to'} = shift;
@@ -106,7 +105,7 @@ sub assigned_to($;$) {
     }
 }
 
-sub component($;$) {
+sub component {
     my $self = shift;
     if (@_) {
         $self->{'component'} = shift;
@@ -115,7 +114,7 @@ sub component($;$) {
     }
 }
 
-sub creation_time($;$) {
+sub creation_time {
     my $self = shift;
     if (@_) {
         $self->{'creation_time'} = shift;
@@ -124,7 +123,7 @@ sub creation_time($;$) {
     }
 }
 
-sub dupe_of($;$) {
+sub dupe_of {
     my $self = shift;
     if (@_) {
         $self->{'dupe_of'} = shift;
@@ -133,7 +132,7 @@ sub dupe_of($;$) {
     }
 }
 
-sub internals($;$) {
+sub internals {
     my $self = shift;
     if (@_) {
         $self->{'internals'} = shift;
@@ -142,7 +141,7 @@ sub internals($;$) {
     }
 }
 
-sub is_open($;$) {
+sub is_open {
     my $self = shift;
     if (@_) {
         $self->{'is_open'} = shift;
@@ -151,7 +150,7 @@ sub is_open($;$) {
     }
 }
 
-sub last_change_time($;$) {
+sub last_change_time {
     my $self = shift;
     if (@_) {
         $self->{'last_change_time'} = shift;
@@ -160,7 +159,7 @@ sub last_change_time($;$) {
     }
 }
 
-sub priority($;$) {
+sub priority {
     my $self = shift;
     if (@_) {
         $self->{'priority'} = shift;
@@ -169,7 +168,7 @@ sub priority($;$) {
     }
 }
 
-sub product($;$) {
+sub product {
     my $self = shift;
     if (@_) {
         $self->{'product'} = shift;
@@ -178,7 +177,7 @@ sub product($;$) {
     }
 }
 
-sub resolution($;$) {
+sub resolution {
     my $self = shift;
     if (@_) {
         $self->{'resolution'} = shift;
@@ -187,7 +186,7 @@ sub resolution($;$) {
     }
 }
 
-sub severity($;$) {
+sub severity {
     my $self = shift;
     if (@_) {
         $self->{'severity'} = shift;
@@ -196,7 +195,7 @@ sub severity($;$) {
     }
 }
 
-sub status($;$) {
+sub status {
     my $self = shift;
     if (@_) {
         $self->{'status'} = shift;
@@ -205,7 +204,7 @@ sub status($;$) {
     }
 }
 
-sub summary($;$) {
+sub summary {
     my $self = shift;
     if (@_) {
         $self->{'summary'} = shift;

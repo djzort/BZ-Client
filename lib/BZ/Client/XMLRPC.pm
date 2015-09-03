@@ -16,20 +16,19 @@ use BZ::Client::XMLRPC::Parser();
 use DateTime::Format::Strptime();
 use DateTime::TimeZone();
 
-our $VERSION = 1.02;
 our $counter;
 our $fmt = DateTime::Format::Strptime->new(pattern=> '%C%Y-%m-%dT%T', time_zone=>'UTC');
 our $tz = DateTime::TimeZone->new(name => 'UTC');
 
 
-sub new($%) {
+sub new {
     my $class = shift;
     my $self = { @_ };
     bless($self, ref($class) || $class);
     return $self;
 }
 
-sub url($;$) {
+sub url {
     my $self = shift;
     if (@_) {
         $self->{'url'} = shift;
@@ -38,7 +37,7 @@ sub url($;$) {
     }
 }
 
-sub user_agent($;$) {
+sub user_agent {
     my $self = shift;
     if (@_) {
         $self->{'user_agent'} = shift;
@@ -46,14 +45,14 @@ sub user_agent($;$) {
         my $ua = $self->{'user_agent'};
         if (!defined($ua)) {
             $ua = LWP::UserAgent->new();
-            $ua->agent("BZ::Client::XMLRPC $VERSION");
+            $ua->agent("BZ::Client::XMLRPC $BZ::Client::XMLRPC::VERSION");
             $self->user_agent($ua);
         }
         return $ua;
     }
 }
 
-sub error($$;$$) {
+sub error {
     my($self, $message, $http_code, $xmlrpc_code) = @_;
     require BZ::Client::Exception;
     BZ::Client::Exception->throw('message' => $message,
@@ -61,7 +60,7 @@ sub error($$;$$) {
                                  'xmlrpc_code' => $xmlrpc_code);
 }
 
-sub value($$$) {
+sub value {
     my($self, $writer, $value) = @_;
     if (ref($value) eq 'HASH') {
         $writer->startTag('value');
@@ -120,7 +119,7 @@ sub value($$$) {
     }
 }
 
-sub create_request($$$) {
+sub create_request {
     my($self, $methodName, $params) = @_;
     my $contents;
     my $writer = XML::Writer->new(OUTPUT => \$contents, ENCODING => 'UTF-8');
@@ -140,14 +139,14 @@ sub create_request($$$) {
     return encode('utf8', $contents);
 }
 
-sub get_response($$) {
+sub get_response {
     my($self, $contents) = @_;
     return _get_response($self, { 'url' => $self->url() . '/xmlrpc.cgi',
                                   'contentType' => 'text/xml',
                                   'contents' => encode_utf8($contents) });
 }
 
-sub _get_response($$) {
+sub _get_response {
     my($self, $params) = @_;
     my $url = $params->{'url'};
     my $contentType = $params->{'contentType'};
@@ -174,15 +173,15 @@ sub _get_response($$) {
         require File::Spec;
         my $fileName = File::Spec->catfile($logDir, "$$.$logId.request.log");
         if (open(my $fh, '>', $fileName)) {
-	    for my $header ($req->header_field_names()) {
-		for my $value ($req->header($header)) {
-		    print $fh "$header: $value\n";
-		}
-	    }
-	    if ($ua->cookie_jar()) {
-		print $fh $ua->cookie_jar()->as_string();
-	    }
-	    print $fh "\n";
+            for my $header ($req->header_field_names()) {
+                for my $value ($req->header($header)) {
+                    print $fh "$header: $value\n";
+                }
+            }
+            if ($ua->cookie_jar()) {
+                print $fh $ua->cookie_jar()->as_string();
+            }
+            print $fh "\n";
             print $fh $contents;
             close($fh);
         }
@@ -193,15 +192,15 @@ sub _get_response($$) {
     if ($logDir) {
         my $fileName = File::Spec->catfile($logDir, "$$.$logId.response.log");
         if (open(my $fh, '>', $fileName)) {
-	    for my $header ($res->header_field_names()) {
-		for my $value ($res->header($header)) {
-		    print $fh "$header: $value\n";
-		}
-	    }
-	    print $fh "\n";
-	    if ($res->is_success) {
-		print $fh $response;
-	    }
+            for my $header ($res->header_field_names()) {
+                for my $value ($res->header($header)) {
+                    print $fh "$header: $value\n";
+                }
+            }
+            print $fh "\n";
+            if ($res->is_success) {
+                print $fh $response;
+            }
             close($fh);
         }
     }
@@ -220,13 +219,13 @@ sub _get_response($$) {
     return $response;
 }
 
-sub parse_response($$) {
+sub parse_response {
     my($self, $contents) = @_;
     my $parser = BZ::Client::XMLRPC::Parser->new();
     return $parser->parse($contents);
 }
 
-sub request($%) {
+sub request {
     my $self = shift;
     my %args = @_;
     my $methodName = $args{'methodName'};
@@ -241,7 +240,7 @@ sub request($%) {
     return $self->parse_response($response);
 }
 
-sub log($$$) {
+sub log {
     my($self, $level, $msg) = @_;
     my $logger = $self->logger();
     if ($logger) {
@@ -249,7 +248,7 @@ sub log($$$) {
     }
 }
 
-sub logger($;$) {
+sub logger {
     my($self) = shift;
     if (@_) {
         $self->{'logger'} = shift;
@@ -258,7 +257,7 @@ sub logger($;$) {
     }
 }
 
-sub logDirectory($;$) {
+sub logDirectory {
     my($self) = shift;
     if (@_) {
         $self->{'logDirectory'} = shift;
@@ -269,14 +268,14 @@ sub logDirectory($;$) {
 
 package BZ::Client::XMLRPC::int;
 
-sub new($$) {
+sub new {
     my($class, $value) = @_;
     return bless(\$value, (ref($class) || $class));
 }
 
 package BZ::Client::XMLRPC::boolean;
 
-sub new($$) {
+sub new {
     my($class, $value) = @_;
     return bless(\$value, (ref($class) || $class));
 }
@@ -286,7 +285,7 @@ use constant FALSE => BZ::Client::XMLRPC::boolean->new(0);
 
 package BZ::Client::XMLRPC::double;
 
-sub new($$) {
+sub new {
     my($class, $value) = @_;
     return bless(\$value, (ref($class) || $class));
 }

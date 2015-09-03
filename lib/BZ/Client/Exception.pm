@@ -8,32 +8,30 @@ use warnings "all";
 
 package BZ::Client::Exception;
 
-our $VERSION = 1.0;
-
-sub throw ($@) {
+sub throw {
     my $class = shift;
     die $class->new(@_);
 }
 
-sub new ($@) {
+sub new {
     my $class = shift;
     my $self = { @_ };
     bless($self, ref($class) || $class);
     return $self;
 }
 
-sub message($) {
-    my($self) = shift;
+sub message {
+    my $self = shift;
     return $self->{"message"};
 }
 
-sub xmlrpc_code($) {
-    my($self) = shift;
+sub xmlrpc_code {
+    my $self = shift;
     return $self->{"xmlrpc_code"};
 }
 
-sub http_code($) {
-    my($self) = shift;
+sub http_code {
+    my $self = shift;
     return $self->{"http_code"};
 }
 

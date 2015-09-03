@@ -1,18 +1,17 @@
 #
 # BZ::Client::XMLRPC::Response - Event handler for parsing an XML-RPC response.
 #
-package BZ::Client::XMLRPC::Response;
-
 use strict;
 use warnings "all";
+
+package BZ::Client::XMLRPC::Response;
 
 use BZ::Client::XMLRPC::Handler();
 use BZ::Client::XMLRPC::Value();
 
-our $VERSION = 1.0;
 our @ISA = qw(BZ::Client::XMLRPC::Handler);
 
-sub start($$) {
+sub start {
     my($self,$name) = @_;
     my $l = $self->inc_level();
     if ($l == 0) {
@@ -75,19 +74,19 @@ sub start($$) {
     }
 }
 
-sub end($$) {
+sub end {
     my($self, $name) = @_;
     my $l = $self->SUPER::end($name);
     return $l;
 }
 
-sub exception($) {
-    my($self) = shift;
+sub exception {
+    my $self = shift;
     return $self->{"exception"};
 }
 
-sub result($) {
-    my($self) = shift;
+sub result {
+    my $self = shift;
     return $self->{"result"};
 }
 

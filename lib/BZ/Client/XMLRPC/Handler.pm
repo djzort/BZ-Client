@@ -1,14 +1,12 @@
 #
 # BZ::Client::XMLRPC::Handler - Abstract event handler for parsing an XML-RPC response.
 #
-package BZ::Client::XMLRPC::Handler;
-
 use strict;
 use warnings "all";
 
-our $VERSION = 1.0;
+package BZ::Client::XMLRPC::Handler;
 
-sub new ($%) {
+sub new {
     my $class = shift;
     my $self = { @_ };
     $self->{'level'} = 0;
@@ -16,12 +14,12 @@ sub new ($%) {
     return $self;
 }
 
-sub init($$) {
+sub init {
     my($self,$parser) = @_;
     $self->parser($parser);
 }
 
-sub parser($;$) {
+sub parser {
     my $self = shift;
     if (@_) {
         $self->{'parser'} = shift;
@@ -30,7 +28,7 @@ sub parser($;$) {
     }
 }
 
-sub level($;$) {
+sub level {
     my $self = shift;
     if (@_) {
         $self->{'level'} = shift;
@@ -39,31 +37,31 @@ sub level($;$) {
     }
 }
 
-sub inc_level($) {
+sub inc_level {
     my $self = shift;
     my $res = $self->{'level'}++;
     return $res;
 }
 
-sub dec_level($) {
+sub dec_level {
     my $self = shift;
     my $res = --$self->{'level'};
     return $res;
 }
 
-sub error($$) {
+sub error {
     my($self, $msg) = @_;
     $self->parser()->error($msg);
 }
 
-sub characters($$) {
+sub characters {
     my($self, $text) = @_;
     if ($text !~ /^\s*$/s) {
         $self->error("Unexpected non-whitespace: $text");
     }
 }
 
-sub end($$) {
+sub end {
     my($self,$name) = @_;
     my $l = $self->dec_level();
     if ($l == 0) {

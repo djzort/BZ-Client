@@ -9,16 +9,15 @@ package BZ::Client::Bugzilla;
 
 use BZ::Client::API();
 
-our $VERSION = 1.0;
 our @ISA = qw(BZ::Client::API);
 
-sub extensions($$) {
+sub extensions {
     my($class, $client) = @_;
     my $params = {};
     return $class->api_call($client, "Bugzilla.extensions", $params);
 }
 
-sub time($$) {
+sub time {
     my($class, $client) = @_;
     my $params = {};
     $client->log("debug", "BZ::Client::Bugzilla::time: Asking");
@@ -27,7 +26,7 @@ sub time($$) {
     return $time;
 }
 
-sub timezone($$) {
+sub timezone {
     my($class, $client) = @_;
     my $params = {};
     $client->log("debug", "BZ::Client::Bugzilla::timezone: Asking");
@@ -36,7 +35,7 @@ sub timezone($$) {
     return $timezone;
 }
 
-sub version($$) {
+sub version {
     my($class, $client) = @_;
     my $params = {};
     $client->log("debug", "BZ::Client::Bugzilla::version: Asking");

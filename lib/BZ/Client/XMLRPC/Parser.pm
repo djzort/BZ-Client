@@ -1,25 +1,23 @@
 #
 # BZ::Client::XMLRPC::Parser - A parser for an XML-RPC response.
 #
+use strict;
+use warnings "all";
+
 package BZ::Client::XMLRPC::Parser;
 
 use BZ::Client::XMLRPC::Response();
 
-use strict;
-use warnings "all";
-
 use XML::Parser();
 
-our $VERSION = "1.0";
-
-sub new($@) {
+sub new {
     my $class = shift;
     my $self = { @_ };
     bless($self, ref($class) || $class);
     return $self;
 }
 
-sub parse($$) {
+sub parse {
     my($self, $content) = @_;
     $self->{'stack'} = [];
     my $handler = BZ::Client::XMLRPC::Response->new();
@@ -54,7 +52,7 @@ sub parse($$) {
     return $self->{"result"};
 }
 
-sub register($$$) {
+sub register {
     my($self, $parent, $handler, $code) = @_;
     my $current = [$parent, $handler, $code];
     if ($parent->can("dec_level")) {
@@ -65,7 +63,7 @@ sub register($$$) {
     $handler->init($self);
 }
 
-sub remove($$) {
+sub remove {
     my($self, $handler) = @_;
     my $stack = $self->{'stack'};
     my $top = pop(@$stack);
@@ -76,20 +74,20 @@ sub remove($$) {
     &$code($parent, $h);
 }
 
-sub error($$) {
+sub error {
     my($self, $message) = @_;
     require BZ::Client::Exception;
     BZ::Client::Exception->throw("message" => $message);
 }
 
-sub result($) {
-    my($self) = shift;
+sub result {
+    my $self = shift;
     my $res = $self->{"result"};
     return $res;
 }
 
-sub exception($) {
-    my($self) = shift;
+sub exception {
+    my $self = shift;
     return $self->{"exception"};
 }
 
