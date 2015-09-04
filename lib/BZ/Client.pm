@@ -68,7 +68,10 @@ sub log {
 sub logger {
     my ($self) = shift;
     if (@_) {
-        $self->{'logger'} = shift;
+        my $logger = shift;
+        $self->error('Cannot set logger to non-coderef.')
+            unless ref $logger eq 'CODE';
+        $self->{'logger'} = $logger;
     }
     else {
         return $self->{'logger'};
@@ -261,6 +264,34 @@ Returns or sets the password to use when logging in to the Bugzilla server.
 
 Used to login to the Bugzilla server. There is no need to call this method
 explicitly: It is done automatically, whenever required.
+
+=head2 is_logged_in
+
+Returns 1 if logged in, otherwise 0
+
+=head2 logout
+
+Deletes local cookies and calls bugzilla's logout function
+
+=head2 logger
+
+Sets or gets the logging function. Argument is a coderef. Returns undef if none.
+
+  my $logger = $client->logger();
+
+  $client->logger(
+      sub {
+          my ($level, $msg) = @_;
+          print STDERR "$level $message\n";
+          return 1
+      });
+
+Also can be set via new(), e.g.
+
+  $client = BZ::Client->new( logger => sub { },
+                             url    => $url
+                             user   => $user,
+                             password => $password );
 
 =head2 api_call
 
