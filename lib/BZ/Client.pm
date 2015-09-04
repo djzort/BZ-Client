@@ -27,6 +27,16 @@ sub url {
     }
 }
 
+sub api_key {
+    my $self = shift;
+    if (@_) {
+        $self->{'api_key'} = shift;
+    }
+    else {
+        return $self->{'api_key'};
+    }
+}
+
 sub user {
     my $self = shift;
     if (@_) {
@@ -44,6 +54,18 @@ sub password {
     }
     else {
         return $self->{'password'};
+    }
+}
+
+sub autologin {
+    my $self = shift;
+    if (@_) {
+        $self->{'autologin'} = shift;
+    }
+    else {
+        $self->{'autologin'} = 1
+           unless defined($self->{'autologin'});
+        return $self->{'autologin'};
     }
 }
 
@@ -66,7 +88,7 @@ sub log {
 }
 
 sub logger {
-    my ($self) = shift;
+    my $self = shift;
     if (@_) {
         my $logger = shift;
         $self->error('Cannot set logger to non-coderef.')
@@ -79,7 +101,7 @@ sub logger {
 }
 
 sub logDirectory {
-    my ($self) = shift;
+    my $self = shift;
     if (@_) {
         $self->{'logDirectory'} = shift;
     }
@@ -109,26 +131,38 @@ sub xmlrpc {
 
 sub login {
     my $self = shift;
-    my $user = $self->user()
-      or $self->error('The Bugzilla servers user name is not set.');
-    my $password = $self->password()
-      or $self->error('The Bugzilla servers password is not set.');
-
-    my $params = {
-        'login'    => $user,
-        'password' => $password,
-        'remember' => BZ::Client::XMLRPC::boolean->new(0)
-    };
+    my %params = (
+        'remember'       => BZ::Client::XMLRPC::boolean->new(0), # dropped in 5.0
+        'restrictlogin'  => BZ::Client::XMLRPC::boolean->new(0), # added in 3.6
+        'restrict_login' => BZ::Client::XMLRPC::boolean->new(0), # added in 5.0
+    );
+    if (my $api_key = $self->api_key()) {
+        $params{api_key} = $api_key
+    }
+    else {
+        my $user = $self->user()
+            or $self->error('The Bugzilla servers user name is not set.');
+        my $password = $self->password()
+            or $self->error('The Bugzilla servers password is not set.');
+        $params{user} = $user;
+        $params{password} = $password;
+    }
     my $cookies = HTTP::Cookies->new();
-    my $response = $self->_api_call( 'User.login', $params, $cookies );
+    my $response = $self->_api_call( 'User.login', \%params, $cookies );
     if ( not defined( $response->{'id'} )
         or $response->{'id'} !~ m/^\d+$/s )
     {
         $self->error('Server did not return a valid user ID.');
     }
-    $self->{'cookies'} = $cookies;
-
-    return
+    $self->log( 'debug', 'BZ::Client::login, got ID ' . $response->{'id'} );
+    if ( my $token = $response->{'token'} ) { # from 4.4.3
+        $self->{'token'} = $token;
+        $self->log( 'debug', 'BZ::Client::login, got token ' . $token );
+    }
+    else {
+        $self->{'cookies'} = $cookies;
+    }
+    return 1
 }
 
 sub logout {
@@ -148,7 +182,7 @@ sub is_logged_in {
 
 sub api_call {
     my ( $self, $methodName, $params ) = @_;
-    if ( !$self->is_logged_in() ) {
+    if ( $self->autologin && not $self->is_logged_in() ) {
         $self->login();
     }
     return $self->_api_call( $methodName, $params )
@@ -193,9 +227,11 @@ __END__
 
 =head1 SYNOPSIS
 
-  my $client = BZ::Client->new( url      => $url,
-                                user     => $user,
-                                password => $password );
+  my $client = BZ::Client->new( url       => $url,
+                                user      => $user,
+                                password  => $password,
+                                autologin => 0
+                                );
   $client->login();
 
 =head1 CLASS METHODS
@@ -208,11 +244,14 @@ This section lists the class methods of BZ::Client.
                                 user     => $user,
                                 password => $password );
 
+  my $client = BZ::Client->new( url      => $url,
+                                api_key  => $api_key );
+
 The new method constructs a new instance of BZ::Client. Whenever you
 want to connect to the Bugzilla server, you must first create a
 Bugzilla client. The methods input is a hash of parameters.
 
-For debuggign, you can pass in a subref named I<logger> which will be
+For debugging, you can pass in a subref named I<logger> which will be
 fed debugging information as the client works. Also the I<logDirectory>
 option is a directory where the raw http content will be dumped.
 
@@ -222,6 +261,13 @@ option is a directory where the raw http content will be dumped.
 
 The Bugzilla servers URL, for example C<https://bugzilla.mozilla.org/>.
 
+=item api_key
+
+API keys were introduced in 5.0.
+
+You can set up an API key by using the 'API Key' tab in the Preferences
+pages in your Bugzilla install.
+
 =item user
 
 The user name to use when logging in to the Bugzilla server. Typically,
@@ -230,6 +276,17 @@ this will be your email address.
 =item password
 
 The password to use when logging in to the Bugzilla server.
+
+=item autologin
+
+If set to 1 (true), will try to log in (if not already logged in) when
+the first API call is made. This is default.
+
+If set to 0, will try APi calls without logging in. You can
+still call $client->login() to log in manually.
+
+
+Note: once you're logged in, you'll stay that way until you call I<logout>
 
 =back
 
@@ -260,10 +317,16 @@ server. Typically, this will be your email address.
 
 Returns or sets the password to use when logging in to the Bugzilla server.
 
+=head2 autologin
+
+If I<login> is automatically called, or not.
+
 =head2 login
 
-Used to login to the Bugzilla server. There is no need to call this method
-explicitly: It is done automatically, whenever required.
+Used to login to the Bugzilla server. By default, there is no need to call
+this method explicitly: It is done automatically, whenever required.
+
+If I<autologin> is set to 0, call this to log in.
 
 =head2 is_logged_in
 
@@ -292,6 +355,12 @@ Also can be set via new(), e.g.
                              url    => $url
                              user   => $user,
                              password => $password );
+
+=head log
+
+  $client->log( $level, $message );
+
+Sends log messages to whatever is loaded via I<logger>.
 
 =head2 api_call
 

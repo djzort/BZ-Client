@@ -3,6 +3,8 @@ Revision history for Perl extension BZ::Client.
 TBD
     - BZ::Client::logger protects its input
     - Add pod for more methods in BZ/Client.pm
+    - Add autologin option for RT91184
+    - Add support for token based logins used in bz4.4.3+
 
 1.064 Fr Sep 04 11:57 2015
     - BZ::Client::Test if it cant find a config file, it blesses a hash-ref rather than trying (and failing) to bless a scalar

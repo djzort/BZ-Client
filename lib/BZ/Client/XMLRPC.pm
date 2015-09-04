@@ -23,7 +23,7 @@ sub new {
     my $class = shift;
     my $self = { @_ };
     bless($self, ref($class) || $class);
-    return $self;
+    return $self
 }
 
 sub url {
