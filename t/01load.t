@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 use strict;
-use warnings "all";
+use warnings 'all';
 
 use Test;
 use File::Find();
@@ -25,33 +25,33 @@ our @MODULES = qw(
 
 plan(tests => (scalar(@MODULES) + 1));
 
-sub CountModules() {
+sub CountModules {
     my $numModules;
     File::Find::find(sub {
-        if ($_ =~ /\.pm$/  &&  -f $_) {
+        if ($_ =~ m/\.pm$/  &&  -f $_) {
             ++$numModules;
         }
-    }, "lib");
+    }, 'lib');
     return $numModules;
 }
 
-sub CheckModule($) {
+sub CheckModule {
     my $module = shift;
     eval {
-        my $mod = $module . ".pm";
+        my $mod = $module . '.pm';
         $mod =~ s/\:\:/\//g;
         require $mod;
     };
     my $err = $@;
     if ($err) {
     }
-    ok($err, "", $module . ($err ? ": $err" : ""));
+    ok($err, q||, $module . ($err ? ": $err" : q||));
 }
 
-foreach my $module (@MODULES) {
+for my $module (@MODULES) {
     CheckModule($module);
 }
 
 my $numModules = CountModules();
-ok(scalar(@MODULES), $numModules, "Expected " . scalar(@MODULES) . ", got $numModules");
+ok(scalar(@MODULES), $numModules, 'Expected ' . scalar(@MODULES) . ", got $numModules");
 
