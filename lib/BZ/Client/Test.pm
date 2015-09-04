@@ -23,15 +23,16 @@ sub new {
                 if ($@) {
                     die "Failed to load configuration file $f: $@";
                 }
-                if (!$hash  ||  ref($hash) ne 'HASH') {
-                    die "Configuration file $f didn't return a HASH value.";
-                }
+                die "Configuration file $f didn't return a HASH value."
+                    unless ($hash and ref($hash) eq 'HASH');
                 # Create a copy of $hash
-                my %opts = %{ $hash };
-                $self = \%opts;
+                $self = \%{ $hash };
             }
         }
-    } else {
+        # If no file was found, $self becomes and emtpy hashref
+        $self = {} unless ref($self) eq 'HASH';
+    }
+    else {
         $self = { @_ };
     }
     bless($self, ref($class) || $class);

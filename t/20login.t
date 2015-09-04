@@ -57,7 +57,8 @@ $tester = BZ::Client::Test->new(['config.pl', 't/config.pl']);
 my $skipping;
 if ($tester->isSkippingIntegrationTests()) {
     $skipping = 'No Bugzilla server configured, skipping';
-} else {
+}
+else {
     $skipping = 0;
 }
 skip($skipping, \&TestBasic, 1, 'TestBasic');

@@ -1,5 +1,8 @@
 Revision history for Perl extension BZ::Client.
 
+1.064 Fr Sep 04 11:57 2015
+    - BZ::Client::Test if it cant find a config file, it blesses a hash-ref rather than trying (and failing) to bless a scalar
+
 1.063 Thu Sep 03 21:48:00 2015
     - Make PodWeaver do stuff
     - Strip out subroutine prototypes
@@ -32,7 +35,6 @@ Revision history for Perl extension BZ::Client.
 
 1.01 Mon Aug 10 17:31:00 2009
     - XML::Parser and XML::Writer now declared as dependencies.
-
 
 1.0  Tue Jun 23 07:18:25 2009
     - Created
