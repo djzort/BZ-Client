@@ -1,6 +1,6 @@
 #!/bin/false
 # PODNAME: BZ::Client::Bugzilla
-# ABSTRACT: Provides access to the Bugzilla::Webservices::Bugzilla API
+# ABSTRACT: Information about the Bugzilla server, i.e. the Bugzilla::Webservices::Bugzilla API
 
 use strict;
 use warnings 'all';
