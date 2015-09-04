@@ -137,15 +137,17 @@ sub login {
         'restrict_login' => BZ::Client::XMLRPC::boolean->new(0), # added in 5.0
     );
     if (my $api_key = $self->api_key()) {
-        $params{api_key} = $api_key
+        $params{api_key} = $api_key;
+        $self->log( 'debug', 'BZ::Client::login, going to log in with api_key' );
     }
     else {
         my $user = $self->user()
             or $self->error('The Bugzilla servers user name is not set.');
         my $password = $self->password()
             or $self->error('The Bugzilla servers password is not set.');
-        $params{user} = $user;
+        $params{login} = $user;
         $params{password} = $password;
+        $self->log( 'debug', 'BZ::Client::login, going to log in with username and password' );
     }
     my $cookies = HTTP::Cookies->new();
     my $response = $self->_api_call( 'User.login', \%params, $cookies );
