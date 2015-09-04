@@ -370,7 +370,7 @@ Also can be set via new(), e.g.
                              user   => $user,
                              password => $password );
 
-=head log
+=head2 log
 
   $client->log( $level, $message );
 
