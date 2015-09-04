@@ -37,7 +37,7 @@ sub get_accessible_products {
 
 sub get_list {
     my($class, $methodName, $client) = @_;
-    my $result = $class->api_call($client, $methodName, {});
+    my $result = $class->api_call($client, $methodName);
     my $ids = $result->{'ids'};
     if (!$ids  ||  'ARRAY' ne ref($ids)) {
         $class->error($client, 'Invalid reply by server, expected array of ids.');

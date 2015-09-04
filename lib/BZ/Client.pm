@@ -131,10 +131,11 @@ sub xmlrpc {
 
 sub login {
     my $self = shift;
+    my $rl = BZ::Client::XMLRPC::boolean->new($self->{'restrictlogin'} ? 1 : 0);
     my %params = (
         'remember'       => BZ::Client::XMLRPC::boolean->new(0), # dropped in 5.0
-        'restrictlogin'  => BZ::Client::XMLRPC::boolean->new(0), # added in 3.6
-        'restrict_login' => BZ::Client::XMLRPC::boolean->new(0), # added in 5.0
+        'restrictlogin'  => $rl, # added in 3.6
+        'restrict_login' => $rl, # added in 5.0
     );
     if (my $api_key = $self->api_key()) {
         $params{api_key} = $api_key;
@@ -179,14 +180,16 @@ sub logout {
 
 sub is_logged_in {
     my $self = shift;
-    return ( $self->{'cookies'} or $self->{'payload'} ) ? 1 : 0
+    return ( $self->{'cookies'} or $self->{'token'} ) ? 1 : 0
 }
 
 sub api_call {
     my ( $self, $methodName, $params ) = @_;
+    $params ||= {};
     if ( $self->autologin && not $self->is_logged_in() ) {
         $self->login();
     }
+
     return $self->_api_call( $methodName, $params )
 }
 
@@ -203,6 +206,8 @@ sub _api_call {
     if ($cookies) {
         $xmlrpc->user_agent()->cookie_jar($cookies);
     }
+    $params->{token} = $self->{'token'}
+        if ($self->{'token'} and not $params->{token});
 
     my $response =
       $xmlrpc->request( 'methodName' => $methodName, params => [$params] );
@@ -287,8 +292,15 @@ the first API call is made. This is default.
 If set to 0, will try APi calls without logging in. You can
 still call $client->login() to log in manually.
 
-
 Note: once you're logged in, you'll stay that way until you call I<logout>
+
+=item restrictlogin
+
+If set to 1 (true), will ask Bugzilla to restrict logins to your IP only.
+Generally this is a good idea, but may caused problems if you are using
+a loadbalanced forward proxy.
+
+Default: 0
 
 =back
 

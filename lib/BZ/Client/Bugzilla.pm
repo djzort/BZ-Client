@@ -13,33 +13,29 @@ our @ISA = qw(BZ::Client::API);
 
 sub extensions {
     my($class, $client) = @_;
-    my $params = {};
-    return $class->api_call($client, 'Bugzilla.extensions', $params);
+    return $class->api_call($client, 'Bugzilla.extensions');
 }
 
 sub time {
     my($class, $client) = @_;
-    my $params = {};
     $client->log('debug', 'BZ::Client::Bugzilla::time: Asking');
-    my $time = $class->api_call($client, 'Bugzilla.time', $params);
+    my $time = $class->api_call($client, 'Bugzilla.time');
     $client->log('debug', 'BZ::Client::Bugzilla::time: Got $time');
     return $time
 }
 
 sub timezone {
     my($class, $client) = @_;
-    my $params = {};
     $client->log('debug', 'BZ::Client::Bugzilla::timezone: Asking');
-    my $timezone = $class->api_call($client, "Bugzilla.timezone", $params);
+    my $timezone = $class->api_call($client, 'Bugzilla.timezone');
     $client->log('debug', 'BZ::Client::Bugzilla::time: Got $timezone');
     return $timezone
 }
 
 sub version {
     my($class, $client) = @_;
-    my $params = {};
     $client->log('debug', 'BZ::Client::Bugzilla::version: Asking');
-    my $version = $class->api_call($client, 'Bugzilla.version', $params);
+    my $version = $class->api_call($client, 'Bugzilla.version');
     $client->log('debug', 'BZ::Client::Bugzilla::time: Got $version');
     return $version
 }
