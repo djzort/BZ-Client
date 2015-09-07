@@ -133,9 +133,9 @@ sub login {
     my $self = shift;
     my $rl = BZ::Client::XMLRPC::boolean->new($self->{'restrictlogin'} ? 1 : 0);
     my %params = (
-        'remember'       => BZ::Client::XMLRPC::boolean->new(0), # dropped in 5.0
+        'remember'       => BZ::Client::XMLRPC::boolean->new(0), # dropped in 4.4 as cookies no longer used
         'restrictlogin'  => $rl, # added in 3.6
-        'restrict_login' => $rl, # added in 5.0
+        'restrict_login' => $rl, # added in 4.4 for tokens
     );
     if (my $api_key = $self->api_key()) {
         $params{api_key} = $api_key;
@@ -391,6 +391,24 @@ Sends log messages to whatever is loaded via I<logger>.
 Used by subclasses of L<BZ::Client::API> to invoke methods of the Bugzilla
 API. Takes a method name and a hash ref of parameters as input. Returns a
 hash ref of named result objects.
+
+=head1 ERROR CODES
+
+=head2 300 (Invalid Username or Password)
+
+The username does not exist, or the password is wrong.
+
+=head2 301 (Login Disabled)
+
+The ability to login with this account has been disabled. A reason may be specified with the error.
+
+=head2 305 (New Password Required)
+
+The current password is correct, but the user is asked to change his password.
+
+=head2 50 (Param Required)
+
+A login or password parameter was not provided.
 
 =head1 SEE ALSO
 
