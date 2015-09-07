@@ -1,5 +1,9 @@
 Revision history for Perl extension BZ::Client.
 
+1.071 Monday Sep 07 13:21:00 2015
+    - Improve/fix logout() and login() functions
+    - t/write-config.pl will help you write a config file to run tests against a real bugzilla server
+
 1.07 Friday Sep 04 15:58:00 2015
     - BZ::Client::logger protects its input
     - Add pod for more methods in BZ/Client.pm
