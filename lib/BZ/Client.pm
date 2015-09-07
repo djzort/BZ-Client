@@ -158,7 +158,7 @@ sub login {
         $self->error('Server did not return a valid user ID.');
     }
     $self->log( 'debug', 'BZ::Client::login, got ID ' . $response->{'id'} );
-    if ( my $token = $response->{'token'} ) { # from 4.4.3
+    if ( my $token = $response->{'token'} ) { # for 4.4.3 onward
         $self->{'token'} = $token;
         $self->log( 'debug', 'BZ::Client::login, got token ' . $token );
     }
@@ -170,12 +170,16 @@ sub login {
 
 sub logout {
     my $self    = shift;
+    return 1 unless $self->is_logged_in;
+
     my $cookies = $self->{'cookies'};
-    if ($cookies) {
-        $self->{'cookies'} = undef;
-        my $xmlrpc = $self->xmlrpc();
-        $xmlrpc->request( 'methodName' => 'User.logout', params => [] );
+    my $token = $self->{'token'};
+    if ($cookies or $token) {
+        $cookies->clear();
+        $self->xmlrpc->request( 'methodName' => 'User.logout', params => [] );
+        $self->{'token'} = undef;
     }
+    return 1
 }
 
 sub is_logged_in {
@@ -204,7 +208,7 @@ sub _api_call {
     my $xmlrpc = $self->xmlrpc();
 
     if ($cookies) {
-        $xmlrpc->user_agent()->cookie_jar($cookies);
+        $xmlrpc->user_agent->cookie_jar($cookies);
     }
     $params->{token} = $self->{'token'}
         if ($self->{'token'} and not $params->{token});
