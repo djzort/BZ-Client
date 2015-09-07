@@ -3,63 +3,109 @@
 use strict;
 use warnings 'all';
 
-use BZ::Client::Test();
-use Test;
+use BZ::Client::Test;
+use Test::More tests => 10;
+use Data::Dumper;
 
-my $tester;
+my $tester = BZ::Client::Test->new(['config.pl', 't/config.pl']);
 
-sub TestBasic() {
+SKIP: {
+    skip('No Bugzilla server configured, skipping',10)
+        if $tester->isSkippingIntegrationTests();
+
     my $client = $tester->client();
-    if ($client->is_logged_in()) {
-        print STDERR "The client is already logged in.\n";
-        return 0;
-    }
+
+    # check client isnt logged in before log in
+    ok(! $client->is_logged_in(), 'The client is NOT already logged in')
+        or BAIL_OUT('Already logged in? cannot proceed' . Dumper( $client ));
+
+    # try to login
+    {
+    my $ret;
     eval {
-        $client->login();
+        $ret = $client->login();
     };
+
     if ($@) {
         my $err = $@;
+        my $msg;
         if (ref($err) eq 'BZ::Client::Exception') {
-            print STDERR 'Error: ' . (defined($err->http_code()) ? $err->http_code() : 'undef')
+            $msg = 'Error: ' . (defined($err->http_code()) ? $err->http_code() : 'undef')
                 . ', ' . (defined($err->xmlrpc_code()) ? $err->xmlrpc_code() : 'undef')
-                . ', ' . (defined($err->message()) ? $err->message() : 'undef') . "\n";
-        } else {
-            print STDERR "Error $err\n";
+                . ', ' . (defined($err->message()) ? $err->message() : 'undef');
         }
+        else {
+            $msg = "Error $err";
+        }
+        ok(0, 'No errors from ->login') or diag($msg)
     }
-    if (!$client->is_logged_in()) {
-        print STDERR "The client isn't logged in.\n";
-        return 0;
+    else {
+        ok(1, 'No errors from ->login')
     }
+
+    ok($ret, '->login returned true');
+    ok($client->is_logged_in(), 'The client IS now logged in')
+        or BAIL_OUT('Not logged in, cannot proceed');
+
+    }
+
+    # logout when logged in
+    {
+    my $ret;
     eval {
-        $client->logout();
+        $ret = $client->logout();
     };
+
     if ($@) {
         my $err = $@;
+        my $msg;
         if (ref($err) eq 'BZ::Client::Exception') {
-            print STDERR 'Error: ' . (defined($err->http_code()) ? $err->http_code() : 'undef')
+            $msg = 'Error: ' . (defined($err->http_code()) ? $err->http_code() : 'undef')
                 . ', ' . (defined($err->xmlrpc_code()) ? $err->xmlrpc_code() : 'undef')
-                . ', ' . (defined($err->message()) ? $err->message() : 'undef') . "\n";
-        } else {
-            print STDERR "Error $err\n";
+                . ', ' . (defined($err->message()) ? $err->message() : 'undef');
         }
+        else {
+            $msg = "Error $err";
+        }
+        ok(0, 'No errors from ->logout') or diag($msg)
     }
-    if ($client->is_logged_in()) {
-        print STDERR "The client is still logged in.\n";
-        return 0;
+    else {
+        ok(1, 'No errors from ->logout')
     }
-    return 1;
-}
 
-plan(tests => 1);
+    ok($ret, '->logout returned true');
+    ok(! $client->is_logged_in(), 'The client is no longer logged in.');
+    }
 
-$tester = BZ::Client::Test->new(['config.pl', 't/config.pl']);
-my $skipping;
-if ($tester->isSkippingIntegrationTests()) {
-    $skipping = 'No Bugzilla server configured, skipping';
-}
-else {
-    $skipping = 0;
-}
-skip($skipping, \&TestBasic, 1, 'TestBasic');
+    # logout when not logged in
+    {
+    my $ret;
+    eval {
+        $ret = $client->logout();
+    };
 
+    if ($@) {
+        my $err = $@;
+        my $msg;
+        if (ref($err) eq 'BZ::Client::Exception') {
+            $msg = 'Error: ' . (defined($err->http_code()) ? $err->http_code() : 'undef')
+                . ', ' . (defined($err->xmlrpc_code()) ? $err->xmlrpc_code() : 'undef')
+                . ', ' . (defined($err->message()) ? $err->message() : 'undef');
+        }
+        else {
+            $msg = "Error $err";
+        }
+        ok(0, 'No errors from ->logout (again)') or diag($msg)
+    }
+    else {
+        ok(1, 'No errors from ->logout (again)')
+    }
+
+    ok($ret, '->logout (again) returned true');
+    ok(! $client->is_logged_in(), 'The client is STILL not logged in.');
+
+    }
+
+};
+
+1

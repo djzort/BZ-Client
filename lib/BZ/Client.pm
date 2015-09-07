@@ -175,8 +175,12 @@ sub logout {
     my $cookies = $self->{'cookies'};
     my $token = $self->{'token'};
     if ($cookies or $token) {
-        $cookies->clear();
-        $self->xmlrpc->request( 'methodName' => 'User.logout', params => [] );
+        # cannot use _api_call() as response from logout is empty
+        my $params = {};
+        $params->{'token'} = $self->{'token'}
+            if $self->{'token'};
+        $self->xmlrpc->request( 'methodName' => 'User.logout', params => [$params] );
+        $cookies->clear() if $cookies;
         $self->{'token'} = undef;
     }
     return 1
