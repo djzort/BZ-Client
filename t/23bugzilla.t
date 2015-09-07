@@ -1,35 +1,15 @@
 #!/usr/bin/perl -w
 
 use strict;
-use warnings "all";
+use warnings 'all';
 
 use BZ::Client::Test();
 use BZ::Client::Bugzilla();
-use Test;
+use Test::More tests => 11;
 
 my $tester;
 
-sub TestVersion() {
-    my $values = TestCall("version");
-    return $values  &&  $values->{"version"} eq "3.3.4";
-}
-
-sub TestTimezone() {
-    my $values = TestCall("timezone");
-    return $values  &&  $values->{"timezone"} eq "+0200";
-}
-
-sub TestTime() {
-    my $values = TestCall("time");
-    return $values  &&  $values->{"tz_name"} eq "Europe/Berlin";
-}
-
-sub TestExtensions() {
-    my $values = TestCall("extensions");
-    return $values  &&  ref($values) eq "HASH";
-}
-
-sub TestCall($) {
+sub TestCall {
     my($method) = @_;
     my $client = $tester->client();
     my $values;
@@ -39,34 +19,47 @@ sub TestCall($) {
     };
     if ($@) {
         my $err = $@;
-        if (ref($err) eq "BZ::Client::Exception") {
-            print STDERR "Error: " . (defined($err->http_code()) ? $err->http_code() : "undef")
-                . ", " . (defined($err->xmlrpc_code()) ? $err->xmlrpc_code() : "undef")
-                . ", " . (defined($err->message()) ? $err->message() : "undef") . "\n";
-        } else {
-            print STDERR "Error $err\n";
+        my $msg;
+        if (ref($err) eq 'BZ::Client::Exception') {
+            $msg = 'Error: ' . (defined($err->http_code()) ? $err->http_code() : 'undef')
+                . ', ' . (defined($err->xmlrpc_code()) ? $err->xmlrpc_code() : 'undef')
+                . ', ' . (defined($err->message()) ? $err->message() : 'undef');
         }
+        else {
+            $msg =  "Error $err";
+        }
+        ok(0, 'No errors') and diag($msg);
         return undef;
     }
-    if (!$values  ||  ref($values) ne "HASH") {
-        print STDERR "No values returned.\n";
-        return undef;
+    else {
+        ok(1, 'No errors')
     }
     return $values;
 }
 
-plan(tests => 4);
+$tester = BZ::Client::Test->new(['config.pl', 't/config.pl']);
+SKIP: {
+    skip('No Bugzilla server configured, skipping',11)
+        if $tester->isSkippingIntegrationTests();
 
-$tester = BZ::Client::Test->new(["config.pl", "t/config.pl"]);
-my $skipping;
-if ($tester->isSkippingIntegrationTests()) {
-    $skipping = "No Bugzilla server configured, skipping";
-} else {
-    $skipping = 0;
+{
+    my $values = TestCall('version');
+    ok( ($values and ref($values) eq 'HASH'), 'Got something from Version');
+    like( $values->{'version'}, qr/^\d+\.\d+(\.\d+)?(\-\d+)?$/, 'Resembles a version number' );
+}
+{
+    my $values = TestCall('timezone');
+    ok( ($values and ref($values) eq 'HASH'), 'Got something from Timezone');
+    like( $values->{'timezone'}, qr/^[-+]\d\d\d\d$/, 'Resembles a Time offset' );
+}
+{
+    my $values = TestCall('time');
+    ok( ($values and ref($values) eq 'HASH'), 'Got something from Timezone name');
+    like( $values->{'tz_name'}, qr!^(\w+/\w+|UTC)$!, 'Resembles a Timezone name' );
+}
+{
+    my $values = TestCall('extensions');
+    ok( ($values and ref($values) eq 'HASH'), 'Got something from Extensions');
 }
 
-skip($skipping, \&TestVersion, 1, "TestVersion");
-skip($skipping, \&TestTime, 1, "TestTime");
-skip($skipping, \&TestTimezone, 1, "TestTimezone");
-skip($skipping, \&TestExtensions, 1, "TestExtensions");
-
+};
