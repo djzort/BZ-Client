@@ -17,7 +17,7 @@ sub legal_values {
     my $params = { 'field' => $field };
     my $result = $class->api_call($client, 'Bug.legal_values', $params);
     my $values = $result->{'values'};
-    if (!$values  ||  'ARRAY' ne ref($values)) {
+    if (!$values || 'ARRAY' ne ref($values)) {
         $class->error($client, 'Invalid reply by server, expected array of values.');
     }
     $client->log('debug', 'BZ::Client::Bug::legal_values: Got ' . join(',', @$values));
