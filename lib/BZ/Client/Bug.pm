@@ -233,7 +233,11 @@ This section lists the class methods, which are available in this module.
 
 =head2 get
 
+  $ids = 101; or $ids = [ 69, 101 ]; or $ids = '69,101';
+
   my $bugs = BZ::Client::Bug->get( $client, $ids );
+
+I<$ids> is an arrayref of ids, or a scalar containing comma delimiteed ids
 
 Returns a list of bug instances with the given ID's.
 
