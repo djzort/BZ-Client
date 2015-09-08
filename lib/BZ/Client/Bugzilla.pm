@@ -75,6 +75,8 @@ Returns a hash ref with information about the Bugzilla servers extensions.
 
 Returns a hash ref with information about the Bugzilla servers local time.
 
+Note: as of Bugzilla 3.6 this will always return UTC values.
+
 =head2 timezone
 
   my $timezone = BZ::Client::Bugzilla->timezone( $client );
@@ -82,12 +84,24 @@ Returns a hash ref with information about the Bugzilla servers local time.
 Returns the Bugzilla servers timezone as a numeric value. This method
 is deprecated: Use L</time> instead.
 
+Note: as of Bugzilla 3.6 the timezone is always +0000 (UTC)
+Also, Bugzilla has depreceated but not yet removed this API call
+
 =head2 version
 
   my $version = BZ::Client::Bugzilla->version( $client );
 
 Returns the Bugzilla servers version.
 
+=head1 TODO
+
+=over 4
+
+=item paramaters (added in 4.4)
+
+=item last_audit_time (added in 4.4)
+
+=back
 
 =head1 SEE ALSO
 
