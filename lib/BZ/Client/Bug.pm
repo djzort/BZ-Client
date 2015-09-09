@@ -231,6 +231,50 @@ This class provides methods for accessing and managing bugs in Bugzilla.
 
 This section lists the class methods, which are available in this module.
 
+=head2 fields
+
+=head2 legal_values
+
+  my $values = BZ::Client::Bug->legal_values( $client, $field )
+
+Tells you what values are allowed for a particular field.
+
+Note: This is deprecated in Bugzilla, use L<fields> instead.
+
+Params:
+
+=over 4
+
+=item $field
+
+The name of the field you want information about. This should be the same as the name you would use in L<create>, below.
+
+=back
+
+Returns:
+
+=over 4
+
+=item $values
+
+An arrayref of strings: the legal values for this field. The values will be sorted as they normally would be in Bugzilla.
+
+=back
+
+Errors:
+
+=over 4
+
+=item 106 - Invalid Product
+
+You were required to specify a product, and either you didn't, or you specified an invalid product (or a product that you can't access).
+
+=item 108 - Invalid Field Name
+
+You specified a field that doesn't exist or isn't a drop-down field.
+
+=back
+
 =head2 get
 
   $ids = 101; or $ids = [ 69, 101 ]; or $ids = '69,101';
