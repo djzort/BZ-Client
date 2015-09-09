@@ -17,6 +17,7 @@ my @MODULES = qw(
         BZ::Client::XMLRPC::Parser
         BZ::Client::Bug
         BZ::Client::Bugzilla
+        BZ::Client::User
         BZ::Client::API
         BZ::Client::Test
         BZ::Client
