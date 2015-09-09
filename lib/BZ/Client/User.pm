@@ -15,11 +15,34 @@ our @ISA = qw(BZ::Client::API);
 
 sub offer_account_by_email {
     my($class, $client, $params) = @_;
+    unless (ref $params) {
+        $params = { email => $params }
+    }
     $client->log('debug', 'BZ::Client::User::offer_account_by_email: Inviting');
     return $class->api_call($client, 'User.offer_account_by_email', $params);
 }
 
-sub get;
+sub get {
+    my($class, $client, $params) = @_;
+    $client->log('debug', 'BZ::Client::User::get: Asking for (TODO)');
+    if ($params->{'include_disabled'}) {
+        $params->{'include_disabled'} = BZ::Client::XMLRPC::boolean::TRUE()
+    }
+    else {
+        $params->{'include_disabled'} = BZ::Client::XMLRPC::boolean::FALSE()
+    }
+    my $result = $class->api_call($client, 'User.get', $params);
+    my $users = $result->{'users'};
+    if (!$users  ||  'ARRAY' ne ref($users)) {
+        $class->error($client, 'Invalid reply by server, expected array of users.');
+    }
+    my @result;
+    for my $user (@$users) {
+        push(@result, BZ::Client::User->new(%$user));
+    }
+    $client->log('debug', 'BZ::Client::User::get: Got ' . scalar(@result));
+    return wantarray ? @result : \@result
+}
 
 sub new {
     my $class = shift;
@@ -39,7 +62,29 @@ sub create {
     return $id
 }
 
-sub update;
+sub update {
+    my($class, $client, $params) = @_;
+    $client->log('debug', 'BZ::Client::User::update: Updating for: TODO');
+    if (defined $params->{'email_enabled'}) {
+        if ($params->{'email_enabled'}) {
+            $params->{'email_enabled'} = BZ::Client::XMLRPC::boolean::TRUE()
+        }
+        else {
+            $params->{'email_enabled'} = BZ::Client::XMLRPC::boolean::FALSE()
+        }
+    }
+    my $result = $class->api_call($client, 'User.update', $params);
+    my $users = $result->{'users'};
+    if (!$users  ||  'ARRAY' ne ref($users)) {
+        $class->error($client, 'Invalid reply by server, expected array of users.');
+    }
+    my @result;
+    for my $user (@$users) {
+        push(@result, BZ::Client::User->new(%$user));
+    }
+    $client->log('debug', 'BZ::Client::User::update: Got ' . scalar(@result));
+    return wantarray ? @result : \@result
+}
 
 1;
 
@@ -56,7 +101,10 @@ servers installation.
                                 user     => $user,
                                 password => $password );
 
-  my $bugs = BZ::Client::User->get( $client, \%params );
+  my $ok    = BZ::Client::User->offer_account_by_email( $client, 'email@adress' );
+  my $users = BZ::Client::User->get( $client, \%params );
+  my $id    = BZ::Client::User->create( $client, \%params );
+  my $users = BZ::Client::User->update( $client, \%params );
 
 =head1 CLASS METHODS
 
@@ -64,7 +112,8 @@ This section lists the class methods, which are available in this module.
 
 =head2 offer_account_by_email
 
-  my $extensions = BZ::Client::User->offer_account_by_email( $client, \%params );
+  my $ok = BZ::Client::User->offer_account_by_email( $client, 'email@address' );
+  my $ok = BZ::Client::User->offer_account_by_email( $client, \%params );
 
 Sends an email to the user, offering to create an account. The user will have to click on a URL in the email, and choose their password and real name.
 
@@ -78,9 +127,11 @@ Params:
 
 I<email> (string) The email address to send the offer to.
 
+Note: email can be provided as the single option as a scalar as shown above.
+
 =back
 
-Returns: nothing if successfull
+Returns: nothing if successful
 
 Errors:
 
@@ -98,7 +149,7 @@ This Bugzilla does not allow you to create accounts with the format of email add
 
 =head2 get
 
-  my $bugs = BZ::Client::User->get( $client, \%params );
+  my $users = BZ::Client::User->get( $client, \%params );
 
 Gets information about user accounts in Bugzilla. Added in Bugzilla 3.4
 
@@ -336,10 +387,85 @@ The password specified is too short. (Usually, this means the password is under 
 
 Removed in Bugzilla 3.6
 
+=back
 
 =head2 update
 
-TODO
+ my $users = BZ::Client::User->update( $client, \%params );
+
+Updates user accounts in Bugzilla.
+
+Params:
+
+=over 4
+
+=item ids
+
+I<array> Contains ids of user to update.
+
+=item names
+
+I<array> Contains email/login of user to update.
+
+=item full_name
+
+I<string> The new name of the user.
+
+=item email
+
+I<string> The email of the user. Note that email used to login to bugzilla. Also note that you can only update one user at a time when changing the login name / email. (An error will be thrown if you try to update this field for multiple users at once.)
+
+=item password
+
+I<string> The password of the user.
+
+=item email_enabled
+
+I<boolean> A boolean value to enable/disable sending bug-related mail to the user.
+
+=item login_denied_text
+
+I<string> A text field that holds the reason for disabling a user from logging into bugzilla, if empty then the user account is enabled otherwise it is disabled/closed.
+
+=back
+
+Returns:
+
+A hash with a single field I<users>. This points to an array of hashes with the following fields:
+
+=over 4
+
+=item id
+
+I<int> The id of the user that was updated.
+
+=item changes
+
+I<hash> The changes that were actually done on this user. The keys are the names of the fields that were changed, and the values are a hash with two keys:
+
+=item added
+
+I<string> The values that were added to this field, possibly a comma-and-space-separated list if multiple values were added.
+
+=item removed
+
+I<string> The values that were removed from this field, possibly a comma-and-space-separated list if multiple values were removed.
+
+=back
+
+Errors:
+
+=over 4
+
+=item 51 - Bad Login Name
+
+You passed an invalid login name in the "names" array.
+
+=item 304 - Authorization Required
+
+Logged-in users are not authorized to edit other users.
+
+=back
 
 =head1 SEE ALSO
 
