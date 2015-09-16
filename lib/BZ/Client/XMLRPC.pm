@@ -15,7 +15,9 @@ use DateTime::Format::Strptime();
 use DateTime::TimeZone();
 
 our $counter;
-our $fmt = DateTime::Format::Strptime->new( pattern=> '%C%Y-%m-%dT%T', time_zone => 'UTC' );
+our $fmt = DateTime::Format::Strptime->new(
+                    pattern   => '%C%Y-%m-%dT%T',
+                    time_zone => 'UTC' );
 our $tz = DateTime::TimeZone->new( name => 'UTC' );
 
 
@@ -30,7 +32,8 @@ sub url {
     my $self = shift;
     if (@_) {
         $self->{'url'} = shift;
-    } else {
+    }
+    else {
         return $self->{'url'};
     }
 }
@@ -39,7 +42,8 @@ sub user_agent {
     my $self = shift;
     if (@_) {
         $self->{'user_agent'} = shift;
-    } else {
+    }
+    else {
         my $ua = $self->{'user_agent'};
         if (!defined($ua)) {
             $ua = LWP::UserAgent->new();
@@ -53,8 +57,8 @@ sub user_agent {
 sub error {
     my($self, $message, $http_code, $xmlrpc_code) = @_;
     require BZ::Client::Exception;
-    BZ::Client::Exception->throw('message' => $message,
-                                 'http_code' => $http_code,
+    BZ::Client::Exception->throw('message'     => $message,
+                                 'http_code'   => $http_code,
                                  'xmlrpc_code' => $xmlrpc_code)
 }
 
@@ -73,7 +77,8 @@ sub value {
         }
         $writer->endTag('struct');
         $writer->endTag('value');
-    } elsif (ref($value) eq 'ARRAY') {
+    }
+    elsif (ref($value) eq 'ARRAY') {
         $writer->startTag('value');
         $writer->startTag('array');
         $writer->startTag('data');
@@ -83,25 +88,29 @@ sub value {
         $writer->endTag('data');
         $writer->endTag('array');
         $writer->endTag('value');
-    } elsif (ref($value) eq 'BZ::Client::XMLRPC::int') {
+    }
+    elsif (ref($value) eq 'BZ::Client::XMLRPC::int') {
         $writer->startTag('value');
         $writer->startTag('i4');
         $writer->characters($$value);
         $writer->endTag('i4');
         $writer->endTag('value');
-    } elsif (ref($value) eq 'BZ::Client::XMLRPC::boolean') {
+    }
+    elsif (ref($value) eq 'BZ::Client::XMLRPC::boolean') {
         $writer->startTag('value');
         $writer->startTag('boolean');
         $writer->characters($$value ? '1' : '0');
         $writer->endTag('boolean');
         $writer->endTag('value');
-    } elsif (ref($value) eq 'BZ::Client::XMLRPC::double') {
+    }
+    elsif (ref($value) eq 'BZ::Client::XMLRPC::double') {
         $writer->startTag('value');
         $writer->startTag('double');
         $writer->characters($$value);
         $writer->endTag('double');
         $writer->endTag('value');
-    } elsif (ref($value) eq 'DateTime') {
+    }
+    elsif (ref($value) eq 'DateTime') {
         my $clone = $value->clone();
         $clone->set_time_zone($tz);
         $clone->set_formatter($fmt);
@@ -110,7 +119,8 @@ sub value {
         $writer->characters($clone->iso8601(). 'Z');
         $writer->endTag('dateTime.iso8601');
         $writer->endTag('value');
-    } else {
+    }
+    else {
         $writer->startTag('value');
         $writer->characters($value);
         $writer->endTag('value');
@@ -120,7 +130,9 @@ sub value {
 sub create_request {
     my($self, $methodName, $params) = @_;
     my $contents;
-    my $writer = XML::Writer->new(OUTPUT => \$contents, ENCODING => 'UTF-8');
+    my $writer = XML::Writer->new(
+                OUTPUT   => \$contents,
+                ENCODING => 'UTF-8' );
     $writer->startTag('methodCall');
     $writer->startTag('methodName');
     $writer->characters($methodName);
@@ -139,9 +151,10 @@ sub create_request {
 
 sub get_response {
     my($self, $contents) = @_;
-    return _get_response($self, { 'url' => $self->url() . '/xmlrpc.cgi',
-                                  'contentType' => 'text/xml',
-                                  'contents' => encode_utf8($contents) })
+    return _get_response($self,
+                        { 'url' => $self->url() . '/xmlrpc.cgi',
+                          'contentType' => 'text/xml',
+                          'contents' => encode_utf8($contents) })
 }
 
 sub _get_response {
@@ -207,9 +220,11 @@ sub _get_response {
         my $code = $res->code();
         if ($code == 401) {
            $self->error('Authorization error, perhaps invalid user name and/or password', $code);
-        } elsif ($code == 404) {
+        }
+        elsif ($code == 404) {
            $self->error('Bugzilla server not found, perhaps invalid URL.', $code);
-        } else {
+        }
+        else {
            $self->error("Unknown error: $msg", $code);
         }
     }
@@ -250,7 +265,8 @@ sub logger {
     my($self) = shift;
     if (@_) {
         $self->{'logger'} = shift;
-    } else {
+    }
+    else {
         return $self->{'logger'};
     }
 }
@@ -259,7 +275,8 @@ sub logDirectory {
     my($self) = shift;
     if (@_) {
         $self->{'logDirectory'} = shift;
-    } else {
+    }
+    else {
         return $self->{'logDirectory'};
     }
 }
@@ -278,8 +295,15 @@ sub new {
     return bless(\$value, (ref($class) || $class))
 }
 
-use constant TRUE => BZ::Client::XMLRPC::boolean->new(1);
-use constant FALSE => BZ::Client::XMLRPC::boolean->new(0);
+{
+
+my $true = BZ::Client::XMLRPC::boolean->new(1);
+my $false = BZ::Client::XMLRPC::boolean->new(0);
+
+sub TRUE  { $true }
+sub FALSE { $false }
+
+}
 
 package BZ::Client::XMLRPC::double;
 
