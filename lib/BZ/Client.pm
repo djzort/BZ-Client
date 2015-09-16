@@ -8,7 +8,7 @@ use warnings 'all';
 package BZ::Client;
 
 use BZ::Client::XMLRPC;
-use HTTP::Cookies();
+use HTTP::CookieJar;
 
 sub new {
     my $class = shift;
@@ -151,7 +151,7 @@ sub login {
         $params{password} = $password;
         $self->log( 'debug', 'BZ::Client::login, going to log in with username and password' );
     }
-    my $cookies = HTTP::Cookies->new();
+    my $cookies = HTTP::CookieJar->new();
     my $response = $self->_api_call( 'User.login', \%params, $cookies );
     if ( not defined( $response->{'id'} )
         or $response->{'id'} !~ m/^\d+$/s )
@@ -182,7 +182,8 @@ sub logout {
             if $self->{'token'};
         $self->xmlrpc->request( 'methodName' => 'User.logout', params => [$params] );
         $cookies->clear() if $cookies;
-        $self->{'token'} = undef;
+        delete $self->{'token'};
+        delete $self->{'cookies'};
     }
     return 1
 }
@@ -213,7 +214,7 @@ sub _api_call {
     my $xmlrpc = $self->xmlrpc();
 
     if ($cookies) {
-        $xmlrpc->user_agent->cookie_jar($cookies);
+        $xmlrpc->web_agent->{cookie_jar} = $cookies;
     }
     $params->{token} = $self->{'token'}
         if ($self->{'token'} and not $params->{token});
