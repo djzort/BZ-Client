@@ -95,7 +95,9 @@ sub isSkippingIntegrationTests {
 
 __END__
 
-=encoding utf-8
+=pod
+
+=encoding utf8
 
 =head1 SYNOPSIS
 

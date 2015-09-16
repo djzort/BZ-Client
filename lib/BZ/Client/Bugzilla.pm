@@ -44,7 +44,7 @@ sub version {
 
 __END__
 
-=encoding utf-8
+=encoding utf8
 
 =head1 SYNOPSIS
 

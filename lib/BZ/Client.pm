@@ -240,6 +240,8 @@ __END__
 
 =pod
 
+=encoding utf8
+
 =head1 SYNOPSIS
 
   my $client = BZ::Client->new( url       => $url,
