@@ -62,9 +62,12 @@ sub error {
                                  'xmlrpc_code' => $xmlrpc_code)
 }
 
-sub value {
-    my($self, $writer, $value) = @_;
-    if (ref($value) eq 'HASH') {
+{
+
+my %actions = (
+
+    'HASH' => sub {
+        my($self, $writer, $value) = @_;
         $writer->startTag('value');
         $writer->startTag('struct');
         for my $key (sort keys %$value) {
@@ -77,8 +80,10 @@ sub value {
         }
         $writer->endTag('struct');
         $writer->endTag('value');
-    }
-    elsif (ref($value) eq 'ARRAY') {
+    },
+
+    'ARRAY' => sub {
+        my($self, $writer, $value) = @_;
         $writer->startTag('value');
         $writer->startTag('array');
         $writer->startTag('data');
@@ -88,29 +93,37 @@ sub value {
         $writer->endTag('data');
         $writer->endTag('array');
         $writer->endTag('value');
-    }
-    elsif (ref($value) eq 'BZ::Client::XMLRPC::int') {
+    },
+
+    'BZ::Client::XMLRPC::int' => sub {
+        my($self, $writer, $value) = @_;
         $writer->startTag('value');
         $writer->startTag('i4');
         $writer->characters($$value);
         $writer->endTag('i4');
         $writer->endTag('value');
-    }
-    elsif (ref($value) eq 'BZ::Client::XMLRPC::boolean') {
+    },
+
+    'BZ::Client::XMLRPC::boolean' => sub {
+        my($self, $writer, $value) = @_;
         $writer->startTag('value');
         $writer->startTag('boolean');
         $writer->characters($$value ? '1' : '0');
         $writer->endTag('boolean');
         $writer->endTag('value');
-    }
-    elsif (ref($value) eq 'BZ::Client::XMLRPC::double') {
+    },
+
+    'BZ::Client::XMLRPC::double' => sub {
+        my($self, $writer, $value) = @_;
         $writer->startTag('value');
         $writer->startTag('double');
         $writer->characters($$value);
         $writer->endTag('double');
         $writer->endTag('value');
-    }
-    elsif (ref($value) eq 'DateTime') {
+    },
+
+    'DateTime' => sub {
+        my($self, $writer, $value) = @_;
         my $clone = $value->clone();
         $clone->set_time_zone($tz);
         $clone->set_formatter($fmt);
@@ -119,12 +132,24 @@ sub value {
         $writer->characters($clone->iso8601(). 'Z');
         $writer->endTag('dateTime.iso8601');
         $writer->endTag('value');
+    },
+
+);
+
+sub value {
+    my($self, $writer, $value) = @_;
+
+    if ($actions{ ref($value) }) {
+        $actions{ ref($value) }->($self, $writer, $value);
     }
     else {
         $writer->startTag('value');
         $writer->characters($value);
         $writer->endTag('value');
     }
+
+}
+
 }
 
 sub create_request {
