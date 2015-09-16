@@ -7,7 +7,7 @@ use warnings 'all';
 
 package BZ::Client::Bug;
 
-use BZ::Client::API();
+use BZ::Client::API;
 
 our @ISA = qw(BZ::Client::API);
 

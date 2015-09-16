@@ -7,7 +7,7 @@ use warnings 'all';
 
 package BZ::Client::Test;
 
-use BZ::Client();
+use BZ::Client;
 
 sub new {
     my $class = shift;
