@@ -11,6 +11,8 @@ use BZ::Client::API();
 
 our @ISA = qw(BZ::Client::API);
 
+# See https://www.bugzilla.org/docs/4.4/en/html/api/Bugzilla/WebService/Bug.html
+
 sub legal_values {
     my($class, $client, $field) = @_;
     $client->log('debug', "BZ::Client::Bug::legal_values: Asking for $field");
@@ -21,7 +23,7 @@ sub legal_values {
         $class->error($client, 'Invalid reply by server, expected array of values.');
     }
     $client->log('debug', 'BZ::Client::Bug::legal_values: Got ' . join(',', @$values));
-    return $values
+    return wantarray ? @$values : $values
 }
 
 sub get {
@@ -47,14 +49,14 @@ sub search {
     $client->log('debug', 'BZ::Client::Bug::search: Searching');
     my $result = $class->api_call($client, 'Bug.search', $params);
     my $bugs = $result->{'bugs'};
-    if (!$bugs  ||  'ARRAY' ne ref($bugs)) {
+    if (!$bugs || 'ARRAY' ne ref($bugs)) {
         $class->error($client, 'Invalid reply by server, expected array of bugs.');
     }
     my @result;
     for my $bug (@$bugs) {
         push(@result, BZ::Client::Bug->new(%$bug));
     }
-    $client->log('debug', 'BZ::Client::Bug::search: Got ' . scalar(@result));
+    $client->log('debug', 'BZ::Client::Bug::search: Found ' . join(',',@result));
     return wantarray ? @result : \@result
 }
 
@@ -67,6 +69,17 @@ sub create {
         $class->error($client, 'Invalid reply by server, expected bug ID.');
     }
     return $id
+}
+
+sub update {
+    my($class, $client, $params) = @_;
+    $client->log('debug', 'BZ::Client::Bug::update: Updating');
+    my $result = $class->api_call($client, 'Bug.update', $params);
+    my $bugs = $result->{'bugs'};
+    if (!$bugs || 'ARRAY' ne ref($bugs)) {
+        $class->error($client, 'Invalid reply by server, expected array of bug details.');
+    }
+    return wantarray ? @$bugs : $bugs
 }
 
 sub new {
@@ -227,15 +240,20 @@ This class provides methods for accessing and managing bugs in Bugzilla.
 
   my $bugs = BZ::Client::Bug->get( $client, $ids );
 
-=head1 CLASS METHODS
+=head1 UTILITY FUNCTIONS
 
-This section lists the class methods, which are available in this module.
+This section lists the utility functions provided by this module.
+
+These deal with bug-related information, but not bugs directly.
 
 =head2 fields
+
+FIXME
 
 =head2 legal_values
 
   my $values = BZ::Client::Bug->legal_values( $client, $field )
+  my @values = BZ::Client::Bug->legal_values( $client, $field )
 
 Tells you what values are allowed for a particular field.
 
@@ -255,9 +273,9 @@ Returns:
 
 =over 4
 
-=item $values
+=item $values or @values
 
-An arrayref of strings: the legal values for this field. The values will be sorted as they normally would be in Bugzilla.
+An array or arrayref of strings: the legal values for this field. The values will be sorted as they normally would be in Bugzilla.
 
 =back
 
@@ -275,37 +293,85 @@ You specified a field that doesn't exist or isn't a drop-down field.
 
 =back
 
+=head1 FUNCTIONS FOR FINDING AND RETRIEVING BUGS
+
+This section lists the class methods pertaining to finding and retrieving bugs from your server.
+
+Listed here in order of what you most likely want to do... maybe?
+
 =head2 get
 
   $ids = 101; or $ids = [ 69, 101 ]; or $ids = '69,101';
 
   my $bugs = BZ::Client::Bug->get( $client, $ids );
+  my @bugs = BZ::Client::Bug->get( $client, $ids );
 
-I<$ids> is an arrayref of ids, or a scalar containing comma delimiteed ids
+I<$ids> is an arrayref of ID's, or a scalar containing comma delimiteed ID's.
 
-Returns a list of bug instances with the given ID's.
+Returns an array or arrayref of bug instance objects with the given ID's.
 
-=head2 new
+See L<INSTANCE METHODS> for how to use them.
 
-  my $bug = BZ::Client::Bug->new( id => $id );
+=head2 search
 
-Creates a new instance with the given ID.
+  my $bugs = BZ::Client::Bug->search( $client, $params );
+  my @bugs = BZ::Client::Bug->search( $client, $params );
+
+Searches for bugs matching the given parameters.
+
+Returns an array or arrayref of bug instance objects with the given ID's.
+
+See L<INSTANCE METHODS> for how to use them.
+
+=head2 possible_duplicates
+
+TODO
+
+=head1 FUNCTIONS FOR CREATING AND MODIFYING BUGS
+
+This section lists the class methods pertaining to the creation and modification of bugs.
+
+Listed here in order of what you most likely want to do... maybe?
 
 =head2 create
 
   my $id = BZ::Client::Bug->create( $client, $params );
 
-Creates a new bug and returns the bug ID.
+Creates a new bug in your Bugzilla server and returns the bug ID.
 
-=head2 search
+=head2 update
 
-  my $bugs = BZ::Client::Bug->search( $client, $params );
+  my $id = BZ::Client::Bug->update( $client, $params );
 
-Searches for bugs matching the given parameters.
+Allows you to update the fields of a bug.
+
+(Your Bugzilla server may automatically sends emails out about the changes)
+
+FIXME more details needed
+
+=head2 update_see_also
+
+TODO
+
+=head2 update_tags
+
+TODO
+
+=head2 new
+
+  my $bug = BZ::Client::Bug->new( id => $id );
+
+Creates a new bug object instance with the given ID.
+
+Note: Doesn't actually touch your bugzilla server.
+
+See L<INSTANCE METHODS> for how to use it.
 
 =head1 INSTANCE METHODS
 
 This section lists the modules instance methods.
+
+Once you have a bug object, you can use these methods to inspect and manipulate the bug.
 
 =head2 id
 
@@ -410,4 +476,4 @@ Gets or sets the summary of this bug.
 
 =head1 SEE ALSO
 
-  L<BZ::Client>, L<BZ::Client::API>
+  L<BZ::Client>, L<BZ::Client::API>, L<https://www.bugzilla.org/docs/4.4/en/html/api/Bugzilla/WebService/Bug.html>
