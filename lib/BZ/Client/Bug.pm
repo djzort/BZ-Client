@@ -12,6 +12,19 @@ use BZ::Client::API();
 our @ISA = qw(BZ::Client::API);
 
 # See https://www.bugzilla.org/docs/4.4/en/html/api/Bugzilla/WebService/Bug.html
+# These are in order as per the above
+
+sub fields {
+    my($class, $client, $params) = @_;
+    $client->log('debug', 'BZ::Client::Bug::fields: Retrieving');
+    my $result = $class->api_call($client, 'Bug.fields', $params);
+    my $fields = $result->{'fields'};
+    if (!$fields || 'ARRAY' ne ref($fields)) {
+        $class->error($client, 'Invalid reply by server, expected array of fields.');
+    }
+    $client->log('debug', 'BZ::Client::Bug::fields: Got ' . scalar @$fields);
+    return wantarray ? @$fields : $fields
+}
 
 sub legal_values {
     my($class, $client, $field) = @_;
@@ -27,10 +40,10 @@ sub legal_values {
 }
 
 sub get {
-    my($class, $client, $ids, $permissive) = @_;
-    $client->log('debug', 'BZ::Client::Bug::get: Asking for ' . (ref($ids) eq 'ARRAY' ? join(',', @$ids) : $ids));
-    my $params = { ids => $ids };
-    $params->{'permissive'} = BZ::Client::XMLRPC::boolean::TRUE() if $permissive;
+    my($class, $client, $ids, $params) = @_;
+    $client->log('debug', 'BZ::Client::Bug::get: Asking');
+    $params->{'permissive'} = BZ::Client::XMLRPC::boolean::TRUE()
+        if $params->{'permissive'};
     my $result = $class->api_call($client, 'Bug.get', $params);
     my $bugs = $result->{'bugs'};
     if (!$bugs  ||  'ARRAY' ne ref($bugs)) {
@@ -93,7 +106,8 @@ sub id {
     my $self = shift;
     if (@_) {
         $self->{'id'} = shift;
-    } else {
+    }
+    else {
         return $self->{'id'}
     }
 }
@@ -102,7 +116,8 @@ sub alias {
     my $self = shift;
     if (@_) {
         $self->{'alias'} = shift;
-    } else {
+    }
+    else {
         return $self->{'alias'}
     }
 }
@@ -111,7 +126,8 @@ sub assigned_to {
     my $self = shift;
     if (@_) {
         $self->{'assigned_to'} = shift;
-    } else {
+    }
+    else {
         return $self->{'assigned_to'}
     }
 }
@@ -120,7 +136,8 @@ sub component {
     my $self = shift;
     if (@_) {
         $self->{'component'} = shift;
-    } else {
+    } e
+    lse {
         return $self->{'component'}
     }
 }
@@ -129,7 +146,8 @@ sub creation_time {
     my $self = shift;
     if (@_) {
         $self->{'creation_time'} = shift;
-    } else {
+    }
+    else {
         return $self->{'creation_time'}
     }
 }
@@ -138,7 +156,8 @@ sub dupe_of {
     my $self = shift;
     if (@_) {
         $self->{'dupe_of'} = shift;
-    } else {
+    }
+    else {
         return $self->{'dupe_of'}
     }
 }
@@ -147,7 +166,8 @@ sub internals {
     my $self = shift;
     if (@_) {
         $self->{'internals'} = shift;
-    } else {
+    }
+    else {
         return $self->{'internals'}
     }
 }
@@ -156,7 +176,8 @@ sub is_open {
     my $self = shift;
     if (@_) {
         $self->{'is_open'} = shift;
-    } else {
+    }
+    else {
         return $self->{'is_open'}
     }
 }
@@ -165,7 +186,8 @@ sub last_change_time {
     my $self = shift;
     if (@_) {
         $self->{'last_change_time'} = shift;
-    } else {
+    }
+    else {
         return $self->{'last_change_time'}
     }
 }
@@ -174,7 +196,8 @@ sub priority {
     my $self = shift;
     if (@_) {
         $self->{'priority'} = shift;
-    } else {
+    }
+    else {
         return $self->{'priority'}
     }
 }
@@ -183,7 +206,8 @@ sub product {
     my $self = shift;
     if (@_) {
         $self->{'product'} = shift;
-    } else {
+    }
+    else {
         return $self->{'product'}
     }
 }
@@ -192,7 +216,8 @@ sub resolution {
     my $self = shift;
     if (@_) {
         $self->{'resolution'} = shift;
-    } else {
+    }
+    else {
         return $self->{'resolution'}
     }
 }
@@ -201,7 +226,8 @@ sub severity {
     my $self = shift;
     if (@_) {
         $self->{'severity'} = shift;
-    } else {
+    }
+    else {
         return $self->{'severity'}
     }
 }
@@ -210,7 +236,8 @@ sub status {
     my $self = shift;
     if (@_) {
         $self->{'status'} = shift;
-    } else {
+    }
+    else {
         return $self->{'status'}
     }
 }
@@ -219,7 +246,8 @@ sub summary {
     my $self = shift;
     if (@_) {
         $self->{'summary'} = shift;
-    } else {
+    }
+    else {
         return $self->{'summary'}
     }
 }
@@ -228,7 +256,7 @@ sub summary {
 
 __END__
 
-=encoding utf-8
+=encoding utf8
 
 =head1 SYNOPSIS
 
@@ -248,38 +276,213 @@ These deal with bug-related information, but not bugs directly.
 
 =head2 fields
 
-FIXME
+  $fields = BZ::Client::Bug->fields( $client, $params )
+  @fields = BZ::Client::Bug->fields( $client, $params )
 
-=head2 legal_values
+Get information about valid bug fields, including the lists of legal values for each field.
 
-  my $values = BZ::Client::Bug->legal_values( $client, $field )
-  my @values = BZ::Client::Bug->legal_values( $client, $field )
+Added in Bugzilla 3.6
 
-Tells you what values are allowed for a particular field.
+=head3 Parameters
 
-Note: This is deprecated in Bugzilla, use L<fields> instead.
+You can pass either field ids or field names.
 
-Params:
+Note: If neither ids nor names is specified, then all non-obsolete fields will be returned.
 
 =over 4
 
-=item $field
+=item ids
 
-The name of the field you want information about. This should be the same as the name you would use in L<create>, below.
+I<ids> (array) - An array of integer field ids
+
+=item names
+
+I<names> (array) - An array of strings representing field names.
 
 =back
 
-Returns:
+In addition to the parameters above, this method also accepts the standard I<include_fields> and I<exclude_fields> arguments.
+
+=head3 Returns
+
+Returns an array or an arrayref of hashes, containing the following keys:
 
 =over 4
 
-=item $values or @values
+=item id
+
+I<id> (int) - An integer id uniquely identifying this field in this installation only.
+
+=item type
+
+I<type> (int) The number of the fieldtype. The following values are defined:
+
+=over 4
+
+=item 0 Unknown
+
+=item 1 Free Text
+
+=item 2 Drop Down
+
+=item 3 Multiple-Selection Box
+
+=item 4 Large Text Box
+
+=item 5 Date/Time
+
+=item 6 Bug ID
+
+=item 7 Bug URLs ("See Also")
+
+=back
+
+=item is_custom
+
+I<is_custom> (boolean) True when this is a custom field, false otherwise.
+
+=item name
+
+I<name> (string) The internal name of this field. This is a unique identifier for this field. If this is not a custom field, then this name will be the same across all Bugzilla installations.
+
+=item display_name
+
+I<display_name>  (string) The name of the field, as it is shown in the user interface.
+
+=item is_mandatory
+
+I<is_mandatory> (boolean) True if the field must have a value when filing new bugs. Also, mandatory fields cannot have their value cleared when updating bugs.
+
+This return value was added in Bugzilla 4.0.
+
+=item is_on_bug_entry
+
+I<is_on_bug_entry> (boolean) For custom fields, this is true if the field is shown when you enter a new bug. For standard fields, this is currently always false, even if the field shows up when entering a bug. (To know whether or not a standard field is valid on bug entry, see L</create>.)
+
+=item visibility_field
+
+I<visibility_field> (string) The name of a field that controls the visibility of this field in the user interface. This field only appears in the user interface when the named field is equal to one of the values in visibility_values. Can be null.
+
+=item visibility_values
+
+I<visibility_values> (array) of strings This field is only shown when visibility_field matches one of these values. When visibility_field is null, then this is an empty array.
+
+=item value_field
+
+I<value_field> (string) The name of the field that controls whether or not particular values of the field are shown in the user interface. Can be null.
+
+=item values
+
+This is an array of hashes, representing the legal values for select-type (drop-down and multiple-selection) fields. This is also populated for the component, version, target_milestone, and keywords fields, but not for the product field (you must use L<BZ::Client::Product/get_accessible_products> for that).
+
+For fields that aren't select-type fields, this will simply be an empty array.
+
+Each hash has the following keys:
+
+=over 4
+
+=item name
+
+I<name> (string) The actual value--this is what you would specify for this field in "create", etc.
+
+=item sort_key
+
+I<sort_key> (int) Values, when displayed in a list, are sorted first by this integer and then secondly by their name.
+
+=item sortkey
+
+DEPRECATED - Use I<sort_key> instead.
+
+Renamed to sort_key in Bugzilla 4.2.
+
+=item visibility_values
+
+If L</value_field> is defined for this field, then this value is only shown if the L</value_field> is set to one of the values listed in this array.
+
+Note that for per-product fields, L</value_field> is set to 'product' and L</visibility_values> will reflect which product(s) this value appears in.
+
+=item is_active
+
+I<is_active> (boolean) This value is defined only for certain product specific fields such as version, target_milestone or component.
+
+When true, the value is active, otherwise the value is not active.
+
+Added in Bugzilla 4.4.
+
+=item description
+
+I<description> (string) The description of the value. This item is only included for the keywords field.
+
+=item is_open
+
+I<is_open> (boolean) For L</bug_status> values, determines whether this status specifies that the bug is "open" (true) or "closed" (false). This item is only included for the L</bug_status> field.
+
+=item can_change_to
+
+For L</bug_status> values, this is an array of hashes that determines which statuses you can transition to from this status. (This item is only included for the L</bug_status> field.)
+
+Each hash contains the following items:
+
+=over 4
+
+=item name
+
+The name of the new status
+
+=item comment_required
+
+I<comment_required> (boolean) True if a comment is required when you change a bug into this status using this transition.
+
+=back
+
+=back
+
+=back
+
+Errors:
+
+=over 4
+
+=item 51 - Invalid Field Name or ID
+
+You specified an invalid field name or id.
+
+=back
+
+=head2 legal_values
+
+  $values = BZ::Client::Bug->legal_values( $client, $field )
+  @values = BZ::Client::Bug->legal_values( $client, $field )
+
+Tells you what values are allowed for a particular field.
+
+Note: This is deprecated in Bugzilla, use L</fields> instead.
+
+=head3 Parameters
+
+=over 4
+
+=item field
+
+The name of the field you want information about. This should be the same as the name you would use in L</create>, below.
+
+=item product_id
+
+If you're picking a product-specific field, you have to specify the id of the product you want the values for.
+
+=back
+
+=head3 Returns
+
+=over 4
+
+=item values
 
 An array or arrayref of strings: the legal values for this field. The values will be sorted as they normally would be in Bugzilla.
 
 =back
 
-Errors:
+=head3 Errors
 
 =over 4
 
@@ -301,21 +504,63 @@ Listed here in order of what you most likely want to do... maybe?
 
 =head2 get
 
-  $ids = 101; or $ids = [ 69, 101 ]; or $ids = '69,101';
+  $bugs = BZ::Client::Bug->get( $client, \%params );
+  @bugs = BZ::Client::Bug->get( $client, \%params );
 
-  my $bugs = BZ::Client::Bug->get( $client, $ids );
-  my @bugs = BZ::Client::Bug->get( $client, $ids );
+Gets information about particular bugs in the database.
 
-I<$ids> is an arrayref of ID's, or a scalar containing comma delimiteed ID's.
+=head3 Parameters
 
-Returns an array or arrayref of bug instance objects with the given ID's.
+=over 4
 
-See L<INSTANCE METHODS> for how to use them.
+=item ids
+
+An array of numbers and strings.
+
+If an element in the array is entirely numeric, it represents a bug_id from the Bugzilla database to fetch. If it contains any non-numeric characters, it is considered to be a bug alias instead, and the bug with that alias will be loaded.
+
+=item permissive
+
+I<permissive> (boolean) Normally, if you request any inaccessible or invalid bug ids, will throw an error.
+
+If this parameter is True, instead of throwing an error we return an array of hashes with a I<id>, I<faultString> and I<faultCode> for each bug that fails, and return normal information for the other bugs that were accessible.
+
+Note: marked as B<EXPERIMENTAL> in Bugzilla 4.4
+
+Added in Bugzilla 3.4.
+
+=back
+
+=head3 Returns
+
+An array or arrayref of bug instance objects with the given ID's.
+
+See L</INSTANCE METHODS> for how to use them.
+
+FIXME missing the I<faults> return values (added in 3.4)
+
+=head3 Errors
+
+=over 4
+
+=item 100 - Invalid Bug Alias
+
+If you specified an alias and there is no bug with that alias.
+
+=item 101 - Invalid Bug ID
+
+The bug_id you specified doesn't exist in the database.
+
+=item 102 - Access Denied
+
+You do not have access to the bug_id you specified.
+
+=back
 
 =head2 search
 
-  my $bugs = BZ::Client::Bug->search( $client, $params );
-  my @bugs = BZ::Client::Bug->search( $client, $params );
+  my $bugs = BZ::Client::Bug->search( $client, \%params );
+  my @bugs = BZ::Client::Bug->search( $client, \%params );
 
 Searches for bugs matching the given parameters.
 
@@ -335,13 +580,13 @@ Listed here in order of what you most likely want to do... maybe?
 
 =head2 create
 
-  my $id = BZ::Client::Bug->create( $client, $params );
+  my $id = BZ::Client::Bug->create( $client, \%params );
 
 Creates a new bug in your Bugzilla server and returns the bug ID.
 
 =head2 update
 
-  my $id = BZ::Client::Bug->update( $client, $params );
+  my $id = BZ::Client::Bug->update( $client, \%params );
 
 Allows you to update the fields of a bug.
 
@@ -363,7 +608,7 @@ TODO
 
 Creates a new bug object instance with the given ID.
 
-Note: Doesn't actually touch your bugzilla server.
+B<Note:> Doesn't actually touch your bugzilla server.
 
 See L<INSTANCE METHODS> for how to use it.
 
