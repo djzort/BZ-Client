@@ -7,8 +7,8 @@ use warnings 'all';
 
 package BZ::Client::XMLRPC::Response;
 
-use BZ::Client::XMLRPC::Handler ();
-use BZ::Client::XMLRPC::Value ();
+use BZ::Client::XMLRPC::Handler;
+use BZ::Client::XMLRPC::Value;
 
 our @ISA = qw(BZ::Client::XMLRPC::Handler);
 

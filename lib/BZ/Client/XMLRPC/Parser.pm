@@ -7,7 +7,7 @@ use warnings 'all';
 
 package BZ::Client::XMLRPC::Parser;
 
-use BZ::Client::XMLRPC::Response ();
+use BZ::Client::XMLRPC::Response;
 use XML::Parser ();
 
 sub new {

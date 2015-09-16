@@ -7,9 +7,9 @@ use warnings 'all';
 
 package BZ::Client::XMLRPC::Value;
 
-use BZ::Client::XMLRPC::Handler ();
-use BZ::Client::XMLRPC::Struct ();
-use BZ::Client::XMLRPC::Array ();
+use BZ::Client::XMLRPC::Handler;
+use BZ::Client::XMLRPC::Struct;
+use BZ::Client::XMLRPC::Array;
 use DateTime::Format::ISO8601 ();
 
 our @ISA = qw(BZ::Client::XMLRPC::Handler);
