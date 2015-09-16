@@ -191,5 +191,5 @@ Gets or sets the products description.
 
 =head1 SEE ALSO
 
-  L<BZ::Client>, L<BZ::Client::API>, L<https://www.bugzilla.org/docs/4.4/en/html/api/Bugzilla/WebService/Product.html>
+  L<BZ::Client>, L<BZ::Client::API>, L<Bugzilla API|https://www.bugzilla.org/docs/4.4/en/html/api/Bugzilla/WebService/Product.html>
 

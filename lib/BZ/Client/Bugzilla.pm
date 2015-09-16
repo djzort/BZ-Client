@@ -44,6 +44,8 @@ sub version {
 
 __END__
 
+=pod
+
 =encoding utf8
 
 =head1 SYNOPSIS
@@ -105,5 +107,5 @@ Returns the Bugzilla servers version.
 
 =head1 SEE ALSO
 
-  L<BZ::Client>, L<BZ::Client::API>
+  L<BZ::Client>, L<BZ::Client::API>, L<Bugzilla API|https://www.bugzilla.org/docs/4.4/en/html/api/Bugzilla/WebService/Bugzilla.html>
 
