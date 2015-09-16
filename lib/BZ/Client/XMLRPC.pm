@@ -8,11 +8,15 @@ use warnings 'all';
 package BZ::Client::XMLRPC;
 
 use LWP();
+use URI;
 use XML::Writer();
 use Encode;
-use BZ::Client::XMLRPC::Parser();
+use File::Spec;
+use BZ::Client::Exception;
+use BZ::Client::XMLRPC::Parser;
 use DateTime::Format::Strptime();
 use DateTime::TimeZone();
+
 
 our $counter;
 our $fmt = DateTime::Format::Strptime->new(
@@ -56,7 +60,6 @@ sub user_agent {
 
 sub error {
     my($self, $message, $http_code, $xmlrpc_code) = @_;
-    require BZ::Client::Exception;
     BZ::Client::Exception->throw('message'     => $message,
                                  'http_code'   => $http_code,
                                  'xmlrpc_code' => $xmlrpc_code)
@@ -147,7 +150,6 @@ sub value {
         $writer->characters($value);
         $writer->endTag('value');
     }
-
 }
 
 }
@@ -188,7 +190,6 @@ sub _get_response {
     my $contentType = $params->{'contentType'};
     my $contents = $params->{'contents'};
     if (ref($contents) eq 'ARRAY') {
-        require URI;
         my $uri = URI->new('http:');
         $uri->query_form($contents);
         $contents = $uri->query();
@@ -206,7 +207,6 @@ sub _get_response {
 
     if ($logDir) {
         $logId = ++$counter;
-        require File::Spec;
         my $fileName = File::Spec->catfile($logDir, "$$.$logId.request.log");
         if (open(my $fh, '>', $fileName)) {
             for my $header ($req->header_field_names()) {
