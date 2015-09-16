@@ -95,6 +95,28 @@ sub update {
     return wantarray ? @$bugs : $bugs
 }
 
+sub update_see_also {
+    my($class, $client, $params) = @_;
+    $client->log('debug', 'BZ::Client::Bug::update_see_also: Updating See-Also');
+    my $result = $class->api_call($client, 'Bug.update_see_also', $params);
+    my $changes = $result->{'changes'};
+    if (!$changes || 'HASH' ne ref($changes)) {
+        $class->error($client, 'Invalid reply by server, expected hash of changed bug details.');
+    }
+    return wantarray ? %$changes : $changes
+}
+
+sub update_tags {
+    my($class, $client, $params) = @_;
+    $client->log('debug', 'BZ::Client::Bug::update_tags: Updating Tags');
+    my $result = $class->api_call($client, 'Bug.update_tags', $params);
+    my $changes = $result->{'changes'};
+    if (!$changes || 'HASH' ne ref($changes)) {
+        $class->error($client, 'Invalid reply by server, expected hash of changed bug details.');
+    }
+    return wantarray ? %$changes : $changes
+}
+
 sub new {
     my $class = shift;
     my $self = { @_ };
@@ -255,6 +277,8 @@ sub summary {
 1;
 
 __END__
+
+=pod
 
 =encoding utf8
 
@@ -596,11 +620,163 @@ FIXME more details needed
 
 =head2 update_see_also
 
-TODO
+  $changes = BZ::Client::Bug->update_see_also( $client, \%params );
+  @changes = BZ::Client::Bug->update_see_also( $client, \%params );
+
+Adds or removes URLs for the I<See Also> field on bugs. These URLs must point to some valid bug in some Bugzilla installation or in Launchpad.
+
+This is marked as B<EXPERIMENTAL> in Bugzilla 4.4
+
+Added in Bugzilla 3.4.
+
+=head3 Parameters
+
+=over 4
+
+=item ids
+
+An array of integers or strings. The IDs or aliases of bugs that you want to modify.
+
+=item add
+
+Array of strings. URLs to Bugzilla bugs. These URLs will be added to the I<See Also> field.
+
+If the URLs don't start with C<http://> or C<https://>, it will be assumed that C<http://> should be added to the beginning of the string.
+
+It is safe to specify URLs that are already in the I<See Also> field on a bug as they will just be silently ignored.
+
+=item remove
+
+An array of strings. These URLs will be removed from the I<See Also> field. You must specify the full URL that you want removed. However, matching is done case-insensitively, so you don't have to specify the URL in exact case, if you don't want to.
+
+If you specify a URL that is not in the I<See Also> field of a particular bug, it will just be silently ignored. Invaild URLs are currently silently ignored, though this may change in some future version of Bugzilla.
+
+=back
+
+NOTE: If you specify the same URL in both I<add> and I<remove>, it will be added. (That is, I<add> overrides I<remove>.)
+
+=head3 Returns
+
+A hash or hashref where the keys are numeric bug ids and the contents are a hash with one key, I<see_also>.
+
+I<see_also> points to a hash, which contains two keys, I<added> and I<removed>.
+
+These are arrays of strings, representing the actual changes that were made to the bug.
+
+Here's a diagram of what the return value looks like for updating bug ids 1 and 2:
+
+    {
+        1 => {
+            see_also => {
+                added   => [(an array of bug URLs)],
+                removed => [(an array of bug URLs)],
+            }
+        },
+        2 => {
+            see_also => {
+                added   => [(an array of bug URLs)],
+                removed => [(an array of bug URLs)],
+            }
+        }
+    }
+
+This return value allows you to tell what this method actually did.
+
+It is in this format to be compatible with the return value of a future L<\update> method.
+
+=head3 Errors
+
+This method can throw all of the errors that L</get> throws, plus:
+
+=over 4
+
+=item 109 - Bug Edit Denied
+
+You did not have the necessary rights to edit the bug.
+
+=item 112 - Invalid Bug URL
+
+One of the URLs you provided did not look like a valid bug URL.
+
+=item 115 - See Also Edit Denied
+
+You did not have the necessary rights to edit the See Also field for this bug.
+
+Before Bugzilla 3.6, error 115 had a generic error code of 32000.
+
+=back
 
 =head2 update_tags
 
-TODO
+  $changes = BZ::Client::Bug->update_tags( $client, \%params );
+  @changes = BZ::Client::Bug->update_tags( $client, \%params );
+
+Adds or removes tags on bugs.
+
+This is marked as B<UNSTABLE> in Bugzilla 4.4
+
+Added in Bugzilla 4.4.
+
+=head3 Parameters
+
+=over 4
+
+=item ids
+
+An array of ints and/or strings--the ids or aliases of bugs that you want to add or remove tags to. All the tags will be added or removed to all these bugs.
+
+=item tags
+
+A hash representing tags to be added and/or removed. The hash has the following fields:
+
+=over 4
+
+=item add
+
+An array of strings representing tag names to be added to the bugs.
+
+It is safe to specify tags that are already associated with the bugs as they will just be silently ignored.
+
+=item remove
+
+An array of strings representing tag names to be removed from the bugs.
+
+It is safe to specify tags that are not associated with any bugs as they will just be silently ignored.
+
+=back
+
+=back
+
+=head3 Returns
+
+A hash or hashref where the keys are numeric bug ids and the contents are a hash with one key, I<tags>.
+
+I<tags> points to a hash, which contains two keys, I<added> and I<removed>.
+
+These are arrays of strings, representing the actual changes that were made to the bug.
+
+Here's a diagram of what the return value looks like for updating bug ids 1 and 2:
+
+    {
+        1 => {
+            tags => {
+                added   => [(an array of tags)],
+                removed => [(an array of tags)],
+            }
+        },
+        2 => {
+            tags => {
+                added   => [(an array of tags)],
+                removed => [(an array of tags)],
+            }
+        }
+    }
+
+This return value allows you to tell what this method actually did.
+
+=head3 Errors
+
+This method can throw all of the errors that L</get> throws.
 
 =head2 new
 
@@ -721,4 +897,4 @@ Gets or sets the summary of this bug.
 
 =head1 SEE ALSO
 
-  L<BZ::Client>, L<BZ::Client::API>, L<https://www.bugzilla.org/docs/4.4/en/html/api/Bugzilla/WebService/Bug.html>
+  L<BZ::Client>, L<BZ::Client::API>, L<Bugzilla API|https://www.bugzilla.org/docs/4.4/en/html/api/Bugzilla/WebService/Bug.html>
