@@ -7,7 +7,7 @@ use warnings 'all';
 
 package BZ::Client;
 
-use BZ::Client::XMLRPC();
+use BZ::Client::XMLRPC;
 use HTTP::Cookies();
 
 sub new {
@@ -131,9 +131,10 @@ sub xmlrpc {
 
 sub login {
     my $self = shift;
-    my $rl = BZ::Client::XMLRPC::boolean->new($self->{'restrictlogin'} ? 1 : 0);
+    my $rl = $self->{'restrictlogin'} ? BZ::Client::XMLRPC::boolean->TRUE
+                                      : BZ::Client::XMLRPC::boolean->FALSE;
     my %params = (
-        'remember'       => BZ::Client::XMLRPC::boolean->new(0), # dropped in 4.4 as cookies no longer used
+        'remember'       => BZ::Client::XMLRPC::boolean->FALSE, # dropped in 4.4 as cookies no longer used
         'restrictlogin'  => $rl, # added in 3.6
         'restrict_login' => $rl, # added in 4.4 for tokens
     );
