@@ -197,13 +197,10 @@ sub _get_response {
     }
 
     my %options = (
-
         headers => {
-            'content-type' => $contentType,
+            'Content-Type' => $contentType,
         },
-
-        contents => $contents,
-
+        content => $contents, # carefull of the s
     );
 
     my $wa = $self->web_agent();
@@ -217,6 +214,7 @@ sub _get_response {
             while (my($header,$value) = each %{$options{headers}} ) {
                 print $fh "$header: $value\n";
             }
+            print $fh 'user-agent: ', $wa->agent(), "\n";
             if ($wa->{cookie_jar}) {
                 print $fh join("\n", $wa->{cookie_jar}->dump_cookies());
             }
@@ -231,7 +229,7 @@ sub _get_response {
     if ($logDir) {
         my $fileName = File::Spec->catfile($logDir, "$$.$logId.response.log");
         if (open(my $fh, '>', $fileName)) {
-            for my $header (%{$res->{headers}}) {
+            for my $header (sort keys %{$res->{headers}}) {
                 my $value = $res->{headers}->{$header};
                 if (ref $value) {
                     print $fh "$header: $_\n" for @$value;
