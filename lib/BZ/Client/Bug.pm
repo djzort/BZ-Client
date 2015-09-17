@@ -38,7 +38,7 @@ sub legal_values {
 }
 
 sub get {
-    my($class, $client, $ids, $params) = @_;
+    my($class, $client, $params) = @_;
     $client->log('debug', 'BZ::Client::Bug::get: Asking');
     $params->{'permissive'} = BZ::Client::XMLRPC::boolean::TRUE()
         if $params->{'permissive'};
