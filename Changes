@@ -4,6 +4,7 @@ Pending
     - Implement the api_key properly
     - Bug.pm: handle alias() better (i.e. properly)
     - Replace use+@ISA with 'use parent'
+    - Bug.pm: added history() and possible_duplicates()
 
 2.0_001 Thursday Sep 17 10:42:00 2015
     - let's make this thing sane....

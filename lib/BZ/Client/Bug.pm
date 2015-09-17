@@ -37,6 +37,10 @@ sub legal_values {
     return wantarray ? @$values : $values
 }
 
+sub attachments;
+
+sub comments;
+
 sub get {
     my($class, $client, $params) = @_;
     $client->log('debug', 'BZ::Client::Bug::get: Asking');
@@ -52,6 +56,34 @@ sub get {
         push(@result, BZ::Client::Bug->new(%$bug));
     }
     $client->log('debug', 'BZ::Client::Bug::get: Got ' . scalar(@result));
+    return wantarray ? @result : \@result
+}
+
+sub history {
+    my($class, $client, $params) = @_;
+    $client->log('debug', 'BZ::Client::Bug::history: Retrieving');
+    my $result = $class->api_call($client, 'Bug.history', $params);
+    my $bugs = $result->{'bugs'};
+    if (!$bugs || 'ARRAY' ne ref($bugs)) {
+        $class->error($client, 'Invalid reply by server, expected array of bug changes.');
+    }
+    $client->log('debug', 'BZ::Client::Bug::history: Got ' . scalar @$bugs);
+    return wantarray ? @$bugs : $bugs
+}
+
+sub possible_duplicates {
+    my($class, $client, $params) = @_;
+    $client->log('debug', 'BZ::Client::Bug::possible_duplicates: Asking');
+    my $result = $class->api_call($client, 'Bug.possible_duplicates', $params);
+    my $bugs = $result->{'bugs'};
+    if (!$bugs  ||  'ARRAY' ne ref($bugs)) {
+        $class->error($client, 'Invalid reply by server, expected array of bugs.');
+    }
+    my @result;
+    for my $bug (@$bugs) {
+        push(@result, BZ::Client::Bug->new(%$bug));
+    }
+    $client->log('debug', 'BZ::Client::Bug::possible_duplicates: Got ' . scalar(@result));
     return wantarray ? @result : \@result
 }
 
@@ -610,9 +642,125 @@ Returns an array or arrayref of bug instance objects with the given ID's.
 
 See L<INSTANCE METHODS> for how to use them.
 
+=head2 history
+
+  $history = BZ::Client::Bug->history( $client, \%params );
+  @history = BZ::Client::Bug->history( $client, \%params );
+
+Gets the history of changes for particular bugs in the database.
+
+Added in Bugzilla 3.4.
+
+=head3 Parameters
+
+=over 4
+
+=item ids
+
+An array of numbers and strings.
+
+If an element in the array is entirely numeric, it represents a bug_id from the Bugzilla database to fetch. If it contains any non-numeric characters, it is considered to be a bug alias instead, and the data bug with that alias will be loaded.
+
+=back
+
+=head3 Returns
+
+An array or arrayref of hashes, containing the following keys:
+
+=over 4
+
+=item id
+
+I<id> (int) The numeric id of the bug
+
+=item alias
+
+I<alias> (array) The alias of this bug. If there is no alias, this will be undef.
+
+=item history
+
+An array of hashes, each hash having the following keys:
+
+=over 4
+
+=item when
+
+I<when> (dateTime) The date the bug activity/change happened.
+
+=item who
+
+I<who> (string) The login name of the user who performed the bug change.
+
+=item changes
+
+An array of hashes which contain all the changes that happened to the bug at this time (as specified by when). Each hash contains the following items:
+
+=over 4
+
+=item  field_name
+
+I<field_name> (string) The name of the bug field that has changed.
+
+=item removed
+
+I<removed> (string) The previous value of the bug field which has been deleted by the change.
+
+=item added
+
+I<added> (string) The new value of the bug field which has been added by the change.
+
+=item attachment_id
+
+I<attachment_id> (int) The id of the attachment that was changed. This only appears if the change was to an attachment, otherwise attachment_id will not be present in this hash.
+
+=back
+
+=back
+
+=back
+
+=head3 Errors
+
+The same as L</get>.
+
 =head2 possible_duplicates
 
-TODO
+  $bugs = BZ::Client::Bug->possible_duplicates( $client, \%params );
+  @bugs = BZ::Client::Bug->possible_duplicates( $client, \%params );
+
+Allows a user to find possible duplicate bugs based on a set of keywords such as a user may use as a bug summary. Optionally the search can be narrowed down to specific products.
+
+Added in Bugzilla 4.0.
+
+=head3 Parameters
+
+=over 4
+
+=item summary
+
+I<summary> (string) A string of keywords defining the type of bug you are trying to report. B<Required>.
+
+=item product
+
+I<product> (array) One or more product names to narrow the duplicate search to. If omitted, all bugs are searched.
+
+=back
+
+=head3 Returns
+
+The same as L</get>.
+
+Note that you will only be returned information about bugs that you can see. Bugs that you can't see will be entirely excluded from the results. So, if you want to see private bugs, you will have to first log in and then call this method.
+
+=head3 Errors
+
+=over 4
+
+=item 50 - Param Required
+
+You must specify a value for I<summary> containing a string of keywords to search for duplicates.
+
+=back
 
 =head1 FUNCTIONS FOR CREATING AND MODIFYING BUGS
 
