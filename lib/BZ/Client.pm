@@ -131,26 +131,29 @@ sub xmlrpc {
 
 sub login {
     my $self = shift;
-    my $rl = $self->{'restrictlogin'} ? BZ::Client::XMLRPC::boolean->TRUE
-                                      : BZ::Client::XMLRPC::boolean->FALSE;
+
+    if ($self->api_key()) {
+        $self->log( 'debug', 'BZ::Client::login, no need for User.login call when using api_key' );
+        return 1
+    }
+
+    my $rl = BZ::Client::XMLRPC::boolean->new($self->{'restrictlogin'} ? 1 : 0);
     my %params = (
         'remember'       => BZ::Client::XMLRPC::boolean->FALSE, # dropped in 4.4 as cookies no longer used
         'restrictlogin'  => $rl, # added in 3.6
         'restrict_login' => $rl, # added in 4.4 for tokens
     );
-    if (my $api_key = $self->api_key()) {
-        $params{api_key} = $api_key;
-        $self->log( 'debug', 'BZ::Client::login, going to log in with api_key' );
-    }
-    else {
-        my $user = $self->user()
-            or $self->error('The Bugzilla servers user name is not set.');
-        my $password = $self->password()
-            or $self->error('The Bugzilla servers password is not set.');
-        $params{login} = $user;
-        $params{password} = $password;
-        $self->log( 'debug', 'BZ::Client::login, going to log in with username and password' );
-    }
+
+    # FIXME username and password can be provided to any function and it will be ok
+    my $user = $self->user()
+        or $self->error('The Bugzilla servers user name is not set.');
+    my $password = $self->password()
+        or $self->error('The Bugzilla servers password is not set.');
+
+    $params{login} = $user;
+    $params{password} = $password;
+    $self->log( 'debug', 'BZ::Client::login, going to log in with username and password' );
+
     my $cookies = HTTP::CookieJar->new();
     my $response = $self->_api_call( 'User.login', \%params, $cookies );
     if ( not defined( $response->{'id'} )
@@ -190,7 +193,10 @@ sub logout {
 
 sub is_logged_in {
     my $self = shift;
-    return ( $self->{'cookies'} or $self->{'token'} ) ? 1 : 0
+    return 1 if $self->{'cookies'};
+    return 1 if $self->{'token'};
+    return 1 if $self->{'api_key'};
+    return
 }
 
 sub api_call {
@@ -216,8 +222,16 @@ sub _api_call {
     if ($cookies) {
         $xmlrpc->web_agent->{cookie_jar} = $cookies;
     }
-    $params->{token} = $self->{'token'}
-        if ($self->{'token'} and not $params->{token});
+
+    $params->{Bugzilla_token} = $self->{'token'}
+        if ($self->{'token'}
+            and not $params->{token}
+            and not $params->{Bugzilla_token});
+
+    $params->{Bugzilla_api_key} = $self->api_key()
+        if ($self->api_key()
+            and not $params->{Bugzilla_token}
+            and not $params->{Bugzilla_api_key});
 
     my $response =
       $xmlrpc->request( 'methodName' => $methodName, params => [$params] );
