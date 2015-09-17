@@ -1,5 +1,8 @@
 Revision history for Perl extension BZ::Client.
 
+Pending
+    - Implement the api_key properly
+
 2.0_001 Thursday Sep 17 10:42:00 2015
     - let's make this thing sane....
     - lots and lots of pod improvements
