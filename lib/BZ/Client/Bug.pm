@@ -147,6 +147,19 @@ sub alias {
         # silently ignore anything else
     }
     else {
+
+        return '' unless defined $self->{'alias'};
+
+        # long form so its clear what is going on.
+        if (ref $self->{'alias'}) {
+            if (ref $self->{'alias'} eq 'ARRAY'
+                and @{$self->{'alias'}}) {
+                return $self->{'alias'}->[0];
+            }
+            return ''
+        }
+
+        # fall back
         return $self->{'alias'}
     }
 }
