@@ -11,7 +11,7 @@ use BZ::Client::API;
 
 our @ISA = qw(BZ::Client::API);
 
-# See https://www.bugzilla.org/docs/4.4/en/html/api/Bugzilla/WebService/User.html
+# See https://www.bugzilla.org/docs/tip/en/html/api/Bugzilla/WebService/User.html
 
 sub offer_account_by_email {
     my($class, $client, $params) = @_;
@@ -471,5 +471,5 @@ Logged-in users are not authorized to edit other users.
 
 =head1 SEE ALSO
 
-  L<BZ::Client>, L<BZ::Client::API>, L<Bugzilla API|https://www.bugzilla.org/docs/4.4/en/html/api/Bugzilla/WebService/User.html>
+  L<BZ::Client>, L<BZ::Client::API>, L<Bugzilla API|https://www.bugzilla.org/docs/tip/en/html/api/Bugzilla/WebService/User.html>
 

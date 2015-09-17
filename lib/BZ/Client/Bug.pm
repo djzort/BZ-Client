@@ -11,7 +11,7 @@ use BZ::Client::API;
 
 our @ISA = qw(BZ::Client::API);
 
-# See https://www.bugzilla.org/docs/4.4/en/html/api/Bugzilla/WebService/Bug.html
+# See https://www.bugzilla.org/docs/tip/en/html/api/Bugzilla/WebService/Bug.html
 # These are in order as per the above
 
 sub fields {
@@ -897,4 +897,4 @@ Gets or sets the summary of this bug.
 
 =head1 SEE ALSO
 
-  L<BZ::Client>, L<BZ::Client::API>, L<Bugzilla API|https://www.bugzilla.org/docs/4.4/en/html/api/Bugzilla/WebService/Bug.html>
+  L<BZ::Client>, L<BZ::Client::API>, L<Bugzilla API|https://www.bugzilla.org/docs/tip/en/html/api/Bugzilla/WebService/Bug.html>

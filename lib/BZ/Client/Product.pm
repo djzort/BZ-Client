@@ -11,7 +11,7 @@ use BZ::Client::API;
 
 our @ISA = qw(BZ::Client::API);
 
-# See https://www.bugzilla.org/docs/4.4/en/html/api/Bugzilla/WebService/Product.html
+# See https://www.bugzilla.org/docs/tip/en/html/api/Bugzilla/WebService/Product.html
 
 sub get_selectable_products {
     my($class, $client) = @_;
@@ -191,5 +191,5 @@ Gets or sets the products description.
 
 =head1 SEE ALSO
 
-  L<BZ::Client>, L<BZ::Client::API>, L<Bugzilla API|https://www.bugzilla.org/docs/4.4/en/html/api/Bugzilla/WebService/Product.html>
+  L<BZ::Client>, L<BZ::Client::API>, L<Bugzilla API|https://www.bugzilla.org/docs/tip/en/html/api/Bugzilla/WebService/Product.html>
 
