@@ -294,8 +294,24 @@ The Bugzilla servers URL, for example C<https://bugzilla.mozilla.org/>.
 
 API keys were introduced in 5.0.
 
-You can set up an API key by using the 'API Key' tab in the Preferences
-pages in your Bugzilla install.
+An API Key can be obtained in the web interface of your Bugzilla server,
+with the following steps:
+
+=over 4
+
+=item Click 'Preferences' link
+
+=item Click 'API Keys' tab
+
+=item Click the checkbox next to 'Generate a new API key...'
+
+=item If you like, add some description in the textbox
+
+=item Click the 'Submit Changes' button
+
+=item Key appears in the table under the 'Existing API keys' subheading
+
+=back
 
 =item user
 
