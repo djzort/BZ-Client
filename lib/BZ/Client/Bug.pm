@@ -137,7 +137,14 @@ sub id {
 sub alias {
     my $self = shift;
     if (@_) {
-        $self->{'alias'} = shift;
+        my $alias = shift;
+        if (ref $alias eq 'ARRAY' && @$a) {
+            $self->{'alias'} = $alias->[0];
+        }
+        if (not ref $alias) {
+            $self->{'alias'} = $alias;
+        }
+        # silently ignore anything else
     }
     else {
         return $self->{'alias'}
