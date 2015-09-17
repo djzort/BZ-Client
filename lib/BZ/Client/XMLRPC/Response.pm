@@ -7,10 +7,9 @@ use warnings 'all';
 
 package BZ::Client::XMLRPC::Response;
 
-use BZ::Client::XMLRPC::Handler;
+use parent qw( BZ::Client::XMLRPC::Handler );
 use BZ::Client::XMLRPC::Value;
-
-our @ISA = qw(BZ::Client::XMLRPC::Handler);
+use BZ::Client::Exception;
 
 sub start {
     my($self,$name) = @_;
@@ -43,7 +42,6 @@ sub start {
                 }
                 my $faultCode = $result->{'faultCode'};
                 my $faultString = $result->{'faultString'};
-                require BZ::Client::Exception;
                 $self->{'exception'} = BZ::Client::Exception->new('message' => $faultString,
                                                                   'xmlrpc_code' => $faultCode);
             });

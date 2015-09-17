@@ -7,9 +7,7 @@ use warnings 'all';
 
 package BZ::Client::Bug;
 
-use BZ::Client::API;
-
-our @ISA = qw(BZ::Client::API);
+use parent qw( BZ::Client::API );
 
 # See https://www.bugzilla.org/docs/tip/en/html/api/Bugzilla/WebService/Bug.html
 # These are in order as per the above

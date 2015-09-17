@@ -7,9 +7,7 @@ use warnings 'all';
 
 package BZ::Client::Bugzilla;
 
-use BZ::Client::API;
-
-our @ISA = qw(BZ::Client::API);
+use parent qw( BZ::Client::API );
 
 sub extensions {
     my($class, $client) = @_;

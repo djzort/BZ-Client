@@ -7,9 +7,7 @@ use warnings 'all';
 
 package BZ::Client::XMLRPC::Array;
 
-use BZ::Client::XMLRPC::Handler;
-
-our @ISA = qw(BZ::Client::XMLRPC::Handler);
+use parent qw(BZ::Client::XMLRPC::Handler);
 
 sub init {
     my($self,$parser) = @_;

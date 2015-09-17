@@ -8,6 +8,7 @@ use warnings 'all';
 package BZ::Client::XMLRPC::Parser;
 
 use BZ::Client::XMLRPC::Response;
+use BZ::Client::Exception;
 use XML::Parser ();
 
 sub new {
@@ -76,7 +77,6 @@ sub remove {
 
 sub error {
     my($self, $message) = @_;
-    require BZ::Client::Exception;
     BZ::Client::Exception->throw('message' => $message)
 }
 
