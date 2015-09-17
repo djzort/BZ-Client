@@ -8,6 +8,7 @@ use warnings 'all';
 package BZ::Client;
 
 use BZ::Client::XMLRPC;
+use BZ::Client::Exception;
 use HTTP::CookieJar;
 
 sub new {
@@ -71,7 +72,6 @@ sub autologin {
 
 sub error {
     my ( $self, $message, $http_code, $xmlrpc_code ) = @_;
-    require BZ::Client::Exception;
     BZ::Client::Exception->throw(
         message     => $message,
         http_code   => $http_code,
@@ -243,6 +243,16 @@ __END__
 =pod
 
 =encoding utf8
+
+=head1 WARNING
+
+USE THIS 2.0 DEVELOPMENT VERSION AT YOUR OWN RISK!
+
+(Which is actually, a clausing in the open source license this software is provided under)
+
+THE API IS CHANGING, STUFF IS BREAKING, YMMV!
+
+USE THE 1.x SERIES UNLESS YOU PREFER DEBUGGING TO GETTING THINGS DONE.
 
 =head1 SYNOPSIS
 

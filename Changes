@@ -1,6 +1,17 @@
 Revision history for Perl extension BZ::Client.
 
-2.0 let's make this thing sane....
+2.0_001 Thursday Sep 17 10:42:00 2015
+    - let's make this thing sane....
+    - lots and lots of pod improvements
+    - wantarray sensitivity all around the place
+    - Bug.pm: add fields() function
+    - XMLRPC.pm: dispatch table used rather than by if/elsif/else
+    - XMLRPC.pm: replace 'use constants' and make singleton-ish
+    - XMLRPC.pm: 'use' rather than 'require'
+    - XMLRPC.pm: use HTTP::Tiny instead of LWP
+    - Client.pm: use HTTP::CookieJar instead of HTTP::Cookies
+    - Client.pm: make logout() work better
+    - Bug.pm: add update_see_also() and update_tags() functions
 
 1.072 Wednesday Sep 09 23:44:00 2015
     - Add Users.pm
