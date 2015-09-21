@@ -455,6 +455,12 @@ The current password is correct, but the user is asked to change his password.
 
 A login or password parameter was not provided.
 
+=head1 TESTING
+
+Bugzilla maintains demos of all supported versions and trunk at L<https://landfill.bugzilla.org>
+
+You might consider using that for testing against live versions>
+
 =head1 SEE ALSO
 
 L<BZ::Client::Exception>
