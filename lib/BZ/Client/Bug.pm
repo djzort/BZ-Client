@@ -12,6 +12,8 @@ use parent qw( BZ::Client::API );
 # See https://www.bugzilla.org/docs/tip/en/html/api/Bugzilla/WebService/Bug.html
 # These are in order as per the above
 
+## functions
+
 sub fields {
     my($class, $client, $params) = @_;
     $client->log('debug', 'BZ::Client::Bug::fields: Retrieving');
@@ -26,7 +28,7 @@ sub fields {
 
 sub legal_values {
     my($class, $client, $field) = @_;
-    $client->log('debug', "BZ::Client::Bug::legal_values: Asking for $field");
+    $client->log('debug', __PACKAGE__ . "::legal_values: Asking for $field");
     my $params = { 'field' => $field };
     my $result = $class->api_call($client, 'Bug.legal_values', $params);
     my $values = $result->{'values'};
@@ -36,10 +38,6 @@ sub legal_values {
     $client->log('debug', 'BZ::Client::Bug::legal_values: Got ' . join(',', @$values));
     return wantarray ? @$values : $values
 }
-
-sub attachments;
-
-sub comments;
 
 sub get {
     my($class, $client, $params) = @_;
@@ -73,7 +71,7 @@ sub history {
 
 sub possible_duplicates {
     my($class, $client, $params) = @_;
-    $client->log('debug', 'BZ::Client::Bug::possible_duplicates: Asking');
+    $client->log('debug', __PACKAGE__ . '::possible_duplicates: Asking');
     my $result = $class->api_call($client, 'Bug.possible_duplicates', $params);
     my $bugs = $result->{'bugs'};
     if (!$bugs  ||  'ARRAY' ne ref($bugs)) {
@@ -83,13 +81,13 @@ sub possible_duplicates {
     for my $bug (@$bugs) {
         push(@result, BZ::Client::Bug->new(%$bug));
     }
-    $client->log('debug', 'BZ::Client::Bug::possible_duplicates: Got ' . scalar(@result));
+    $client->log('debug', __PACKAGE__ . '::possible_duplicates: Got ' . scalar(@result));
     return wantarray ? @result : \@result
 }
 
 sub search {
     my($class, $client, $params) = @_;
-    $client->log('debug', 'BZ::Client::Bug::search: Searching');
+    $client->log('debug', __PACKAGE__ . '::search: Searching');
     my $result = $class->api_call($client, 'Bug.search', $params);
     my $bugs = $result->{'bugs'};
     if (!$bugs || 'ARRAY' ne ref($bugs)) {
@@ -99,13 +97,13 @@ sub search {
     for my $bug (@$bugs) {
         push(@result, BZ::Client::Bug->new(%$bug));
     }
-    $client->log('debug', 'BZ::Client::Bug::search: Found ' . join(',',@result));
+    $client->log('debug', __PACKAGE__ . '::search: Found ' . join(',',@result));
     return wantarray ? @result : \@result
 }
 
 sub create {
     my($class, $client, $params) = @_;
-    $client->log('debug', 'BZ::Client::Bug::create: Creating');
+    $client->log('debug', __PACKAGE__ . '::create: Creating');
     my $result = $class->api_call($client, 'Bug.create', $params);
     my $id = $result->{'id'};
     if (!$id) {
@@ -116,7 +114,7 @@ sub create {
 
 sub update {
     my($class, $client, $params) = @_;
-    $client->log('debug', 'BZ::Client::Bug::update: Updating');
+    $client->log('debug', __PACKAGE__ . '::update: Updating');
     my $result = $class->api_call($client, 'Bug.update', $params);
     my $bugs = $result->{'bugs'};
     if (!$bugs || 'ARRAY' ne ref($bugs)) {
@@ -127,7 +125,7 @@ sub update {
 
 sub update_see_also {
     my($class, $client, $params) = @_;
-    $client->log('debug', 'BZ::Client::Bug::update_see_also: Updating See-Also');
+    $client->log('debug', __PACKAGE__ . '::update_see_also: Updating See-Also');
     my $result = $class->api_call($client, 'Bug.update_see_also', $params);
     my $changes = $result->{'changes'};
     if (!$changes || 'HASH' ne ref($changes)) {
@@ -138,7 +136,7 @@ sub update_see_also {
 
 sub update_tags {
     my($class, $client, $params) = @_;
-    $client->log('debug', 'BZ::Client::Bug::update_tags: Updating Tags');
+    $client->log('debug', __PACKAGE__ . '::update_tags: Updating Tags');
     my $result = $class->api_call($client, 'Bug.update_tags', $params);
     my $changes = $result->{'changes'};
     if (!$changes || 'HASH' ne ref($changes)) {
@@ -147,12 +145,7 @@ sub update_tags {
     return wantarray ? %$changes : $changes
 }
 
-sub new {
-    my $class = shift;
-    my $self = { @_ };
-    bless($self, ref($class) || $class);
-    return $self
-}
+## methods
 
 sub id {
     my $self = shift;
@@ -697,7 +690,7 @@ An array of hashes which contain all the changes that happened to the bug at thi
 
 =over 4
 
-=item  field_name
+=item field_name
 
 I<field_name> (string) The name of the bug field that has changed.
 

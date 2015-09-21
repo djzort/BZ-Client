@@ -11,27 +11,29 @@ use parent qw( BZ::Client::API );
 
 # See https://www.bugzilla.org/docs/tip/en/html/api/Bugzilla/WebService/Product.html
 
+## functions
+
 sub get_selectable_products {
     my($class, $client) = @_;
-    $client->log('debug', 'BZ::Client::Product::get_selectable_products: Asking');
+    $client->log('debug', __PACKAGE__ . '::get_selectable_products: Asking');
     my $result = $class->get_list('Product.get_selectable_products', $client);
-    $client->log('debug', 'BZ::Client::Product::get_selectable_products: Got ' . @$result);
+    $client->log('debug', __PACKAGE__ . '::get_selectable_products: Got ' . @$result);
     return $result
 }
 
 sub get_enterable_products {
     my($class, $client) = @_;
-    $client->log('debug', 'BZ::Client::Product::get_enterable_products: Asking');
+    $client->log('debug', __PACKAGE__ . '::get_enterable_products: Asking');
     my $result = $class->get_list('Product.get_enterable_products', $client);
-    $client->log('debug', 'BZ::Client::Product::get_enterable_products: Got ' . @$result);
+    $client->log('debug', __PACKAGE__ . '::get_enterable_products: Got ' . @$result);
     return $result
 }
 
 sub get_accessible_products {
     my($class, $client) = @_;
-    $client->log('debug', 'BZ::Client::Product::get_accessible_products: Asking');
-    my $result = $class->get_list("Product.get_accessible_products", $client);
-    $client->log('debug', 'BZ::Client::Product::get_accessible_products: Got ' . @$result);
+    $client->log('debug', __PACKAGE__ . '::get_accessible_products: Asking');
+    my $result = $class->get_list('Product.get_accessible_products', $client);
+    $client->log('debug', __PACKAGE__ . '::get_accessible_products: Got ' . @$result);
     return $result
 }
 
@@ -62,12 +64,7 @@ sub get {
     return \@result
 }
 
-sub new {
-    my $class = shift;
-    my $self = { @_ };
-    bless($self, ref($class) || $class);
-    return $self
-}
+## methods
 
 sub id {
     my $self = shift;

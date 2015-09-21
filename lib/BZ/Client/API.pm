@@ -17,6 +17,13 @@ sub error {
     return $client->error($message, $http_code, $xmlrpc_code)
 }
 
+sub new {
+    my $class = shift;
+    my $self = { @_ };
+    bless($self, ref($class) || $class);
+    return $self
+}
+
 1;
 
 __END__

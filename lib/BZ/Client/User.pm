@@ -11,18 +11,20 @@ use parent qw( BZ::Client::API );
 
 # See https://www.bugzilla.org/docs/tip/en/html/api/Bugzilla/WebService/User.html
 
+## functions
+
 sub offer_account_by_email {
     my($class, $client, $params) = @_;
     unless (ref $params) {
         $params = { email => $params }
     }
-    $client->log('debug', 'BZ::Client::User::offer_account_by_email: Inviting');
+    $client->log('debug', __PACKAGE__ . '::offer_account_by_email: Inviting');
     return $class->api_call($client, 'User.offer_account_by_email', $params);
 }
 
 sub get {
     my($class, $client, $params) = @_;
-    $client->log('debug', 'BZ::Client::User::get: Asking for (TODO)');
+    $client->log('debug', __PACKAGE__ . '::get: Asking for (TODO)');
     if ($params->{'include_disabled'}) {
         $params->{'include_disabled'} = BZ::Client::XMLRPC::boolean::TRUE()
     }
@@ -38,20 +40,15 @@ sub get {
     for my $user (@$users) {
         push(@result, BZ::Client::User->new(%$user));
     }
-    $client->log('debug', 'BZ::Client::User::get: Got ' . scalar(@result));
+    $client->log('debug', __PACKAGE__ . '::get: Got ' . scalar(@result));
     return wantarray ? @result : \@result
 }
 
-sub new {
-    my $class = shift;
-    my $self = { @_ };
-    bless($self, ref($class) || $class);
-    return $self
-}
+## methods
 
 sub create {
     my($class, $client, $params) = @_;
-    $client->log('debug', 'BZ::Client::User::create: Creating');
+    $client->log('debug', __PACKAGE__ . '::create: Creating');
     my $result = $class->api_call($client, 'User.create', $params);
     my $id = $result->{'id'};
     if (!$id) {
@@ -62,7 +59,7 @@ sub create {
 
 sub update {
     my($class, $client, $params) = @_;
-    $client->log('debug', 'BZ::Client::User::update: Updating for: TODO');
+    $client->log('debug', __PACKAGE__ . '::update: Updating for: TODO');
     if (defined $params->{'email_enabled'}) {
         if ($params->{'email_enabled'}) {
             $params->{'email_enabled'} = BZ::Client::XMLRPC::boolean::TRUE()
@@ -80,7 +77,7 @@ sub update {
     for my $user (@$users) {
         push(@result, BZ::Client::User->new(%$user));
     }
-    $client->log('debug', 'BZ::Client::User::update: Got ' . scalar(@result));
+    $client->log('debug', __PACKAGE__ . '::update: Got ' . scalar(@result));
     return wantarray ? @result : \@result
 }
 

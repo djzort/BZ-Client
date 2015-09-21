@@ -9,6 +9,8 @@ package BZ::Client::Bugzilla;
 
 use parent qw( BZ::Client::API );
 
+## functions
+
 sub extensions {
     my($class, $client) = @_;
     return $class->api_call($client, 'Bugzilla.extensions');
@@ -16,25 +18,25 @@ sub extensions {
 
 sub time {
     my($class, $client) = @_;
-    $client->log('debug', 'BZ::Client::Bugzilla::time: Asking');
+    $client->log('debug', __PACKAGE__ . '::time: Asking');
     my $time = $class->api_call($client, 'Bugzilla.time');
-    $client->log('debug', 'BZ::Client::Bugzilla::time: Got $time');
+    $client->log('debug', __PACKAGE__ . '::time: Got $time');
     return $time
 }
 
 sub timezone {
     my($class, $client) = @_;
-    $client->log('debug', 'BZ::Client::Bugzilla::timezone: Asking');
+    $client->log('debug', __PACKAGE__ . '::timezone: Asking');
     my $timezone = $class->api_call($client, 'Bugzilla.timezone');
-    $client->log('debug', 'BZ::Client::Bugzilla::time: Got $timezone');
+    $client->log('debug', __PACKAGE__ . '::time: Got $timezone');
     return $timezone
 }
 
 sub version {
     my($class, $client) = @_;
-    $client->log('debug', 'BZ::Client::Bugzilla::version: Asking');
+    $client->log('debug', __PACKAGE__ . '::version: Asking');
     my $version = $class->api_call($client, 'Bugzilla.version');
-    $client->log('debug', 'BZ::Client::Bugzilla::time: Got $version');
+    $client->log('debug', __PACKAGE__ . '::time: Got $version');
     return $version
 }
 
