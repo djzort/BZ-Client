@@ -38,7 +38,7 @@ sub get {
     }
     my @result;
     for my $user (@$users) {
-        push(@result, BZ::Client::User->new(%$user));
+        push(@result, __PACKAGE__->new(%$user));
     }
     $client->log('debug', __PACKAGE__ . '::get: Got ' . scalar(@result));
     return wantarray ? @result : \@result
@@ -75,7 +75,7 @@ sub update {
     }
     my @result;
     for my $user (@$users) {
-        push(@result, BZ::Client::User->new(%$user));
+        push(@result, __PACKAGE__->new(%$user));
     }
     $client->log('debug', __PACKAGE__ . '::update: Got ' . scalar(@result));
     return wantarray ? @result : \@result

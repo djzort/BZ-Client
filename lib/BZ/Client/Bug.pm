@@ -79,7 +79,7 @@ sub possible_duplicates {
     }
     my @result;
     for my $bug (@$bugs) {
-        push(@result, BZ::Client::Bug->new(%$bug));
+        push(@result, __PACKAGE__->new(%$bug));
     }
     $client->log('debug', __PACKAGE__ . '::possible_duplicates: Got ' . scalar(@result));
     return wantarray ? @result : \@result
@@ -95,7 +95,7 @@ sub search {
     }
     my @result;
     for my $bug (@$bugs) {
-        push(@result, BZ::Client::Bug->new(%$bug));
+        push(@result, __PACKAGE__->new(%$bug));
     }
     $client->log('debug', __PACKAGE__ . '::search: Found ' . join(',',@result));
     return wantarray ? @result : \@result
