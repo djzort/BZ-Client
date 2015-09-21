@@ -1,10 +1,14 @@
 Revision history for Perl extension BZ::Client.
 
-Pending
+2.0_3 Tuesday Sep 22 09:47:00 2015
     - Implement the api_key properly
     - Bug.pm: handle alias() better (i.e. properly)
     - Replace use+@ISA with 'use parent'
     - Bug.pm: added history() and possible_duplicates()
+    - Initial commit of Bugs/Attachment.pm
+    - Initial commit of Bugs/Comment.pm
+    - API.pm: move new() in here to be reused
+    - Use __PACKAGE__ all around the place
 
 2.0_001 Thursday Sep 17 10:42:00 2015
     - let's make this thing sane....
