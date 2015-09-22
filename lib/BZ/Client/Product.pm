@@ -153,7 +153,7 @@ mentioned in the list @ids.
 
 =head2 new
 
-  my $product = BZ::Client->Product->new( id           => $id,
+  my $product = BZ::Client::Product->new( id           => $id,
                                           name         => $name,
                                           description  => $description );
 
