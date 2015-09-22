@@ -71,12 +71,15 @@ sub bug_id {
 sub comment {
     my $self = shift;
     if (@_) {
-        $self->{'comment'} = shift;
+        $self->{'text'} = shift;
+        delete $self->{'comment'};
     }
     else {
-        return $self->{'comment'}
+        return $self->{'text'} || $self->{'comment'}
     }
 }
+
+sub text { goto &comment }
 
 sub is_private {
     my $self = shift;
@@ -165,7 +168,7 @@ I<comment_ids> (array) - An array of integer comment_ids. These comments will be
 
 =item new_since
 
-I<new_since> - (dateTime) If specified, the method will only return comments newer than this time. This only affects comments returned from the I<ids> argument. You will always be returned all comments you request in the I<comment_ids> argument, even if they are older than this date.
+I<new_since> (dateTime) - If specified, the method will only return comments newer than this time. This only affects comments returned from the I<ids> argument. You will always be returned all comments you request in the I<comment_ids> argument, even if they are older than this date.
 
 =back
 
