@@ -47,13 +47,24 @@ sub get {
 
 sub add {
     my($class, $client, $params) = @_;
-    $client->log('debug', 'BZ::Client::Bug::add: Creating');
-    my $result = $class->api_call($client, 'Bug.add_attachment', $params);
+    $client->log('debug', __PACKAGE__ . '::add: Adding');
+    my $result = $class->api_call($client, 'Bug.add_comment', $params);
     my $id = $result->{'id'};
     if (!$id) {
         $class->error($client, 'Invalid reply by server, expected comment ID.');
     }
     return $id
+}
+
+sub render {
+    my($class, $client, $params) = @_;
+    $client->log('debug', __PACKAGE__ . '::render: Rendering Comment');
+    my $result = $class->api_call($client, 'Bug.render_comment', $params);
+    my $html = $result->{'html'};
+    if (!$html) {
+        $class->error($client, 'Invalid reply by server, expected HTML.');
+    }
+    return $html
 }
 
 ## rw methods
@@ -291,6 +302,36 @@ You tried to add a comment longer than the maximum allowed length (65,535 charac
 =back
 
 Before Bugzilla 3.6, error 54 and error 114 had a generic error code of 32000.
+
+=head2 render
+
+Returns the HTML rendering of the provided comment text.
+
+Note: this all takes place on your Bugzilla server.
+
+Added in Bugzilla 5.0.
+
+=head3 Parameters
+
+=over 4
+
+=item text
+
+I<text> (string) Required - Text comment text to render
+
+=item id
+
+I<id> The ID of the bug to render the comment against.
+
+=back
+
+=head3 Returns
+
+The HTML rendering
+
+=head3 Errors
+
+As per "get"
 
 =head2 new
 
