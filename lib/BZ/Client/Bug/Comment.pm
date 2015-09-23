@@ -140,7 +140,7 @@ __END__
 
 =head1 SYNOPSIS
 
-This class provides methods for accessing and managing products in Bugzilla. Instances
+This class provides methods for accessing and managing comments in Bugzilla. Instances
 of this class are returned by L<BZ::Client::Bug::Comment::get>.
 
   my $client = BZ::Client->new( url       => $url,
@@ -203,7 +203,7 @@ Each individual comment requested in comment_ids is returned here, in a hash whe
 
 A "comment" as described above is an object instance of this package.
 
-=head2 Errors
+=head3 Errors
 
 =over 4
 
@@ -249,7 +249,7 @@ An instance of this package or a hash containing:
 
 =item id
 
-id (int or string) Required - The id or alias of the bug to append a comment to.
+I<id> (int or string) Required - The id or alias of the bug to append a comment to.
 
 =item comment
 
@@ -307,6 +307,8 @@ Before Bugzilla 3.6, error 54 and error 114 had a generic error code of 32000.
 
 Returns the HTML rendering of the provided comment text.
 
+Actual Bugzilla API method is "render_comment".
+
 Note: this all takes place on your Bugzilla server.
 
 Added in Bugzilla 5.0.
@@ -331,7 +333,23 @@ The HTML rendering
 
 =head3 Errors
 
-As per "get"
+=over 4
+
+=item 100 - Invalid Bug Alias
+
+If you specified an alias and there is no bug with that alias.
+
+=item 101 - Invalid Bug ID
+
+The bug_id you specified doesn't exist in the database.
+
+=item 102 - Access Denied
+
+You do not have access to the I<bug_id> you specified.
+
+=back
+
+=cut
 
 =head2 new
 
