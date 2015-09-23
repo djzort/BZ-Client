@@ -185,7 +185,7 @@ I<new_since> (dateTime) - If specified, the method will only return comments new
 
 =head3 Returns
 
-Two items are returned:
+A hash containing two items is returned:
 
 =over 4
 
