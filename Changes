@@ -1,5 +1,9 @@
 Revision history for Perl extension BZ::Client.
 
+2.0_4 Thursday Sep 24 01:35:00 2015
+    - Attachment.pm: update() method and pod
+    - Comment.pm: lots of pod and render() function
+
 2.0_3 Tuesday Sep 22 09:47:00 2015
     - Implement the api_key properly
     - Bug.pm: handle alias() better (i.e. properly)
