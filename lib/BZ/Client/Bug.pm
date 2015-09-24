@@ -335,6 +335,85 @@ This class provides methods for accessing and managing bugs in Bugzilla.
 
   my $bugs = BZ::Client::Bug->get( $client, $ids );
 
+=head1 COMMON PARAMETERS
+
+Many Webservice methods take similar arguments. Instead of re-writing the documentation for each method, we document the parameters here, once, and then refer back to this documentation from the individual methods where these parameters are used.
+
+=head2 Limiting What Fields Are Returned
+
+Many methods return an array of structs with various fields in the structs.
+(For example, L<get> in L<BZ::Client::Bug> returns a list of bugs that have fields like
+L<id>, L<summary>, L<creation_time>, etc.)
+
+These parameters allow you to limit what fields are present in the structs, to possibly improve performance or save some bandwidth.
+
+=head3 include_fields
+
+I<include_fields> (array) - An array of strings, representing the (case-sensitive) names of fields in the return value. Only the fields specified in this hash will be returned, the rest will not be included.
+
+If you specify an empty array, then this function will return empty hashes.
+
+Invalid field names are ignored.
+
+Example:
+
+ BZ::Client::User->get( $client,
+    { ids => [1], include_fields => ['id', 'name'] })
+
+would return something like:
+
+ [{ id => 1, name => 'user@domain.com' }]
+
+=head3 exclude_fields
+
+I<exclude_fields> (array) - An array of strings, representing the (case-sensitive) names of fields in the return value. The fields specified will not be included in the returned hashes.
+
+If you specify all the fields, then this function will return empty hashes.
+
+Some RPC calls support specifying sub fields. If an RPC call states that it support sub field restrictions, you can restrict what information is returned within the first field. For example, if you call Product.get with an include_fields of components.name, then only the component name would be returned (and nothing else). You can include the main field, and exclude a sub field.
+
+Invalid field names are ignored.
+
+Specifying fields here overrides L<include_fields>, so if you specify a field in both, it will be excluded, not included.
+
+Example:
+
+ BZ::Client::User->get( $client,
+    { ids => [1], exclude_fields => ['name'] })
+
+would return something like:
+
+ [{ id => 1, real_name => 'John Smith' }]
+
+=head3 shortcuts
+
+There are several shortcut identifiers to ask for only certain groups of fields to be returned or excluded.
+
+=over 4
+
+=item _all
+
+All possible fields are returned if _all is specified in include_fields.
+
+=item _default
+
+These fields are returned if include_fields is empty or _default is specified. All fields described in the documentation are returned by default unless specified otherwise.
+
+=item _extra
+
+These fields are not returned by default and need to be manually specified in include_fields either by field name, or using _extra.
+
+=item _custom
+
+Only custom fields are returned if _custom is specified in include_fields. This is normally specific to bug objects and not relevant for other returned objects.
+
+=back
+
+Example:
+
+ BZ::Client::User->get( $client,
+    { ids => [1], include_fields => ['_all'] })
+
 =head1 UTILITY FUNCTIONS
 
 This section lists the utility functions provided by this module.

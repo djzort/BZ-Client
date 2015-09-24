@@ -33,7 +33,7 @@ sub get {
     }
     my $result = $class->api_call($client, 'User.get', $params);
     my $users = $result->{'users'};
-    if (!$users  ||  'ARRAY' ne ref($users)) {
+    if (!$users || 'ARRAY' ne ref($users)) {
         $class->error($client, 'Invalid reply by server, expected array of users.');
     }
     my @result;
