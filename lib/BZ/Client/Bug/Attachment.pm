@@ -606,6 +606,8 @@ Here is an example of what a return value might look like:
 
 =head3 Errors
 
+=over 4
+
 =item 100 - Invalid Bug Alias
 
 If you specified an alias and there is no bug with that alias.
