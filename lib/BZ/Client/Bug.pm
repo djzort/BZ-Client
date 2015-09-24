@@ -16,13 +16,13 @@ use parent qw( BZ::Client::API );
 
 sub fields {
     my($class, $client, $params) = @_;
-    $client->log('debug', 'BZ::Client::Bug::fields: Retrieving');
+    $client->log('debug', __PACKAGE__ . '::fields: Retrieving');
     my $result = $class->api_call($client, 'Bug.fields', $params);
     my $fields = $result->{'fields'};
     if (!$fields || 'ARRAY' ne ref($fields)) {
         $class->error($client, 'Invalid reply by server, expected array of fields.');
     }
-    $client->log('debug', 'BZ::Client::Bug::fields: Got ' . scalar @$fields);
+    $client->log('debug', __PACKAGE__ . '::fields: Got ' . scalar @$fields);
     return wantarray ? @$fields : $fields
 }
 
@@ -35,13 +35,13 @@ sub legal_values {
     if (!$values || 'ARRAY' ne ref($values)) {
         $class->error($client, 'Invalid reply by server, expected array of values.');
     }
-    $client->log('debug', 'BZ::Client::Bug::legal_values: Got ' . join(',', @$values));
+    $client->log('debug', __PACKAGE__ . '::legal_values: Got ' . join(',', @$values));
     return wantarray ? @$values : $values
 }
 
 sub get {
     my($class, $client, $params) = @_;
-    $client->log('debug', 'BZ::Client::Bug::get: Asking');
+    $client->log('debug', __PACKAGE__ . '::get: Asking');
     $params->{'permissive'} = BZ::Client::XMLRPC::boolean::TRUE()
         if $params->{'permissive'};
     my $result = $class->api_call($client, 'Bug.get', $params);
@@ -53,19 +53,19 @@ sub get {
     for my $bug (@$bugs) {
         push(@result, BZ::Client::Bug->new(%$bug));
     }
-    $client->log('debug', 'BZ::Client::Bug::get: Got ' . scalar(@result));
+    $client->log('debug', __PACKAGE__ . '::get: Got ' . scalar(@result));
     return wantarray ? @result : \@result
 }
 
 sub history {
     my($class, $client, $params) = @_;
-    $client->log('debug', 'BZ::Client::Bug::history: Retrieving');
+    $client->log('debug', __PACKAGE__ . '::history: Retrieving');
     my $result = $class->api_call($client, 'Bug.history', $params);
     my $bugs = $result->{'bugs'};
     if (!$bugs || 'ARRAY' ne ref($bugs)) {
         $class->error($client, 'Invalid reply by server, expected array of bug changes.');
     }
-    $client->log('debug', 'BZ::Client::Bug::history: Got ' . scalar @$bugs);
+    $client->log('debug', __PACKAGE__ . '::history: Got ' . scalar @$bugs);
     return wantarray ? @$bugs : $bugs
 }
 
@@ -109,6 +109,7 @@ sub create {
     if (!$id) {
         $class->error($client, 'Invalid reply by server, expected bug ID.');
     }
+    $client->log('debug', __PACKAGE__ . "::create: Made $id");
     return $id
 }
 
@@ -120,6 +121,7 @@ sub update {
     if (!$bugs || 'ARRAY' ne ref($bugs)) {
         $class->error($client, 'Invalid reply by server, expected array of bug details.');
     }
+    $client->log('debug', __PACKAGE__ . '::update: Updated stuff');
     return wantarray ? @$bugs : $bugs
 }
 
@@ -131,6 +133,7 @@ sub update_see_also {
     if (!$changes || 'HASH' ne ref($changes)) {
         $class->error($client, 'Invalid reply by server, expected hash of changed bug details.');
     }
+    $client->log('debug', __PACKAGE__ . '::update_see_also: Updated stuff');
     return wantarray ? %$changes : $changes
 }
 
@@ -142,6 +145,7 @@ sub update_tags {
     if (!$changes || 'HASH' ne ref($changes)) {
         $class->error($client, 'Invalid reply by server, expected hash of changed bug details.');
     }
+    $client->log('debug', __PACKAGE__ . '::update_tags: Updated stuff');
     return wantarray ? %$changes : $changes
 }
 
