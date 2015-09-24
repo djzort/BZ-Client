@@ -86,5 +86,5 @@ Returns the http code (200, 404, etc)
 
 =head1 SEE ALSO
 
-  L<BZ::Client>
+L<BZ::Client>
 

@@ -51,7 +51,7 @@ sub web_agent {
         my $wa = $self->{'web_agent'};
         if (!defined($wa)) {
             $wa = HTTP::Tiny->new(
-                agent => "BZ::Client::XMLRPC $BZ::Client::XMLRPC::VERSION"
+                agent => 'BZ::Client::XMLRPC ' . $BZ::Client::XMLRPC::VERSION
             );
             $self->web_agent($wa);
         }
@@ -392,4 +392,4 @@ errors.
 
 =head1 SEE ALSO
 
-  L<BZ::Client>, L<BZ::Client::Exception>
+L<BZ::Client>, L<BZ::Client::Exception>

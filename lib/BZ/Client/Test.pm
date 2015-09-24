@@ -179,5 +179,5 @@ object, because integration tests are being skipped.
 
 =head1 SEE ALSO
 
-  L<BZ::Client>
+L<BZ::Client>
 

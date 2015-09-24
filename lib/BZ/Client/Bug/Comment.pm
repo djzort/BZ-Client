@@ -447,5 +447,5 @@ Added in Bugzilla 4.4.
 
 =head1 SEE ALSO
 
-  L<BZ::Client>, L<BZ::Client::API>, L<Bugzilla API|https://www.bugzilla.org/docs/tip/en/html/api/Bugzilla/WebService/Bug.html>
+L<BZ::Client>, L<BZ::Client::API>, L<Bugzilla API|https://www.bugzilla.org/docs/tip/en/html/api/Bugzilla/WebService/Bug.html>
 

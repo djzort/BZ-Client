@@ -1056,4 +1056,6 @@ Gets or sets the summary of this bug.
 
 =head1 SEE ALSO
 
-  L<BZ::Client>, L<BZ::Client::API>, L<Bugzilla API|https://www.bugzilla.org/docs/tip/en/html/api/Bugzilla/WebService/Bug.html>
+L<BZ::Client>, L<BZ::Client::Bug::Attachment>, L<BZ::Client::Bug::Comment>
+
+L<BZ::Client::API>, L<Bugzilla API|https://www.bugzilla.org/docs/tip/en/html/api/Bugzilla/WebService/Bug.html>
