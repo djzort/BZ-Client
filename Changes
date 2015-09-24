@@ -1,5 +1,13 @@
 Revision history for Perl extension BZ::Client.
 
+2.0_5 Friday Sep 25 01:11:00 2015
+    - Bug.pm: minor changes
+    - Bugzilla.pm: add last_audit_time()
+    - Bugzilla.pm: add parameters()
+    - Bugzilla.pm: adjust version()
+    - Bugzilla.pm: overhaul extensions()
+    - Bugzilla.pm: adjust time()
+
 2.0_4 Thursday Sep 24 01:35:00 2015
     - Attachment.pm: update() method and pod
     - Comment.pm: lots of pod and render() function
