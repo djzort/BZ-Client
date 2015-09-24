@@ -1054,6 +1054,17 @@ Gets or sets the current status of the bug.
 
 Gets or sets the summary of this bug.
 
+=head1 ATTACHMENTS & COMMENTS
+
+These are implemented by other modules.
+
+See L<BZ::Client::Bug::Attachment> and L<BZ::Client::Bug::Comment>
+
+=head1 TODO
+
+Bugzilla 5.0. introduced the C<search_comment_tags> and C<update_comment_tags> methods,
+these are yet to be specifically implemented.
+
 =head1 SEE ALSO
 
 L<BZ::Client>, L<BZ::Client::Bug::Attachment>, L<BZ::Client::Bug::Comment>
