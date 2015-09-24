@@ -203,6 +203,8 @@ Note: As of Bugzilla 3.6, this method returns all data as though the server were
 
 A hash with the following items:
 
+=over 4
+
 =item db_time
 
 I<db_time> (dateTime) -  The current time in UTC, according to the Bugzilla database server.
