@@ -121,7 +121,9 @@ sub xmlrpc {
         if ( !$xmlrpc ) {
             my $url = $self->url()
               || $self->error('The Bugzilla servers URL is not set.');
-            $xmlrpc = BZ::Client::XMLRPC->new( 'url' => $url );
+            $xmlrpc = BZ::Client::XMLRPC->new(
+                    url     => $url,
+                    connect => $self->{'connect'} );
             $xmlrpc->logDirectory( $self->logDirectory() );
             $xmlrpc->logger( $self->logger() );
             $self->xmlrpc($xmlrpc);
@@ -282,7 +284,7 @@ USE THE 1.x SERIES UNLESS YOU PREFER DEBUGGING TO GETTING THINGS DONE.
 
 This section lists the class methods of BZ::Client.
 
-=head1 new
+=head2 new
 
   my $client = BZ::Client->new( url      => $url,
                                 user     => $user,
@@ -298,6 +300,8 @@ Bugzilla client. The methods input is a hash of parameters.
 For debugging, you can pass in a subref named I<logger> which will be
 fed debugging information as the client works. Also the I<logDirectory>
 option is a directory where the raw http content will be dumped.
+
+=head3 Parameters
 
 =over
 
@@ -354,6 +358,31 @@ Generally this is a good idea, but may caused problems if you are using
 a loadbalanced forward proxy.
 
 Default: 0
+
+=item connect
+
+A hashref with options for L<HTTP::Tiny>, this is passed through so the
+bellow are for reference only:
+
+=over 4
+
+=item http_proxy, https_proxy, proxy
+
+Nominates a proxy for HTTP, HTTPS or both, respectively.
+
+You might also use C<$ENV{all_proxy}>, C<$ENV{http_proxy}>, C<$ENV{https_proxy}>
+or C<$ENV{all_proxy}>.
+
+=item timeout
+
+Request timeout in seconds (default is 60)
+
+=item verify_SSL
+
+A boolean that indicates whether to validate the SSL certificate of an
+"https" connection (default is false)
+
+=back
 
 =back
 

@@ -49,8 +49,12 @@ sub web_agent {
     }
     else {
         my $wa = $self->{'web_agent'};
+        my $connect = $self->{'connect'} || {};
+        $self->error(q/'connect' parameter in new() not a hashref/)
+            unless ref $connect eq 'HASH';
         if (!defined($wa)) {
             $wa = HTTP::Tiny->new(
+                %$connect,
                 agent => 'BZ::Client::XMLRPC ' . $BZ::Client::XMLRPC::VERSION
             );
             $self->web_agent($wa);
