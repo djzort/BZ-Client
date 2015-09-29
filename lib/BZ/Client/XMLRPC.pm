@@ -259,7 +259,7 @@ sub _get_response {
         }
         else {
             my $msg = $res->{reason};
-            $mesg .= ' : ' . $res->{content} if $res->{content};
+            $msg .= ' : ' . $res->{content} if $res->{content};
             $self->error("Unknown error: $msg", $code);
         }
     }
