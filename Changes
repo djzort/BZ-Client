@@ -4,6 +4,7 @@ Revision history for Perl extension BZ::Client.
     - XMLRPC.pm: pass through options to HTTP::Tiny
     - Client.pm: facilitate pass through options to HTTP::Tiny
     - Product.pm: changes to the methods and pod
+    - Product.pm: add create() and update() functions
 
 2.0_5 Friday Sep 25 01:11:00 2015
     - Bug.pm: minor changes
