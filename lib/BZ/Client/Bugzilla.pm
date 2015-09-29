@@ -188,6 +188,7 @@ A user in the tweakparams group can access all existing parameters. New paramete
 =head2 time
 
  %timeinfo = BZ::Client::Bugzilla->time( $client );
+ $timeinfo = BZ::Client::Bugzilla->time( $client );
 
 Gets information about what time the Bugzilla server thinks it is, and what timezone it's running in.
 

@@ -393,23 +393,23 @@ perform.
 
 =head2 url
 
-  my $url = $client->url();
-  $client->url( $url );
+ $url = $client->url();
+ $client->url( $url );
 
 Returns or sets the Bugzilla servers URL.
 
 =head2 user
 
-  my $user = $client->user();
-  $client->user( $user );
+ $user = $client->user();
+ $client->user( $user );
 
 Returns or sets the user name to use when logging in to the Bugzilla
 server. Typically, this will be your email address.
 
 =head2 password
 
-  my $password = $client->password();
-  $client->password( $password );
+ $password = $client->password();
+ $client->password( $password );
 
 Returns or sets the password to use when logging in to the Bugzilla server.
 
@@ -436,31 +436,31 @@ Deletes local cookies and calls bugzilla's logout function
 
 Sets or gets the logging function. Argument is a coderef. Returns undef if none.
 
-  my $logger = $client->logger();
+ $logger = $client->logger();
 
-  $client->logger(
-      sub {
-          my ($level, $msg) = @_;
-          print STDERR "$level $message\n";
-          return 1
-      });
+ $client->logger(
+     sub {
+         my ($level, $msg) = @_;
+         print STDERR "$level $message\n";
+         return 1
+     });
 
 Also can be set via new(), e.g.
 
-  $client = BZ::Client->new( logger => sub { },
-                             url    => $url
-                             user   => $user,
-                             password => $password );
+ $client = BZ::Client->new( logger => sub { },
+                            url    => $url
+                            user   => $user,
+                            password => $password );
 
 =head2 log
 
-  $client->log( $level, $message );
+ $client->log( $level, $message );
 
 Sends log messages to whatever is loaded via I<logger>.
 
 =head2 api_call
 
-  my $response = $client->api_call( $methodName, $params );
+ $response = $client->api_call( $methodName, $params );
 
 Used by subclasses of L<BZ::Client::API> to invoke methods of the Bugzilla
 API. Takes a method name and a hash ref of parameters as input. Returns a
