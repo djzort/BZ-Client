@@ -88,7 +88,7 @@ sub _get {
                 internals   => $product->{'internals'})
             );
     }
-    return wantarray @result : \@result
+    return wantarray ? @result : \@result
 }
 
 sub get_products {
@@ -103,16 +103,7 @@ sub get {
     return $class->_get($client, $result)
 }
 
-## methods
-
-sub id {
-    my $self = shift;
-    if (@_) {
-        $self->{'id'} = shift;
-    } else {
-        return $self->{'id'};
-    }
-}
+## rw methods
 
 sub name {
     my $self = shift;
@@ -132,13 +123,92 @@ sub description {
     }
 }
 
-sub internals {
+sub version {
     my $self = shift;
     if (@_) {
-        $self->{'internals'} = shift;
+        $self->{'version'} = shift;
     } else {
-        return $self->{'internals'};
+        return $self->{'version'};
     }
+}
+
+## boolean
+sub has_unconfirmed {
+    my $self = shift;
+    if (@_) {
+        $self->{'has_unconfirmed'} = shift;
+    } else {
+        return $self->{'has_unconfirmed'};
+    }
+}
+
+sub classification {
+    my $self = shift;
+    if (@_) {
+        $self->{'classification'} = shift;
+    } else {
+        return $self->{'classification'};
+    }
+}
+
+sub default_milestone {
+    my $self = shift;
+    if (@_) {
+        $self->{'default_milestone'} = shift;
+    } else {
+        return $self->{'default_milestone'};
+    }
+}
+
+## boolean
+sub is_open {
+    my $self = shift;
+    if (@_) {
+        $self->{'is_open'} = shift;
+    } else {
+        return $self->{'is_open'};
+    }
+}
+
+sub create_series {
+    my $self = shift;
+    if (@_) {
+        $self->{'create_series'} = shift;
+    } else {
+        return $self->{'create_series'};
+    }
+}
+
+## ro methods
+
+sub id { my $self = shift; return $self->{'id'} }
+
+sub internals { my $self = shift; return $self->{'internals'} }
+
+sub components {
+    my $self = shift;
+    return unless $self->{'components'};
+
+    return wantarray ? @{$self->{'components'}}
+                     : $self->{'components'}
+}
+
+
+sub versions {
+    my $self = shift;
+    return unless $self->{'versions'};
+
+    return wantarray ? @{$self->{'versions'}}
+                     : $self->{'versions'}
+}
+
+
+sub milestones {
+    my $self = shift;
+    return unless $self->{'milestones'};
+
+    return wantarray ? @{$self->{'milestones'}}
+                     : $self->{'milestones'}
 }
 
 1;
@@ -446,6 +516,10 @@ An array of product ID's
 
 Returns a list of BZ::Client::Product instances based on the given parameters.
 
+Note, that if the user tries to access a product that is not in the list of
+accessible products for the user, or a product that does not exist, that is
+silently ignored, and no information about that product is returned.
+
 =head3 Parameters
 
 In addition to the parameters below, this method also accepts the standard
@@ -502,9 +576,10 @@ This section lists the modules instance methods.
 =head2 id
 
  $id = $product->id();
- $product->id( $id );
 
-Gets or sets the products ID.
+Gets the products ID.
+
+Read only.
 
 =head2 name
 
@@ -520,7 +595,183 @@ Gets or sets the products name.
 
 Gets or sets the products description.
 
+=head2 version
+
+ $version = $product->version();
+ $product->version( $version );
+
+Gets or sets the products version.
+
+(Set only works for new products, not updates)
+
+=head2 has_unconfirmed
+
+ $bool = $product->has_unconfirmed();
+ $product->has_unconfirmed( $bool );
+
+Gets or sets the products has_unconfirmed setting.
+
+Added in Bugzilla 4.2 as a replacement for L</internals>.
+
+=head2 classification
+
+ $classification = $product->classification();
+ $product->classification( $classification );
+
+Gets or sets the products classification.
+
+Added in Bugzilla 4.2 as a replacement for L</internals>.
+
+=head2 default_milestone
+
+ $milestone = $product->default_milestone();
+ $product->default_milestone( $milestone );
+
+Gets or sets the products default milestone.
+
+Added in Bugzilla 4.2 as a replacement for L</internals>.
+
+=head2 is_open
+
+ $bool = $product->is_open();
+ $product->is_open( $bool );
+
+Gets or sets the products is_open setting.
+
+=head2 create_series
+
+ $series = $product->create_series();
+ $product->create_series( $series );
+
+Gets or sets the products is_open setting.
+
+=head2 components
+
+ @components = $product->components();
+ $components = $product->components();
+
+An array of hashes, where each hash describes a component, and has the following items:
+
+=over 4
+
+=item id
+
+I<id> (int) An integer id uniquely identifying the component in this installation only.
+
+=item name
+
+I<name> (string) The name of the component. This is a unique identifier for this component.
+
+=item description
+
+I<description> (string) A description of the component, which may contain HTML.
+
+
+=item default_assigned_to
+
+I<default_assigned_to> (string) The login name of the user to whom new bugs will be assigned
+by default.
+
+=item default_qa_contact
+
+I<default_qa_contact> (string) The login name of the user who will be set as the QA Contact
+for new bugs by default. Empty string if the QA contact is not defined.
+
+=item sort_key
+
+I<sort_key> (int) Components, when displayed in a list, are sorted first by this integer and
+then secondly by their name.
+
+=item is_active
+
+I<is_active> (boolean) A boolean indicating if the component is active. Inactive components
+are not enabled for new bugs.
+
+=item flag_types
+
+A hash containing the two items bug and attachment that each contains an array of hashes, where
+each hash describes a flagtype, and has the following items:
+
+=over 4
+
+=item id
+
+I<id> (int) Returns the ID of the flagtype.
+
+=item name
+
+I<name> (string) Returns the name of the flagtype.
+
+=item description
+
+I<description> (string) Returns the description of the flagtype.
+
+=item cc_list
+
+I<cc_list> (string) Returns the concatenated CC list for the flagtype, as a single string.
+
+=item sort_key
+
+I<sort_key> (int) Returns the sortkey of the flagtype.
+
+=item is_active
+
+I<is_active> (boolean) Returns whether the flagtype is active or disabled. Flags being in a
+disabled flagtype are not deleted. It only prevents you from adding new flags to it.
+
+=item is_requestable
+
+I<is_requestable> (boolean) Returns whether you can request for the given flagtype (i.e.
+whether the '?' flag is available or not).
+
+=item is_requesteeble
+
+I<is_requesteeble> (boolean) Returns whether you can ask someone specifically or not.
+
+=item is_multiplicable
+
+I<is_multiplicable> (boolean) Returns whether you can have more than one flag for the given
+flagtype in a given bug/attachment.
+
+=item grant_group
+
+I<grant_group> (int) the group id that is allowed to grant/deny flags of this type. If the
+item is not included all users are allowed to grant/deny this flagtype.
+
+=item request_group
+
+I<request_group> (int) the group id that is allowed to request the flag if the flag is of
+the type requestable. If the item is not included all users are allowed request this flagtype.
+
+=back
+
+=back
+
+Added in Bugzilla 4.2 as a replacement for L</internals>.
+
+=head2 versions
+
+ $versions = $product->versions();
+
+Added in Bugzilla 4.2 as a replacement for L</internals>.
+
+Returns an array of hashes, where each hash describes a version, and has the
+following items: C<name>, C<sort_key> and C<is_active>.
+
+=head2 milestones
+
+ $milestones = $product->milestones();
+
+Returns an array of hashes, where each hash describes a milestones, and has the
+following items: C<name>, C<sort_key> and C<is_active>.
+
+Added in Bugzilla 4.2 as a replacement for L</internals>.
+
+=head2 internals
+
+Returned by L</get> until version 4.2, at which point it was dropped.
+Remains for compatibility. Please move away from using it asap.
+
 =head1 SEE ALSO
 
 L<BZ::Client>, L<BZ::Client::API>, L<Bugzilla API|https://www.bugzilla.org/docs/tip/en/html/api/Bugzilla/WebService/Product.html>
-

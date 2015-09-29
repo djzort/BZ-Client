@@ -669,4 +669,6 @@ your Bugzilla Server - see L<add> for that.
 
 =head1 INSTANCE METHODS
 
+FIXME
+
 =cut
