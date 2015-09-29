@@ -250,16 +250,17 @@ sub _get_response {
         }
     }
     if (!$res->{success}) {
-        my $msg = $res->{reason};
         my $code = $res->{status};
         if ($code == 401) {
-           $self->error('Authorization error, perhaps invalid user name and/or password', $code);
+            $self->error('Authorization error, perhaps invalid user name and/or password', $code);
         }
         elsif ($code == 404) {
-           $self->error('Bugzilla server not found, perhaps invalid URL.', $code);
+            $self->error('Bugzilla server not found, perhaps invalid URL.', $code);
         }
         else {
-           $self->error("Unknown error: $msg", $code);
+            my $msg = $res->{reason};
+            $mesg .= ' : ' . $res->{content} if $res->{content};
+            $self->error("Unknown error: $msg", $code);
         }
     }
 
