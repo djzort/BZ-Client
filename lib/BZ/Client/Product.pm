@@ -689,6 +689,8 @@ are not enabled for new bugs.
 
 =item flag_types
 
+Added in Bugzilla 4.4.
+
 A hash containing the two items bug and attachment that each contains an array of hashes, where
 each hash describes a flagtype, and has the following items:
 
