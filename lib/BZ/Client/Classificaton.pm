@@ -1,11 +1,11 @@
 #!/bin/false
-# PODNAME: BZ::Client::Classificaton
+# PODNAME: BZ::Client::Classification
 # ABSTRACT: Client side representation of a Classifications in Bugzilla
 
 use strict;
 use warnings 'all';
 
-package BZ::Client::Classificaton;
+package BZ::Client::Classification;
 
 use parent qw( BZ::Client::API );
 
@@ -16,21 +16,12 @@ use parent qw( BZ::Client::API );
 
 sub get {
     my($class, $client, $params) = @_;
-    my $result = $class->api_call($client, 'Product.get', $params);
-    my $products = $result->{'products'};
-    if (!$products || 'ARRAY' ne ref($products)) {
-        $class->error($client, 'Invalid reply by server, expected array of products.');
+    my $result = $class->api_call($client, 'Classification.get', $params);
+    my $classifications = $result->{'classifications'};
+    if (!$classifications || 'ARRAY' ne ref($classifications)) {
+        $class->error($client, 'Invalid reply by server, expected array of classifications.');
     }
-    my @result;
-    for my $product (@$products) {
-        push(@result, $class->new(
-                id          => $product->{'id'},
-                name        => $product->{'name'},
-                description => $product->{'description'},
-                internals   => $product->{'internals'})
-            );
-    }
-    return wantarray ? @result : \@result
+    return wantarray ? @$classifications : $classifications
 }
 
 1;
