@@ -265,7 +265,7 @@ __END__
 
 USE THIS 2.0 DEVELOPMENT VERSION AT YOUR OWN RISK!
 
-(Which is actually, a clausing in the open source license this software is provided under)
+(Which is actually, a clause in the open source license this software is provided under)
 
 THE API IS CHANGING, STUFF IS BREAKING, YMMV!
 
