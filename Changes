@@ -1,5 +1,9 @@
 Revision history for Perl extension BZ::Client.
 
+2.0_8 Thursday Oct 1 00:02:00 2015
+    - Component.pm: added.
+    - Comment.pm: removed duplicate sub text()
+
 2.0_7 Wednesday Sep 30 00:39::00 2015
     - Classification.pm: added.
 
