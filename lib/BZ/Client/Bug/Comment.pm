@@ -120,8 +120,6 @@ sub attachment_id { my $self = shift; return $self->{'attachment_id'} }
 
 sub count { my $self = shift; return $self->{'count'} }
 
-sub text { my $self = shift; return $self->{'text'} }
-
 sub creator { my $self = shift; return $self->{'creator'} || $self->{'author'} }
 
 sub author { goto &creator }
