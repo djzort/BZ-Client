@@ -276,8 +276,7 @@ USE THE 1.x SERIES UNLESS YOU PREFER DEBUGGING TO GETTING THINGS DONE.
   my $client = BZ::Client->new( url       => $url,
                                 user      => $user,
                                 password  => $password,
-                                autologin => 0
-                                );
+                                autologin => 0 );
   $client->login();
 
 =head1 CLASS METHODS
@@ -297,8 +296,8 @@ The new method constructs a new instance of BZ::Client. Whenever you
 want to connect to the Bugzilla server, you must first create a
 Bugzilla client. The methods input is a hash of parameters.
 
-For debugging, you can pass in a subref named I<logger> which will be
-fed debugging information as the client works. Also the I<logDirectory>
+For debugging, you can pass in a subref named C<logger> which will be
+fed debugging information as the client works. Also the C<logDirectory>
 option is a directory where the raw http content will be dumped.
 
 =head3 Parameters
@@ -318,17 +317,17 @@ with the following steps:
 
 =over 4
 
-=item Click 'Preferences' link
+=item 1. Click 'Preferences' link
 
-=item Click 'API Keys' tab
+=item 2. Click 'API Keys' tab
 
-=item Click the checkbox next to 'Generate a new API key...'
+=item 3. Click the checkbox next to 'Generate a new API key...'
 
-=item If you like, add some description in the textbox
+=item 4. If you like, add some description in the textbox
 
-=item Click the 'Submit Changes' button
+=item 5. Click the 'Submit Changes' button
 
-=item Key appears in the table under the 'Existing API keys' subheading
+=item 6. Key appears in the table under the 'Existing API keys' subheading
 
 =back
 
@@ -343,21 +342,21 @@ The password to use when logging in to the Bugzilla server.
 
 =item autologin
 
-If set to 1 (true), will try to log in (if not already logged in) when
+If set to C<1> (true), will try to log in (if not already logged in) when
 the first API call is made. This is default.
 
-If set to 0, will try APi calls without logging in. You can
+If set to C<0>, will try APi calls without logging in. You can
 still call $client->login() to log in manually.
 
-Note: once you're logged in, you'll stay that way until you call I<logout>
+Note: once you're logged in, you'll stay that way until you call L</logout>
 
 =item restrictlogin
 
-If set to 1 (true), will ask Bugzilla to restrict logins to your IP only.
+If set to C<1> (true), will ask Bugzilla to restrict logins to your IP only.
 Generally this is a good idea, but may caused problems if you are using
 a loadbalanced forward proxy.
 
-Default: 0
+Default: C<0>
 
 =item connect
 
@@ -375,7 +374,7 @@ or C<$ENV{all_proxy}>.
 
 =item timeout
 
-Request timeout in seconds (default is 60)
+Request timeout in seconds (default is C<60>)
 
 =item verify_SSL
 
@@ -415,26 +414,26 @@ Returns or sets the password to use when logging in to the Bugzilla server.
 
 =head2 autologin
 
-If I<login> is automatically called, or not.
+If L<login> is automatically called, or not.
 
 =head2 login
 
 Used to login to the Bugzilla server. By default, there is no need to call
 this method explicitly: It is done automatically, whenever required.
 
-If I<autologin> is set to 0, call this to log in.
+If L<autologin> is set to C<0>, call this to log in.
 
 =head2 is_logged_in
 
-Returns 1 if logged in, otherwise 0
+Returns C<1> if logged in, otherwise C<0>.
 
 =head2 logout
 
-Deletes local cookies and calls bugzilla's logout function
+Deletes local cookies and calls Bugzilla's logout function
 
 =head2 logger
 
-Sets or gets the logging function. Argument is a coderef. Returns undef if none.
+Sets or gets the logging function. Argument is a coderef. Returns C<undef> if none.
 
  $logger = $client->logger();
 
@@ -445,7 +444,7 @@ Sets or gets the logging function. Argument is a coderef. Returns undef if none.
          return 1
      });
 
-Also can be set via new(), e.g.
+Also can be set via L</new>, e.g.
 
  $client = BZ::Client->new( logger => sub { },
                             url    => $url
@@ -456,7 +455,7 @@ Also can be set via new(), e.g.
 
  $client->log( $level, $message );
 
-Sends log messages to whatever is loaded via I<logger>.
+Sends log messages to whatever is loaded via L</logger>.
 
 =head2 api_call
 
@@ -488,7 +487,7 @@ A login or password parameter was not provided.
 
 Bugzilla maintains demos of all supported versions and trunk at L<https://landfill.bugzilla.org>
 
-You might consider using that for testing against live versions>
+You might consider using that for testing against live versions.
 
 =head1 SEE ALSO
 
