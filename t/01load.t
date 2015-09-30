@@ -20,6 +20,7 @@ my @MODULES = qw(
         BZ::Client::Bug::Comment
         BZ::Client::Bugzilla
         BZ::Client::Classification
+        BZ::Client::Component
         BZ::Client::User
         BZ::Client::API
         BZ::Client::Test
