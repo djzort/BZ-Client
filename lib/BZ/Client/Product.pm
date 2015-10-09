@@ -225,7 +225,7 @@ This section lists the class methods, which are available in this module.
 
  $id = BZ::Client::Product->create( $client, \%params );
 
-This allows you to create a new product in Bugzilla.
+This allows you to create a new Product in Bugzilla.
 
 Marked as experimental as of Bugzilla 5.0.
 
@@ -313,7 +313,7 @@ You must specify a version for this product.
 
  $id = BZ::Client::Product->update( $client, \%params );
 
-This allows you to update a product in Bugzilla.
+This allows you to update a Group in Bugzilla.
 
 As of Bugzilla 5.0. this is marked as experimental.
 
