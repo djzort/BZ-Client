@@ -29,15 +29,29 @@ sub new {
 sub _create {
     my($client, $methodName, $params) = @_;
     my $sub = ( caller(1) )[3];
-    $client->log('debug', $sub . ': Creating');
+    $client->log('debug', $sub . ': Running');
     my $result = __PACKAGE__->api_call($client, $methodName, $params);
     my $id = $result->{'id'};
     if (!$id) {
         __PACKAGE__->error($client, "Invalid reply by server, expected $methodName ID.");
     }
-    $client->log('debug', "$sub: Made $id");
+    $client->log('debug', "$sub: Returned $id");
     return $id
 }
+
+sub _returns_array {
+    my($client, $methodName, $params, $key) = @_;
+    my $sub = ( caller(1) )[3];
+    $client->log('debug',$sub . ': Running');
+    my $result = $class->api_call($client, $methodName, $params);
+    my $foo = $result->{$key};
+    if (!$foo || 'ARRAY' ne ref($foo)) {
+        __PACKAGE__->error($client, "Invalid reply by server, expected array of $methodName details");
+    }
+    $client->log('debug', "$sub: Recieved results");
+    return wantarray ? @$foo : $foo
+}
+
 
 
 1;

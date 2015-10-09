@@ -21,24 +21,12 @@ sub create {
 
 sub update {
     my($class, $client, $params) = @_;
-    $client->log('debug', __PACKAGE__ . '::update: Updating');
-    my $result = $class->api_call($client, 'Component.update', $params);
-    my $components = $result->{'components'};
-    if (!$components || 'ARRAY' ne ref($components)) {
-        $class->error($client, 'Invalid reply by server, expected array of components details.');
-    }
-    $client->log('debug', __PACKAGE__ . '::update: Updated stuff');
-    return wantarray ? @$components : $components
+    return _returns_array($client, 'Component.update', $params, 'components');
 }
 
 sub delete {
     my($class, $client, $params) = @_;
-    my $result = $class->api_call($client, 'Component.delete', $params);
-    my $components = $result->{'components'};
-    if (!$components || 'ARRAY' ne ref($components)) {
-        $class->error($client, 'Invalid reply by server, expected array of components.');
-    }
-    return wantarray ? @$components : $components
+    return _returns_array($client, 'Component.delete', $params, 'components');
 }
 
 1;

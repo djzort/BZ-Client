@@ -108,14 +108,8 @@ sub create {
 
 sub update {
     my($class, $client, $params) = @_;
-    $client->log('debug', __PACKAGE__ . '::update: Updating');
-    my $result = $class->api_call($client, 'Bug.update', $params);
-    my $bugs = $result->{'bugs'};
-    if (!$bugs || 'ARRAY' ne ref($bugs)) {
-        $class->error($client, 'Invalid reply by server, expected array of bug details.');
-    }
-    $client->log('debug', __PACKAGE__ . '::update: Updated stuff');
-    return wantarray ? @$bugs : $bugs
+    return _returns_array($client, 'Bug.update', $params, 'bugs');
+
 }
 
 sub update_see_also {

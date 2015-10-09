@@ -16,13 +16,9 @@ use parent qw( BZ::Client::API );
 
 sub get {
     my($class, $client, $params) = @_;
-    my $result = $class->api_call($client, 'Classification.get', $params);
-    my $classifications = $result->{'classifications'};
-    if (!$classifications || 'ARRAY' ne ref($classifications)) {
-        $class->error($client, 'Invalid reply by server, expected array of classifications.');
-    }
-    return wantarray ? @$classifications : $classifications
+    return _returns_array($client, 'Classification.get', $params, 'classifications');
 }
+
 
 1;
 

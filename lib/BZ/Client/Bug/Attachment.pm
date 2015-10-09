@@ -59,14 +59,9 @@ sub add {
 
 sub update {
     my($class, $client, $params) = @_;
-    $client->log('debug', 'BZ::Client::Bug::add: Creating');
-    my $result = $class->api_call($client, 'Bug.update_attachment', $params);
-    my $attachments = $result->{'attachments'};
-    if (!$attachments || 'ARRAY' ne ref($attachments)) {
-        $class->error($client, 'Invalid reply by server, expected arayy of attachment changes.');
-    }
-    return $attachments
+    return _returns_array($client, 'Bug.update_attachment', $params, 'attachments');
 }
+
 
 ## rw methods
 
