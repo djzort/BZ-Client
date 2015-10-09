@@ -43,7 +43,7 @@ sub _returns_array {
     my($client, $methodName, $params, $key) = @_;
     my $sub = ( caller(1) )[3];
     $client->log('debug',$sub . ': Running');
-    my $result = $class->api_call($client, $methodName, $params);
+    my $result = __PACKAGE__->api_call($client, $methodName, $params);
     my $foo = $result->{$key};
     if (!$foo || 'ARRAY' ne ref($foo)) {
         __PACKAGE__->error($client, "Invalid reply by server, expected array of $methodName details");
