@@ -16,14 +16,7 @@ use parent qw( BZ::Client::API );
 
 sub create {
     my($class, $client, $params) = @_;
-    $client->log('debug', __PACKAGE__ . '::create: Creating');
-    my $result = $class->api_call($client, 'Component.create', $params);
-    my $id = $result->{'id'};
-    if (!$id) {
-        $class->error($client, 'Invalid reply by server, expected component ID.');
-    }
-    $client->log('debug', __PACKAGE__ . "::create: Made $id");
-    return $id
+    return _create($client, 'Component.create', $params);
 }
 
 sub update {

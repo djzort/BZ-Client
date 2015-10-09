@@ -24,6 +24,21 @@ sub new {
     return $self
 }
 
+# Move stuff here so we dont do it over and over
+
+sub _create {
+    my($client, $methodName, $params) = @_;
+    $client->log('debug', __PACKAGE__ . '::create: Creating');
+    my $result = __PACKAGE__->api_call($client, $methodName, $params);
+    my $id = $result->{'id'};
+    if (!$id) {
+        __PACKAGE__->error($client, "Invalid reply by server, expected $methodName ID.");
+    }
+    $client->log('debug', __PACKAGE__ . "::create: Made $id");
+    return $id
+}
+
+
 1;
 
 __END__

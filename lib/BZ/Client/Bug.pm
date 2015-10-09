@@ -103,14 +103,7 @@ sub search {
 
 sub create {
     my($class, $client, $params) = @_;
-    $client->log('debug', __PACKAGE__ . '::create: Creating');
-    my $result = $class->api_call($client, 'Bug.create', $params);
-    my $id = $result->{'id'};
-    if (!$id) {
-        $class->error($client, 'Invalid reply by server, expected bug ID.');
-    }
-    $client->log('debug', __PACKAGE__ . "::create: Made $id");
-    return $id
+    return _create($client, 'Bug.create', $params);
 }
 
 sub update {
@@ -708,6 +701,8 @@ You do not have access to the bug_id you specified.
 =back
 
 =head2 search
+
+FIXME
 
  @bugs = BZ::Client::Bug->search( $client, \%params );
  $bugs = BZ::Client::Bug->search( $client, \%params );
