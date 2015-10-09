@@ -28,13 +28,14 @@ sub new {
 
 sub _create {
     my($client, $methodName, $params) = @_;
-    $client->log('debug', __PACKAGE__ . '::create: Creating');
+    my $sub = ( caller(1) )[3];
+    $client->log('debug', $sub . ': Creating');
     my $result = __PACKAGE__->api_call($client, $methodName, $params);
     my $id = $result->{'id'};
     if (!$id) {
         __PACKAGE__->error($client, "Invalid reply by server, expected $methodName ID.");
     }
-    $client->log('debug', __PACKAGE__ . "::create: Made $id");
+    $client->log('debug', "$sub: Made $id");
     return $id
 }
 
