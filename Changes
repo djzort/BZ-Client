@@ -1,5 +1,8 @@
 Revision history for Perl extension BZ::Client.
 
+    - FlagType.pm: added
+    - API.pm: mmake _create a little more flexible
+
 2.0_9 Saturday Oct 10 00:24:00 2015
     - API.pm: moved create() functions in
     - API.pm: moved update() like functions in

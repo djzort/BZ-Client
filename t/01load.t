@@ -21,6 +21,7 @@ my @MODULES = qw(
         BZ::Client::Bugzilla
         BZ::Client::Classification
         BZ::Client::Component
+        BZ::Client::FlagType
         BZ::Client::Group
         BZ::Client::User
         BZ::Client::API
