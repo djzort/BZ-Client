@@ -27,13 +27,14 @@ sub new {
 # Move stuff here so we dont do it over and over
 
 sub _create {
-    my($client, $methodName, $params) = @_;
+    my($client, $methodName, $params, $key) = @_;
+    $key ||= 'id';
     my $sub = ( caller(1) )[3];
     $client->log('debug', $sub . ': Running');
     my $result = __PACKAGE__->api_call($client, $methodName, $params);
-    my $id = $result->{'id'};
+    my $id = $result->{$key};
     if (!$id) {
-        __PACKAGE__->error($client, "Invalid reply by server, expected $methodName ID.");
+        __PACKAGE__->error($client, "Invalid reply by server, expected $methodName $key.");
     }
     $client->log('debug', "$sub: Returned $id");
     return $id
