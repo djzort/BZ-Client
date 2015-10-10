@@ -18,6 +18,7 @@ my @MODULES = qw(
         BZ::Client::Bug
         BZ::Client::Bug::Attachment
         BZ::Client::Bug::Comment
+        BZ::Client::BugUserLastVisit
         BZ::Client::Bugzilla
         BZ::Client::Classification
         BZ::Client::Component
