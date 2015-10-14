@@ -1,6 +1,7 @@
 Revision history for Perl extension BZ::Client.
 
-    - Lots of minor fixes
+2.0_10 Tuesday Oct 14 18:28 2015
+    - Lots of minor fixes, including API.pm working
     - FlagType.pm: added
     - API.pm: mmake _create a little more flexible
     - BugUserLastVisit.pm: added
