@@ -16,88 +16,52 @@ use parent qw( BZ::Client::API );
 
 sub fields {
     my($class, $client, $params) = @_;
-    $client->log('debug', __PACKAGE__ . '::fields: Retrieving');
-    my $result = $class->api_call($client, 'Bug.fields', $params);
-    my $fields = $result->{'fields'};
-    if (!$fields || 'ARRAY' ne ref($fields)) {
-        $class->error($client, 'Invalid reply by server, expected array of fields.');
-    }
-    $client->log('debug', __PACKAGE__ . '::fields: Got ' . scalar @$fields);
-    return wantarray ? @$fields : $fields
+    return $class->_returns_array($client, 'Bug.fields', $params, 'fields');
 }
 
 sub legal_values {
     my($class, $client, $field) = @_;
-    $client->log('debug', __PACKAGE__ . "::legal_values: Asking for $field");
     my $params = { 'field' => $field };
-    my $result = $class->api_call($client, 'Bug.legal_values', $params);
-    my $values = $result->{'values'};
-    if (!$values || 'ARRAY' ne ref($values)) {
-        $class->error($client, 'Invalid reply by server, expected array of values.');
-    }
-    $client->log('debug', __PACKAGE__ . '::legal_values: Got ' . join(',', @$values));
-    return wantarray ? @$values : $values
+    return $class->_returns_array($client, 'Bug.legal_values', $params, 'values');
 }
 
 sub get {
     my($class, $client, $params) = @_;
-    $client->log('debug', __PACKAGE__ . '::get: Asking');
     $params->{'permissive'} = BZ::Client::XMLRPC::boolean::TRUE()
         if $params->{'permissive'};
-    my $result = $class->api_call($client, 'Bug.get', $params);
-    my $bugs = $result->{'bugs'};
-    if (!$bugs  ||  'ARRAY' ne ref($bugs)) {
-        $class->error($client, 'Invalid reply by server, expected array of bugs.');
-    }
+    my $bugs = $class->_returns_array($client, 'Bug.get', $params, 'bugs');
     my @result;
     for my $bug (@$bugs) {
-        push(@result, BZ::Client::Bug->new(%$bug));
+        push(@result, $class->new(%$bug));
     }
-    $client->log('debug', __PACKAGE__ . '::get: Got ' . scalar(@result));
+    $client->log('debug', $class . '::get: Got ' . scalar(@result));
     return wantarray ? @result : \@result
 }
 
 sub history {
     my($class, $client, $params) = @_;
-    $client->log('debug', __PACKAGE__ . '::history: Retrieving');
-    my $result = $class->api_call($client, 'Bug.history', $params);
-    my $bugs = $result->{'bugs'};
-    if (!$bugs || 'ARRAY' ne ref($bugs)) {
-        $class->error($client, 'Invalid reply by server, expected array of bug changes.');
-    }
-    $client->log('debug', __PACKAGE__ . '::history: Got ' . scalar @$bugs);
-    return wantarray ? @$bugs : $bugs
+    return $class->_returns_array($client, 'Bug.history', $params, 'bugs');
 }
 
 sub possible_duplicates {
     my($class, $client, $params) = @_;
-    $client->log('debug', __PACKAGE__ . '::possible_duplicates: Asking');
-    my $result = $class->api_call($client, 'Bug.possible_duplicates', $params);
-    my $bugs = $result->{'bugs'};
-    if (!$bugs  ||  'ARRAY' ne ref($bugs)) {
-        $class->error($client, 'Invalid reply by server, expected array of bugs.');
-    }
+    my $bugs = $class->_returns_array($client, 'Bug.possible_duplicates', $params, 'bugs');
     my @result;
     for my $bug (@$bugs) {
-        push(@result, __PACKAGE__->new(%$bug));
+        push(@result, $class->new(%$bug));
     }
-    $client->log('debug', __PACKAGE__ . '::possible_duplicates: Got ' . scalar(@result));
+    $client->log('debug', $class . '::possible_duplicates: Got ' . scalar(@result));
     return wantarray ? @result : \@result
 }
 
 sub search {
     my($class, $client, $params) = @_;
-    $client->log('debug', __PACKAGE__ . '::search: Searching');
-    my $result = $class->api_call($client, 'Bug.search', $params);
-    my $bugs = $result->{'bugs'};
-    if (!$bugs || 'ARRAY' ne ref($bugs)) {
-        $class->error($client, 'Invalid reply by server, expected array of bugs.');
-    }
+    my $bugs = $class->_returns_array($client, 'Bug.search', $params, 'bugs');
     my @result;
     for my $bug (@$bugs) {
-        push(@result, __PACKAGE__->new(%$bug));
+        push(@result, $class->new(%$bug));
     }
-    $client->log('debug', __PACKAGE__ . '::search: Found ' . join(',',@result));
+    $client->log('debug', $class . '::search: Found ' . join(',',@result));
     return wantarray ? @result : \@result
 }
 
@@ -108,31 +72,31 @@ sub create {
 
 sub update {
     my($class, $client, $params) = @_;
-    return _returns_array($client, 'Bug.update', $params, 'bugs');
+    return $class->_returns_array($client, 'Bug.update', $params, 'bugs');
 
 }
 
 sub update_see_also {
     my($class, $client, $params) = @_;
-    $client->log('debug', __PACKAGE__ . '::update_see_also: Updating See-Also');
+    $client->log('debug', $class . '::update_see_also: Updating See-Also');
     my $result = $class->api_call($client, 'Bug.update_see_also', $params);
     my $changes = $result->{'changes'};
     if (!$changes || 'HASH' ne ref($changes)) {
         $class->error($client, 'Invalid reply by server, expected hash of changed bug details.');
     }
-    $client->log('debug', __PACKAGE__ . '::update_see_also: Updated stuff');
+    $client->log('debug', $class . '::update_see_also: Updated stuff');
     return wantarray ? %$changes : $changes
 }
 
 sub update_tags {
     my($class, $client, $params) = @_;
-    $client->log('debug', __PACKAGE__ . '::update_tags: Updating Tags');
+    $client->log('debug', $class . '::update_tags: Updating Tags');
     my $result = $class->api_call($client, 'Bug.update_tags', $params);
     my $changes = $result->{'changes'};
     if (!$changes || 'HASH' ne ref($changes)) {
         $class->error($client, 'Invalid reply by server, expected hash of changed bug details.');
     }
-    $client->log('debug', __PACKAGE__ . '::update_tags: Updated stuff');
+    $client->log('debug', $class . '::update_tags: Updated stuff');
     return wantarray ? %$changes : $changes
 }
 

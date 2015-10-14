@@ -27,7 +27,7 @@ sub new {
 # Move stuff here so we dont do it over and over
 
 sub _create {
-    my($client, $methodName, $params, $key) = @_;
+    my($class, $client, $methodName, $params, $key) = @_;
     $key ||= 'id';
     my $sub = ( caller(1) )[3];
     $client->log('debug', $sub . ': Running');
@@ -41,7 +41,7 @@ sub _create {
 }
 
 sub _returns_array {
-    my($client, $methodName, $params, $key) = @_;
+    my($class, $client, $methodName, $params, $key) = @_;
     my $sub = ( caller(1) )[3];
     $client->log('debug',$sub . ': Running');
     my $result = __PACKAGE__->api_call($client, $methodName, $params);

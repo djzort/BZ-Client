@@ -16,17 +16,17 @@ use parent qw( BZ::Client::API );
 
 sub create {
     my($class, $client, $params) = @_;
-    return _create($client, 'Component.create', $params);
+    return $class->_create($client, 'Component.create', $params);
 }
 
 sub update {
     my($class, $client, $params) = @_;
-    return _returns_array($client, 'Component.update', $params, 'components');
+    return $class->_returns_array($client, 'Component.update', $params, 'components');
 }
 
 sub delete {
     my($class, $client, $params) = @_;
-    return _returns_array($client, 'Component.delete', $params, 'components');
+    return $class->_returns_array($client, 'Component.delete', $params, 'components');
 }
 
 1;

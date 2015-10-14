@@ -20,7 +20,7 @@ sub create {
 
 sub update {
     my($class, $client, $params) = @_;
-    return _returns_array($client, 'Product.update', $params, 'components');
+    return $class->_returns_array($client, 'Product.update', $params, 'components');
 }
 
 # convenience function
@@ -36,25 +36,25 @@ sub _get_list {
 
 sub get_selectable_products {
     my($class, $client) = @_;
-    $client->log('debug', __PACKAGE__ . '::get_selectable_products: Asking');
+    $client->log('debug', $class . '::get_selectable_products: Asking');
     my $result = $class->_get_list('Product.get_selectable_products', $client);
-    $client->log('debug', __PACKAGE__ . '::get_selectable_products: Got ' . @$result);
+    $client->log('debug', $class . '::get_selectable_products: Got ' . @$result);
     return wantarray ? @$result : $result
 }
 
 sub get_enterable_products {
     my($class, $client) = @_;
-    $client->log('debug', __PACKAGE__ . '::get_enterable_products: Asking');
+    $client->log('debug', $class . '::get_enterable_products: Asking');
     my $result = $class->_get_list('Product.get_enterable_products', $client);
-    $client->log('debug', __PACKAGE__ . '::get_enterable_products: Got ' . @$result);
+    $client->log('debug', $class . '::get_enterable_products: Got ' . @$result);
     return wantarray ? @$result : $result
 }
 
 sub get_accessible_products {
     my($class, $client) = @_;
-    $client->log('debug', __PACKAGE__ . '::get_accessible_products: Asking');
+    $client->log('debug', $class . '::get_accessible_products: Asking');
     my $result = $class->_get_list('Product.get_accessible_products', $client);
-    $client->log('debug', __PACKAGE__ . '::get_accessible_products: Got ' . @$result);
+    $client->log('debug', $class . '::get_accessible_products: Got ' . @$result);
     return wantarray ? @$result : $result
 }
 

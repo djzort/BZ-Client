@@ -18,29 +18,25 @@ sub offer_account_by_email {
     unless (ref $params) {
         $params = { email => $params }
     }
-    $client->log('debug', __PACKAGE__ . '::offer_account_by_email: Inviting');
+    $client->log('debug', $class . '::offer_account_by_email: Inviting');
     return $class->api_call($client, 'User.offer_account_by_email', $params);
 }
 
 sub get {
     my($class, $client, $params) = @_;
-    $client->log('debug', __PACKAGE__ . '::get: Asking for (TODO)');
+    $client->log('debug', $class . '::get: Asking for (TODO)');
     if ($params->{'include_disabled'}) {
         $params->{'include_disabled'} = BZ::Client::XMLRPC::boolean::TRUE()
     }
     else {
         $params->{'include_disabled'} = BZ::Client::XMLRPC::boolean::FALSE()
     }
-    my $result = $class->api_call($client, 'User.get', $params);
-    my $users = $result->{'users'};
-    if (!$users || 'ARRAY' ne ref($users)) {
-        $class->error($client, 'Invalid reply by server, expected array of users.');
-    }
+    my $users = $class->_returns_array($client, 'User.get', $params, 'users');
     my @result;
     for my $user (@$users) {
-        push(@result, __PACKAGE__->new(%$user));
+        push(@result, $class->new(%$user));
     }
-    $client->log('debug', __PACKAGE__ . '::get: Got ' . scalar(@result));
+    $client->log('debug', $class . '::get: Got ' . scalar(@result));
     return wantarray ? @result : \@result
 }
 
@@ -48,18 +44,12 @@ sub get {
 
 sub create {
     my($class, $client, $params) = @_;
-    $client->log('debug', __PACKAGE__ . '::create: Creating');
-    my $result = $class->api_call($client, 'User.create', $params);
-    my $id = $result->{'id'};
-    if (!$id) {
-        $class->error($client, 'Invalid reply by server, expected user ID.');
-    }
-    return $id
+    return _create($client, 'User.create', $params);
 }
 
 sub update {
     my($class, $client, $params) = @_;
-    $client->log('debug', __PACKAGE__ . '::update: Updating for: TODO');
+    $client->log('debug', $class . '::update: Updating for: TODO');
     if (defined $params->{'email_enabled'}) {
         if ($params->{'email_enabled'}) {
             $params->{'email_enabled'} = BZ::Client::XMLRPC::boolean::TRUE()
@@ -68,16 +58,12 @@ sub update {
             $params->{'email_enabled'} = BZ::Client::XMLRPC::boolean::FALSE()
         }
     }
-    my $result = $class->api_call($client, 'User.update', $params);
-    my $users = $result->{'users'};
-    if (!$users  ||  'ARRAY' ne ref($users)) {
-        $class->error($client, 'Invalid reply by server, expected array of users.');
-    }
+    my $users = $class->_returns_array($client, 'User.update', $params, 'users');
     my @result;
     for my $user (@$users) {
-        push(@result, __PACKAGE__->new(%$user));
+        push(@result, $class->new(%$user));
     }
-    $client->log('debug', __PACKAGE__ . '::update: Got ' . scalar(@result));
+    $client->log('debug', $class . '::update: Got ' . scalar(@result));
     return wantarray ? @result : \@result
 }
 

@@ -13,9 +13,9 @@ use parent qw( BZ::Client::API );
 
 sub extensions {
     my($class, $client) = @_;
-    $client->log('debug', __PACKAGE__ . '::extensions: Asking');
+    $client->log('debug', $class . '::extensions: Asking');
     my $result = $class->api_call($client, 'Bugzilla.extensions');
-    $client->log('debug', __PACKAGE__ . '::extensions: Got stuff');
+    $client->log('debug', $class . '::extensions: Got stuff');
     my $extensions = $result->{'extensions'};
     if (!$extensions || 'HASH' ne ref($extensions)) {
         $class->error($client, 'Invalid reply by server, expected hash of extensions.');
@@ -25,59 +25,59 @@ sub extensions {
 
 sub parameters {
     my($class, $client) = @_;
-    $client->log('debug', __PACKAGE__ . '::parameters: Asking');
+    $client->log('debug', $class . '::parameters: Asking');
     my $result = $class->api_call($client, 'Bugzilla.parameters');
-    $client->log('debug', __PACKAGE__ . '::parameters: Got stuff');
+    $client->log('debug', $class . '::parameters: Got stuff');
     my $parameters = $result->{'parameters'};
     if (!$parameters || 'HASH' ne ref($parameters)) {
         $class->error($client, 'Invalid reply by server, expected hash of parameters.');
     }
-    $client->log('debug', __PACKAGE__ . '::parameters: Got ' . scalar %$parameters);
+    $client->log('debug', $class . '::parameters: Got ' . scalar %$parameters);
     return wantarray ? %$parameters : $parameters
 }
 
 sub last_audit_time {
     my($class, $client, $params) = @_;
-    $client->log('debug', __PACKAGE__ . '::last_audit_time: Asking');
+    $client->log('debug', $class . '::last_audit_time: Asking');
     my $result = $class->api_call($client, 'Bugzilla.last_audit_time', $params);
-    $client->log('debug', __PACKAGE__ . '::last_audit_time: Got stuff');
+    $client->log('debug', $class . '::last_audit_time: Got stuff');
     my $last_audit_time = $result->{'last_audit_time'};
     if (!$last_audit_time || ! ref($last_audit_time)) {
         $class->error($client, 'Invalid reply by server, expected last_audit_time dateTime.');
     }
-    $client->log('debug', __PACKAGE__ . "::parameters: Got $last_audit_time");
+    $client->log('debug', $class . "::parameters: Got $last_audit_time");
     return $last_audit_time
 }
 
 sub time {
     my($class, $client) = @_;
-    $client->log('debug', __PACKAGE__ . '::time: Asking');
+    $client->log('debug', $class . '::time: Asking');
     my $time = $class->api_call($client, 'Bugzilla.time');
-    $client->log('debug', __PACKAGE__ . "::time: Got $time");
+    $client->log('debug', $class . "::time: Got $time");
     return wantarray ? %$time : $time
 }
 
 sub timezone {
     my($class, $client) = @_;
-    $client->log('debug', __PACKAGE__ . '::timezone: Asking');
+    $client->log('debug', $class . '::timezone: Asking');
     my $result = $class->api_call($client, 'Bugzilla.timezone');
     my $timezone = $result->{'timezone'};
     if (!$timezone || ref($timezone)) {
         $class->error($client, 'Invalid reply by server, expected timezone scalar.');
     }
-    $client->log('debug', __PACKAGE__ . "::time: Got $timezone");
+    $client->log('debug', $class . "::time: Got $timezone");
     return $timezone
 }
 
 sub version {
     my($class, $client) = @_;
-    $client->log('debug', __PACKAGE__ . '::version: Asking');
+    $client->log('debug', $class . '::version: Asking');
     my $result = $class->api_call($client, 'Bugzilla.version');
     my $version = $result->{'version'};
     if (!$version || ref($version)) {
         $class->error($client, 'Invalid reply by server, expected version scalar.');
     }
-    $client->log('debug', __PACKAGE__ . "::version: Got $version");
+    $client->log('debug', $class . "::version: Got $version");
     return $version
 }
 

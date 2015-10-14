@@ -16,7 +16,7 @@ use parent qw( BZ::Client::API );
 
 sub get {
     my($class, $client, $params) = @_;
-    return _returns_array($client, 'Classification.get', $params, 'classifications');
+    return $class->_returns_array($client, 'Classification.get', $params, 'classifications');
 }
 
 

@@ -15,12 +15,12 @@ use parent qw( BZ::Client::API );
 
 sub create {
     my($class, $client, $params) = @_;
-    return _create($client, 'Group.create', $params);
+    return $class->_create($client, 'Group.create', $params);
 }
 
 sub update {
     my($class, $client, $params) = @_;
-    return _returns_array($client, 'Group.update', $params, 'groups');
+    return $class->_returns_array($client, 'Group.update', $params, 'groups');
 }
 
 sub get {

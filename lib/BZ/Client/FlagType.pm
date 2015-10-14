@@ -21,12 +21,12 @@ sub get {
 
 sub create {
     my($class, $client, $params) = @_;
-    return _create($client, 'FlagType.create', $params, 'flag_id');
+    return $class->_create($client, 'FlagType.create', $params, 'flag_id');
 }
 
 sub update {
     my($class, $client, $params) = @_;
-    return _returns_array($client, 'FlagType.update', $params, 'flagtypes');
+    return $class->_returns_array($client, 'FlagType.update', $params, 'flagtypes');
 }
 
 1;
