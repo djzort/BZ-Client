@@ -1,5 +1,8 @@
 Revision history for Perl extension BZ::Client.
 
+
+    - Proof read and update pod
+
 2.0_10 Tuesday Oct 14 18:28 2015
     - Lots of minor fixes, including API.pm working
     - FlagType.pm: added

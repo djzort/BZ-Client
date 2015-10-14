@@ -113,6 +113,8 @@ This section lists the class methods, which are available in this module.
 
 Returns a hash or hash ref information about the extensions that are currently installed and enabled in this Bugzilla.
 
+=head3 History
+
 Added in Bugzilla 3.2.
 
 As of Bugzilla 3.6, the names of extensions are canonical names that the extensions define themselves. Before 3.6, the names of the extensions depended on the directory they were in on the Bugzilla server.
@@ -142,7 +144,9 @@ The return value looks something like this:
 
  $last_audit_time = BZ::Client::Bugzilla->extensions( $client, \%params );
 
-Gets the latest time of the audit_log table.
+Gets the latest time of the C<audit_log> table.
+
+=head3 History
 
 Added in Bugzilla 4.4.
 
@@ -171,6 +175,8 @@ The maximum of the C<at_time> from the C<audit_log>, as a L<DateTime> object.
 
 Returns a hash or hashref containing the current Bugzilla parameters.
 
+=head3 History
+
 Added in Bugzilla 4.4.
 
 =head3 Parameters
@@ -183,7 +189,7 @@ A logged-out user can only access the C<maintainer> and C<requirelogin> paramete
 
 A logged-in user can access the following parameters (listed alphabetically): C<allowemailchange>, C<attachment_base>, C<commentonchange_resolution>, C<commentonduplicate>, C<cookiepath>, C<defaultopsys>, C<defaultplatform>, C<defaultpriority>, C<defaultseverity>, C<duplicate_or_move_bug_status>, C<emailregexpdesc>, C<emailsuffix>, C<letsubmitterchoosemilestone>, C<letsubmitterchoosepriority>, C<mailfrom>, C<maintainer>, C<maxattachmentsize>, C<maxlocalattachment>, C<musthavemilestoneonaccept>, C<noresolveonopenblockers>, C<password_complexity>, C<rememberlogin>, C<requirelogin>, C<search_allow_no_criteria>, C<urlbase>, C<use_see_also>, C<useclassification>, C<usemenuforusers>, C<useqacontact>, C<usestatuswhiteboard>, C<usetargetmilestone>.
 
-A user in the tweakparams group can access all existing parameters. New parameters can appear or obsolete parameters can disappear depending on the version of Bugzilla and on extensions being installed. The list of parameters returned by this method is not stable and will never be stable.
+A user in the C<tweakparams> group can access all existing parameters. New parameters can appear or obsolete parameters can disappear depending on the version of Bugzilla and on extensions being installed. The list of parameters returned by this method is not stable and will never be stable.
 
 =head2 time
 
@@ -191,6 +197,8 @@ A user in the tweakparams group can access all existing parameters. New paramete
  $timeinfo = BZ::Client::Bugzilla->time( $client );
 
 Gets information about what time the Bugzilla server thinks it is, and what timezone it's running in.
+
+=head3 History
 
 Added in Bugzilla 3.4.
 
@@ -208,13 +216,13 @@ A hash with the following items:
 
 =item db_time
 
-I<db_time> (dateTime) -  The current time in UTC, according to the Bugzilla database server.
+I<db_time> (L<DateTime>) -  The current time in UTC, according to the Bugzilla database server.
 
 Note that Bugzilla assumes that the database and the webserver are running in the same time zone. However, if the web server and the database server aren't synchronized for some reason, this is the time that you should rely on for doing searches and other input to the WebService.
 
 =item web_time
 
-I<web_time> (dateTime) -  This is the current time in UTC, according to Bugzilla's web server.
+I<web_time> (L<DateTime>) -  This is the current time in UTC, according to Bugzilla's web server.
 
 This might be different by a second from L</db_time> since this comes from a different source. If it's any more different than a second, then there is likely some problem with this Bugzilla instance. In this case you should rely on the L</db_time>, not the L</web_time>.
 

@@ -292,15 +292,17 @@ This class provides methods for accessing and managing bugs in Bugzilla.
 
 =head1 COMMON PARAMETERS
 
-Many Webservice methods take similar arguments. Instead of re-writing the documentation for each method, we document the parameters here, once, and then refer back to this documentation from the individual methods where these parameters are used.
+Many Bugzilla Webservice methods take similar arguments. Instead of re-writing the documentation for each method, we document the parameters here, once, and then refer back to this documentation from the individual methods where these parameters are used.
 
 =head2 Limiting What Fields Are Returned
 
 Many methods return an array of structs with various fields in the structs.
-(For example, L<get> in L<BZ::Client::Bug> returns a list of bugs that have fields like
-L<id>, L<summary>, L<creation_time>, etc.)
+(For example, L</get> in L<BZ::Client::Bug> returns a list of bugs that have fields like
+L</id>, L</summary>, L</creation_time>, etc.)
 
 These parameters allow you to limit what fields are present in the structs, to possibly improve performance or save some bandwidth.
+
+Fields follow:
 
 =head3 include_fields
 
@@ -329,7 +331,7 @@ Some RPC calls support specifying sub fields. If an RPC call states that it supp
 
 Invalid field names are ignored.
 
-Specifying fields here overrides L<include_fields>, so if you specify a field in both, it will be excluded, not included.
+Specifying fields here overrides L</include_fields>, so if you specify a field in both, it will be excluded, not included.
 
 Example:
 
@@ -348,19 +350,19 @@ There are several shortcut identifiers to ask for only certain groups of fields 
 
 =item _all
 
-All possible fields are returned if _all is specified in include_fields.
+All possible fields are returned if C<_all> is specified in L</include_fields>.
 
 =item _default
 
-These fields are returned if include_fields is empty or _default is specified. All fields described in the documentation are returned by default unless specified otherwise.
+These fields are returned if L</include_fields> is empty or C<_default> is specified. All fields described in the documentation are returned by default unless specified otherwise.
 
 =item _extra
 
-These fields are not returned by default and need to be manually specified in include_fields either by field name, or using _extra.
+These fields are not returned by default and need to be manually specified in L</include_fields> either by field name, or using C<_extra>.
 
 =item _custom
 
-Only custom fields are returned if _custom is specified in include_fields. This is normally specific to bug objects and not relevant for other returned objects.
+Only custom fields are returned if C<_custom> is specified in L</include_fields>. This is normally specific to bug objects and not relevant for other returned objects.
 
 =back
 
@@ -382,6 +384,8 @@ These deal with bug-related information, but not bugs directly.
 
 Get information about valid bug fields, including the lists of legal values for each field.
 
+=head3 History
+
 Added in Bugzilla 3.6
 
 =head3 Parameters
@@ -402,7 +406,7 @@ I<names> (array) - An array of strings representing field names.
 
 =back
 
-In addition to the parameters above, this method also accepts the standard I<include_fields> and I<exclude_fields> arguments.
+In addition to the parameters above, this method also accepts the standard L</include_fields> and L</exclude_fields> arguments.
 
 =head3 Returns
 
@@ -462,7 +466,7 @@ I<is_on_bug_entry> (boolean) For custom fields, this is true if the field is sho
 
 =item visibility_field
 
-I<visibility_field> (string) The name of a field that controls the visibility of this field in the user interface. This field only appears in the user interface when the named field is equal to one of the values in visibility_values. Can be null.
+I<visibility_field> (string) The name of a field that controls the visibility of this field in the user interface. This field only appears in the user interface when the named field is equal to one of the values in L</visibility_values>. Can be null.
 
 =item visibility_values
 
@@ -474,7 +478,7 @@ I<value_field> (string) The name of the field that controls whether or not parti
 
 =item values
 
-This is an array of hashes, representing the legal values for select-type (drop-down and multiple-selection) fields. This is also populated for the component, version, target_milestone, and keywords fields, but not for the product field (you must use L<BZ::Client::Product/get_accessible_products> for that).
+This is an array of hashes, representing the legal values for select-type (drop-down and multiple-selection) fields. This is also populated for the L</component>, L</version>, L</target_milestone>, and L</keywords> fields, but not for the C<product> field (you must use L<BZ::Client::Product/get_accessible_products> for that).
 
 For fields that aren't select-type fields, this will simply be an empty array.
 
@@ -484,7 +488,7 @@ Each hash has the following keys:
 
 =item name
 
-I<name> (string) The actual value--this is what you would specify for this field in "create", etc.
+I<name> (string) The actual value--this is what you would specify for this field in L</create>, etc.
 
 =item sort_key
 
@@ -492,7 +496,7 @@ I<sort_key> (int) Values, when displayed in a list, are sorted first by this int
 
 =item sortkey
 
-DEPRECATED - Use I<sort_key> instead.
+DEPRECATED - Use L</sort_key> instead.
 
 Renamed to sort_key in Bugzilla 4.2.
 
@@ -500,11 +504,11 @@ Renamed to sort_key in Bugzilla 4.2.
 
 If L</value_field> is defined for this field, then this value is only shown if the L</value_field> is set to one of the values listed in this array.
 
-Note that for per-product fields, L</value_field> is set to 'product' and L</visibility_values> will reflect which product(s) this value appears in.
+Note that for per-product fields, L</value_field> is set to C<product> and L</visibility_values> will reflect which product(s) this value appears in.
 
 =item is_active
 
-I<is_active> (boolean) This value is defined only for certain product specific fields such as version, target_milestone or component.
+I<is_active> (boolean) This value is defined only for certain product specific fields such as L</version>, L</target_milestone> or L</component>.
 
 When true, the value is active, otherwise the value is not active.
 
@@ -512,7 +516,7 @@ Added in Bugzilla 4.4.
 
 =item description
 
-I<description> (string) The description of the value. This item is only included for the keywords field.
+I<description> (string) The description of the value. This item is only included for the L</keywords> field.
 
 =item is_open
 
@@ -618,13 +622,13 @@ Gets information about particular bugs in the database.
 
 An array of numbers and strings.
 
-If an element in the array is entirely numeric, it represents a bug_id from the Bugzilla database to fetch. If it contains any non-numeric characters, it is considered to be a bug alias instead, and the bug with that alias will be loaded.
+If an element in the array is entirely numeric, it represents a C<bug_id> from the Bugzilla database to fetch. If it contains any non-numeric characters, it is considered to be a bug alias instead, and the bug with that alias will be loaded.
 
 =item permissive
 
 I<permissive> (boolean) Normally, if you request any inaccessible or invalid bug ids, will throw an error.
 
-If this parameter is True, instead of throwing an error we return an array of hashes with a I<id>, I<faultString> and I<faultCode> for each bug that fails, and return normal information for the other bugs that were accessible.
+If this parameter is True, instead of throwing an error we return an array of hashes with a C<id>, C<faultString> and C<faultCode> for each bug that fails, and return normal information for the other bugs that were accessible.
 
 Note: marked as B<EXPERIMENTAL> in Bugzilla 4.4
 
@@ -688,7 +692,7 @@ Added in Bugzilla 3.4.
 
 An array of numbers and strings.
 
-If an element in the array is entirely numeric, it represents a bug_id from the Bugzilla database to fetch. If it contains any non-numeric characters, it is considered to be a bug alias instead, and the data bug with that alias will be loaded.
+If an element in the array is entirely numeric, it represents a C<bug_id> from the Bugzilla database to fetch. If it contains any non-numeric characters, it is considered to be a bug alias instead, and the data bug with that alias will be loaded.
 
 =back
 
@@ -714,7 +718,7 @@ An array of hashes, each hash having the following keys:
 
 =item when
 
-I<when> (dateTime) The date the bug activity/change happened.
+I<when> (L<DateTime>) The date the bug activity/change happened.
 
 =item who
 
@@ -740,7 +744,7 @@ I<added> (string) The new value of the bug field which has been added by the cha
 
 =item attachment_id
 
-I<attachment_id> (int) The id of the attachment that was changed. This only appears if the change was to an attachment, otherwise attachment_id will not be present in this hash.
+I<attachment_id> (int) The id of the attachment that was changed. This only appears if the change was to an attachment, otherwise L</attachment_id> will not be present in this hash.
 
 =back
 
@@ -750,7 +754,21 @@ I<attachment_id> (int) The id of the attachment that was changed. This only appe
 
 =head3 Errors
 
-The same as L</get>.
+=over 4
+
+=item 100 - Invalid Bug Alias
+
+If you specified an alias and there is no bug with that alias.
+
+=item 101 - Invalid Bug ID
+
+The bug_id you specified doesn't exist in the database.
+
+=item 102 - Access Denied
+
+You do not have access to the bug_id you specified.
+
+=back
 
 =head2 possible_duplicates
 
@@ -758,6 +776,8 @@ The same as L</get>.
  $bugs = BZ::Client::Bug->possible_duplicates( $client, \%params );
 
 Allows a user to find possible duplicate bugs based on a set of keywords such as a user may use as a bug summary. Optionally the search can be narrowed down to specific products.
+
+=head3 History
 
 Added in Bugzilla 4.0.
 
@@ -787,7 +807,7 @@ Note that you will only be returned information about bugs that you can see. Bug
 
 =item 50 - Param Required
 
-You must specify a value for I<summary> containing a string of keywords to search for duplicates.
+You must specify a value for L</summary> containing a string of keywords to search for duplicates.
 
 =back
 
@@ -802,6 +822,8 @@ Listed here in order of what you most likely want to do... maybe?
   my $id = BZ::Client::Bug->create( $client, \%params );
 
 Creates a new bug in your Bugzilla server and returns the bug ID.
+
+FIXME more details needed
 
 =head2 update
 
@@ -819,6 +841,8 @@ FIXME more details needed
  $changes = BZ::Client::Bug->update_see_also( $client, \%params );
 
 Adds or removes URLs for the I<See Also> field on bugs. These URLs must point to some valid bug in some Bugzilla installation or in Launchpad.
+
+=head3 History
 
 This is marked as B<EXPERIMENTAL> in Bugzilla 4.4
 
@@ -848,13 +872,13 @@ If you specify a URL that is not in the I<See Also> field of a particular bug, i
 
 =back
 
-NOTE: If you specify the same URL in both I<add> and I<remove>, it will be added. (That is, I<add> overrides I<remove>.)
+NOTE: If you specify the same URL in both L</add> and L</remove>, it will be added. (That is, L</add> overrides L</remove>.)
 
 =head3 Returns
 
-A hash or hashref where the keys are numeric bug ids and the contents are a hash with one key, I<see_also>.
+A hash or hashref where the keys are numeric bug ids and the contents are a hash with one key, C<see_also>.
 
-I<see_also> points to a hash, which contains two keys, I<added> and I<removed>.
+C<see_also> points to a hash, which contains two keys, C<added> and C<removed>.
 
 These are arrays of strings, representing the actual changes that were made to the bug.
 
@@ -877,13 +901,23 @@ Here's a diagram of what the return value looks like for updating bug ids 1 and 
 
 This return value allows you to tell what this method actually did.
 
-It is in this format to be compatible with the return value of a future L<\update> method.
+It is in this format to be compatible with the return value of a future L</update> method.
 
 =head3 Errors
 
-This method can throw all of the errors that L</get> throws, plus:
-
 =over 4
+
+=item 100 - Invalid Bug Alias
+
+If you specified an alias and there is no bug with that alias.
+
+=item 101 - Invalid Bug ID
+
+The bug_id you specified doesn't exist in the database.
+
+=item 102 - Access Denied
+
+You do not have access to the bug_id you specified.
 
 =item 109 - Bug Edit Denied
 
@@ -907,6 +941,8 @@ Before Bugzilla 3.6, error 115 had a generic error code of 32000.
  $changes = BZ::Client::Bug->update_tags( $client, \%params );
 
 Adds or removes tags on bugs.
+
+=head3 History
 
 This is marked as B<UNSTABLE> in Bugzilla 4.4
 
@@ -944,9 +980,9 @@ It is safe to specify tags that are not associated with any bugs as they will ju
 
 =head3 Returns
 
-A hash or hashref where the keys are numeric bug ids and the contents are a hash with one key, I<tags>.
+A hash or hashref where the keys are numeric bug ids and the contents are a hash with one key, C<tags>.
 
-I<tags> points to a hash, which contains two keys, I<added> and I<removed>.
+C<tags> points to a hash, which contains two keys, C<added> and C<removed>.
 
 These are arrays of strings, representing the actual changes that were made to the bug.
 
@@ -971,7 +1007,21 @@ This return value allows you to tell what this method actually did.
 
 =head3 Errors
 
-This method can throw all of the errors that L</get> throws.
+=over 4
+
+=item 100 - Invalid Bug Alias
+
+If you specified an alias and there is no bug with that alias.
+
+=item 101 - Invalid Bug ID
+
+The bug_id you specified doesn't exist in the database.
+
+=item 102 - Access Denied
+
+You do not have access to the bug_id you specified.
+
+=back
 
 =head2 new
 
@@ -981,7 +1031,7 @@ Creates a new bug object instance with the given ID.
 
 B<Note:> Doesn't actually touch your bugzilla server.
 
-See L<INSTANCE METHODS> for how to use it.
+See L</INSTANCE METHODS> for how to use it.
 
 =head1 INSTANCE METHODS
 

@@ -227,6 +227,8 @@ This section lists the class methods, which are available in this module.
 
 This allows you to create a new Product in Bugzilla.
 
+=head3 History
+
 Marked as experimental as of Bugzilla 5.0.
 
 =head3 Parameters
@@ -239,19 +241,19 @@ Some params must be set, or an error will be thrown. These params are noted as R
 
 I<name> (string) The name of this product. Must be globally unique within Bugzilla.
 
-Required.
+B<Required>.
 
 =item description
 
 I<description> (string) A description for this product. Allows some simple HTML.
 
-Required.
+B<Required>.
 
 =item version
 
 I<version> (string) The default version for this product.
 
-Required.
+B<Required>.
 
 =item has_unconfirmed
 
@@ -315,6 +317,8 @@ You must specify a version for this product.
 
 This allows you to update a Group in Bugzilla.
 
+=head3 History
+
 As of Bugzilla 5.0. this is marked as experimental.
 
 Added in Bugzilla 4.4.
@@ -329,7 +333,7 @@ All other values change or set something in the product.
 
 =item ids
 
-I<ids> (array) Numeric ids of the products you wish to update.
+I<ids> (array) Numeric ID's of the products you wish to update.
 
 =item names
 
@@ -364,7 +368,7 @@ An array or arrayref of hashes containing the following:
 
 =item id
 
-I<id> (int) The id of the product that was updated.
+I<id> (int) The ID of the product that was updated.
 
 =item changes
 
@@ -437,9 +441,11 @@ You must define a default milestone.
  @products = BZ::Client::Product->get_selectable_products( $client );
  $products = BZ::Client::Product->get_selectable_products( $client );
 
-Returns a list of the ids of the products the user can search on.
+Returns a list of the ID's of the products the user can search on.
 
-Note: Marked as experimental as of Bugzilla 5.0.
+=head3 History
+
+Marked as experimental as of Bugzilla 5.0.
 
 =head3 Parameters
 
@@ -458,9 +464,11 @@ An array of product ID's
  @products = BZ::Client::Product->get_enterable_products( $client );
  $products = BZ::Client::Product->get_enterable_products( $client );
 
-Returns a list of the ids of the products the user can enter bugs against.
+Returns a list of the ID's of the products the user can enter bugs against.
 
-Note: Marked as experimental as of Bugzilla 5.0.
+=head3 History
+
+Marked as experimental as of Bugzilla 5.0.
 
 =head3 Parameters
 
@@ -479,9 +487,11 @@ An array of product ID's
  @products = BZ::Client::Product->get_selectable_products( $client );
  $products = BZ::Client::Product->get_selectable_products( $client );
 
-Returns a list of the ids of the products the user can search or enter bugs against.
+Returns a list of the ID's of the products the user can search or enter bugs against.
 
-Note: Marked as unstable as of Bugzilla 5.0.
+=head3 History
+
+Marked as unstable as of Bugzilla 5.0.
 
 =head3 Parameters
 
@@ -509,7 +519,7 @@ silently ignored, and no information about that product is returned.
 =head3 Parameters
 
 In addition to the parameters below, this method also accepts the standard
-L<include_fields> and L<exclude_fields> arguments.
+L<BZ::Client::Bug/include_fields> and L<BZ::Client::Bug/exclude_fields> arguments.
 
 Note: You must at least specify one of L</ids> or L</names>.
 
@@ -517,7 +527,7 @@ Note: You must at least specify one of L</ids> or L</names>.
 
 =item ids
 
-I<ids> (array) An array of product ids.
+I<ids> (array) An array of product ID's.
 
 =item names
 
@@ -642,7 +652,7 @@ An array of hashes, where each hash describes a component, and has the following
 
 =item id
 
-I<id> (int) An integer id uniquely identifying the component in this installation only.
+I<id> (int) An integer ID uniquely identifying the component in this installation only.
 
 =item name
 
@@ -723,12 +733,12 @@ flagtype in a given bug/attachment.
 
 =item grant_group
 
-I<grant_group> (int) the group id that is allowed to grant/deny flags of this type. If the
+I<grant_group> (int) the group ID that is allowed to grant/deny flags of this type. If the
 item is not included all users are allowed to grant/deny this flagtype.
 
 =item request_group
 
-I<request_group> (int) the group id that is allowed to request the flag if the flag is of
+I<request_group> (int) the group ID that is allowed to request the flag if the flag is of
 the type requestable. If the item is not included all users are allowed request this flagtype.
 
 =back

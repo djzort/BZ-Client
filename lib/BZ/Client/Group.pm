@@ -57,6 +57,8 @@ This section lists the class methods, which are available in this module.
 
 This allows you to create a new Group in Bugzilla.
 
+=head3 History
+
 Marked as unstable as of Bugzilla 5.0.
 
 =head3 Parameters
@@ -71,7 +73,7 @@ I<name> (string) A short name for this group. Must be unique.
 
 This is infrequently displayed in the web user interface.
 
-Required.
+B<Required>.
 
 =item description
 
@@ -79,7 +81,7 @@ I<description> (string) A human-readable name for this group. Should be relative
 
 This is what will normally appear in the UI as the name of the group.
 
-Required.
+B<Required>.
 
 =item user_regexp
 
@@ -129,6 +131,8 @@ You specified an invalid regular expression in the L</user_regexp> field.
 
 This allows you to update a Group in Bugzilla.
 
+=head3 History
+
 As of Bugzilla 5.0. this is marked as unstable.
 
 =head3 Parameters
@@ -141,7 +145,7 @@ All other values change or set something in the product.
 
 =item ids
 
-I<ids> (array) Numeric ids of the groups you wish to update.
+I<ids> (array) Numeric ID's of the groups you wish to update.
 
 =item names
 
@@ -177,7 +181,7 @@ An array or arrayref of hashes containing the following:
 
 =item id
 
-I<id> (int) The id of the Group that was updated.
+I<id> (int) The ID of the Group that was updated.
 
 =item changes
 
@@ -196,7 +200,7 @@ I<removed> (string) The values that were removed from this field, possibly a com
 
 =back
 
-Note that booleans will be represented with the strings '1' and '0'.
+Note that booleans will be represented with the strings C<1> and <0>.
 
 =back
 
@@ -224,7 +228,7 @@ You specified an invalid regular expression in the L</user_regexp> field.
 
 =head2 get
 
-Implemented but documentation is TODO
+Implemented but documentation is TODO FIXME
 
 =head1 INSTANCE METHODS
 

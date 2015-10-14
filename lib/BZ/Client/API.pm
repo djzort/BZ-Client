@@ -68,6 +68,30 @@ __END__
 This is an abstract base class for classes like L<BZ::Client::Product>, which
 are subclassing this one, in order to inherit common functionality.
 
+None of these methods are useful to end users.
+
+=head1 METHODS
+
+=head2 api_call
+
+Wraps C<BZ::Client::api_call>
+
+=head2 error
+
+Wraps C<BZ::Client::error>
+
+=head2 new
+
+Generic C<new()> function. Saving doing it over and over.
+
+=head2 _create
+
+Calls something on the Bugzilla Server, and returns and ID.
+
+=head2 _returns_array
+
+Calls something on the Bugzilla Server, and returns an array / arrayref.
+
 =head1 SEE ALSO
 
 L<BZ::Client>

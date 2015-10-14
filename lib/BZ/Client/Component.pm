@@ -60,13 +60,15 @@ This section lists the class methods, which are available in this module.
 
 Returns the ID of the newly created Component.
 
+=head3 History
+
 Added in Bugzilla 5.0.
 
 Marked experiemental as of Bugzilla 5.0.
 
 =head3 Parameters
 
-Some params must be set, or an error will be thrown. These params are marked Required.
+Some params must be set, or an error will be thrown. These params are marked "Required".
 
 =over 4
 
@@ -74,7 +76,7 @@ Some params must be set, or an error will be thrown. These params are marked Req
 
 I<name> (string) The name of the new component.
 
-Required.
+B<Required>.
 
 =item product
 
@@ -82,19 +84,19 @@ I<product> (string) The name of the product that the component must be added to.
 product must already exist, and the user have the necessary permissions to edit components
 for it.
 
-Required.
+B<Required>.
 
 =item description
 
 I<description> (string) The description of the new component.
 
-Required.
+B<Required>.
 
 =item default_assignee
 
 I<default_assignee> (string) The login name of the default assignee of the component.
 
-Required.
+B<Required>.
 
 =item default_cc
 
@@ -137,6 +139,8 @@ The name that you specified for the new component already exists in the specifie
 
 This allows you to update one or more components in Bugzilla.
 
+=head3 History
+
 Added in Bugzilla 5.0.
 
 =head3 Parameters
@@ -149,7 +153,7 @@ Other parameters set or update values of the Component
 
 =item ids
 
-I<ids> (array) Numeric ids of the components that you wish to update.
+I<ids> (array) Numeric ID's of the components that you wish to update.
 
 =item names
 
@@ -199,13 +203,12 @@ An array of hashes with the following fields:
 
 =item id
 
-I<id> (int) The id of the component that was updated.
+I<id> (int) The ID of the component that was updated.
 
 =item changes
 
 The changes that were actually done on this component. The keys are the names of the fields
 that were changed, and the values are a hash with two keys:
-
 
 =over 4
 
@@ -217,7 +220,7 @@ I<added> (string) The value that this field was changed to.
 
 I<removed> (string) The value that was previously set in this field.
 
-Note that booleans will be represented with the strings '1' and '0'.
+Note that booleans will be represented with the strings C<1> and C<0>.
 
 =back
 
@@ -292,6 +295,8 @@ A default assignee is required for this component.
 
 This allows you to delete one or more components in Bugzilla.
 
+=head3 History
+
 Added in Bugzilla 5.0.
 
 =head3 Parameters
@@ -302,7 +307,7 @@ You must set one or both of these parameters.
 
 =item ids
 
-I<ids> (array) Numeric IDs of the components that you wish to delete.
+I<ids> (array) Numeric ID's of the components that you wish to delete.
 
 =item names
 

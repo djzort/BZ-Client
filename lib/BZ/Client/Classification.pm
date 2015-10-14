@@ -1,6 +1,6 @@
 #!/bin/false
 # PODNAME: BZ::Client::Classification
-# ABSTRACT: Client side representation of a Classifications in Bugzilla
+# ABSTRACT: Client side representation of Classifications in Bugzilla
 
 use strict;
 use warnings 'all';
@@ -49,6 +49,8 @@ This section lists the class methods, which are available in this module.
 
 Returns a hash containing information about a set of classifications.
 
+=head3 History
+
 Added in Bugzilla 4.4.
 
 Marked experiemental as of Bugzilla 5.0.
@@ -56,7 +58,7 @@ Marked experiemental as of Bugzilla 5.0.
 =head3 Parameters
 
 In addition to the parameters below, this method also accepts the standard
-L</include_fields> and L</exclude_fields> arguments.
+L<BZ::Client::Bug/include_fields> and L<BZ::Client::Bug/exclude_fields> arguments.
 
 You could get classifications info by supplying their names and/or ids. So,
 this method accepts the following parameters:
