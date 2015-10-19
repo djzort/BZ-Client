@@ -2,6 +2,7 @@ Revision history for Perl extension BZ::Client.
 
     - Start using Test::RequiresInternet in t/
     - Proof read and update pod
+    - Bug.pm: minor but important fix
 
 2.0_10 Tuesday Oct 14 18:28 2015
     - Lots of minor fixes, including API.pm working
