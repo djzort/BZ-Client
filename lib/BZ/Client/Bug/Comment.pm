@@ -157,27 +157,29 @@ This allows you to get data about comments, given a list of bugs and/or comment 
 
 Actual Bugzilla API method is "comments".
 
+=head3 History
+
 Added in Bugzilla 3.4
 
 =head3 Parameters
 
-Note: At least one of I<ids> or I<comment_ids> is required.
+Note: At least one of L</ids> or L</comment_ids> is required.
 
-In addition to the parameters below, this method also accepts the standard include_fields and exclude_fields arguments.
+In addition to the parameters below, this method also accepts the standard L<BZ::Client::Bug/include_fields> and L<BZ::Client::Bug/exclude_fields> arguments.
 
 =over 4
 
 =item ids
 
-I<ids> (array) - An array that can contain both bug IDs and bug aliases. All of the comments (that are visible to you) will be returned for the specified bugs.
+I<ids> (array) - An array that can contain both bug ID's and bug aliases. All of the comments (that are visible to you) will be returned for the specified bugs.
 
 =item comment_ids
 
-I<comment_ids> (array) - An array of integer comment_ids. These comments will be returned individually, separate from any other comments in their respective bugs.
+I<comment_ids> (array) - An array of integer comment ID's. These comments will be returned individually, separate from any other comments in their respective bugs.
 
 =item new_since
 
-I<new_since> (dateTime) - If specified, the method will only return comments newer than this time. This only affects comments returned from the I<ids> argument. You will always be returned all comments you request in the I<comment_ids> argument, even if they are older than this date.
+I<new_since> (L<DateTime>) - If specified, the method will only return comments newer than this time. This only affects comments returned from the L</ids> argument. You will always be returned all comments you request in the I<comment_ids> argument, even if they are older than this date.
 
 =back
 
@@ -189,13 +191,13 @@ A hash containing two items is returned:
 
 =item bugs
 
-This is used for bugs specified in I<ids>. This is a hash, where the keys are the numeric ids of the bugs, and the value is a hash with a single key, I<comments>, which is an array of comments. (The format of comments is described below.)
+This is used for bugs specified in L</ids>. This is a hash, where the keys are the numeric IDs of the bugs, and the value is a hash with a single key, I<comments>, which is an array of comments. (The format of comments is described below)
 
-Note that any individual bug will only be returned once, so if you specify an id multiple times in ids, it will still only be returned once.
+Note that any individual bug will only be returned once, so if you specify an ID multiple times in ID's, it will still only be returned once.
 
 =item comments
 
-Each individual comment requested in comment_ids is returned here, in a hash where the numeric comment id is the key, and the value is the comment. (The format of comments is described below.)
+Each individual comment requested in L</comment_ids> is returned here, in a hash where the numeric comment ID is the key, and the value is the comment. (The format of comments is described below)
 
 =back
 
@@ -211,19 +213,19 @@ If you specified an alias and there is no bug with that alias.
 
 =item 101 - Invalid Bug ID
 
-The bug_id you specified doesn't exist in the database.
+The C<bug_id> you specified doesn't exist in the database.
 
 =item 102 - Access Denied
 
-You do not have access to the I<bug_id> you specified.
+You do not have access to the C<bug_id> you specified.
 
 =item 110 - Comment Is Private
 
-You specified the id of a private comment in the I<comment_ids> argument, and you are not in the "insider group" that can see private comments.
+You specified the ID of a private comment in the I<comment_ids> argument, and you are not in the "insider group" that can see private comments.
 
 =item 111 - Invalid Comment ID
 
-You specified an id in the I<comment_ids> argument that is invalid--either you specified something that wasn't a number, or there is no comment with that id.
+You specified an ID in the L</comment_ids> argument that is invalid--either you specified something that wasn't a number, or there is no comment with that ID.
 
 =back
 
@@ -233,9 +235,11 @@ This allows you to add a comment to a bug in Bugzilla.
 
 Actual Bugzilla API method is "add_comment".
 
+=head3 History
+
 Added in Bugzilla 3.2.
 
-Modified to return the new comment's id in Bugzilla 3.4
+Modified to return the new comment's ID in Bugzilla 3.4
 
 Modified to throw an error if you try to add a private comment but can't, in Bugzilla 3.4.
 
@@ -247,7 +251,7 @@ An instance of this package or a hash containing:
 
 =item id
 
-I<id> (int or string) Required - The id or alias of the bug to append a comment to.
+I<id> (int or string) Required - The ID or alias of the bug to append a comment to.
 
 =item comment
 
@@ -257,7 +261,7 @@ I<comment> (string) Required - The comment to append to the bug. If this is empt
 
 I<is_private> (boolean) - If set to true, the comment is private, otherwise it is assumed to be public.
 
-Before Bugzilla 3.6, the is_private argument was called private, and you can still call it private for backwards-compatibility purposes if you wish.
+Before Bugzilla 3.6, the L</is_private argument> was called C<private>, and you can still call it C<private> for backwards-compatibility purposes if you wish.
 
 =item work_time
 
@@ -275,7 +279,7 @@ The id of the newly-created comment.
 
 =item 54 - Hours Worked Too Large
 
-You specified a work_time larger than the maximum allowed value of 99999.99.
+You specified a L</work_time> larger than the maximum allowed value of C<99999.99>.
 
 =item 100 - Invalid Bug Alias
 
@@ -283,7 +287,7 @@ If you specified an alias and there is no bug with that alias.
 
 =item 101 - Invalid Bug ID
 
-The id you specified doesn't exist in the database.
+The ID you specified doesn't exist in the database.
 
 =item 109 - Bug Edit Denied
 
@@ -308,6 +312,8 @@ Returns the HTML rendering of the provided comment text.
 Actual Bugzilla API method is "render_comment".
 
 Note: this all takes place on your Bugzilla server.
+
+=head3 History
 
 Added in Bugzilla 5.0.
 
@@ -339,11 +345,11 @@ If you specified an alias and there is no bug with that alias.
 
 =item 101 - Invalid Bug ID
 
-The bug_id you specified doesn't exist in the database.
+The C<bug_id> you specified doesn't exist in the database.
 
 =item 102 - Access Denied
 
-You do not have access to the I<bug_id> you specified.
+You do not have access to the C<bug_id> you specified.
 
 =back
 
@@ -358,8 +364,7 @@ You do not have access to the I<bug_id> you specified.
                                           work_time  => 3.5
                                         );
 
-Creates a new instance with the given details. Doesn't actually touch
-your Bugzilla Server - see L<add> for that.
+Creates a new instance with the given details. Doesn't actually touch your Bugzilla Server - see L</add> for that.
 
 =head1 INSTANCE METHODS
 
@@ -369,19 +374,19 @@ This section lists the modules instance methods.
 
 I<bug_id> (int) - The ID of the bug that this comment is on when reading
 
-I<bug_id> (int or string) - The id or alias of the bug to append a comment to when writing
+I<bug_id> (int or string) - The ID or alias of the bug to append a comment to when writing
 
 =head2 comment
 
 I<comment> (string) The actual text of the comment when reading
 
-When writing, the comment to append to the bug. If this is empty or all whitespace, an error will be thrown saying that you did not set the I<comment> parameter.
+When writing, the comment to append to the bug. If this is empty or all whitespace, an error will be thrown saying that you did not set the L</comment> parameter.
 
 Max length is 65,535 characters.
 
 =head2 text
 
-Synonym for L<comment>
+Synonym for L</comment>
 
 =head2 is_private
 
@@ -421,9 +426,9 @@ Added to the return value in Bugzilla 4.4.
 
 I<creator> (string) -  The login name of the comment's author.
 
-Also returned as L<author>, for backwards-compatibility with older Bugzillas. (However, this backwards-compatibility will go away in Bugzilla 5.0.)
+Also returned as L</author>, for backwards-compatibility with older Bugzillas. (However, this backwards-compatibility will go away in Bugzilla 5.0)
 
-In bugzilla 4.0, the I<author> return value was renamed to I<creator>.
+In bugzilla 4.0, the L</author> return value was renamed to L</creator>.
 
 =head2 author
 
@@ -431,13 +436,13 @@ See creator
 
 =head2 time
 
-I<time> (dateTime) - The time (in Bugzilla's timezone) that the comment was added.
+I<time> (L<DateTime>) - The time (in Bugzilla's timezone) that the comment was added.
 
 Read only.
 
 =head2 creation_time
 
-I<creation_time> (dateTime) - This is exactly same as the L<time> key. Use this field instead of L<time> for consistency with other methods including "get" and "attachments". For compatibility, I<time> is still usable. However, please note that I<time> may be deprecated and removed in a future release of Bugzilla.
+I<creation_time> (L<DateTime>) - This is exactly same as the L</time> key. Use this field instead of L</time> for consistency with other methods including L</get> and "attachments". For compatibility, I</time> is still usable. However, please note that I</time> may be deprecated and removed in a future release of Bugzilla.
 
 Read only.
 

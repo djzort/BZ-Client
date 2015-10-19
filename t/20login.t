@@ -4,8 +4,11 @@ use strict;
 use warnings 'all';
 
 use BZ::Client::Test;
-use Test::More tests => 10;
+use Test::More;
+# use Test::RequiresInternet ( 'www.something.com' => 80, other => 443 );
 use Data::Dumper;
+
+plan tests => 10;
 
 my $tester = BZ::Client::Test->new(['config.pl', 't/config.pl']);
 

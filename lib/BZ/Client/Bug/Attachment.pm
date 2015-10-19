@@ -183,8 +183,7 @@ __END__
 
 =head1 SYNOPSIS
 
-This class provides methods for accessing and managing attachments in Bugzilla. Instances
-of this class are returned by L<BZ::Client::Bug::Attachment::get>.
+This class provides methods for accessing and managing attachments in Bugzilla. Instances of this class are returned by L<BZ::Client::Bug::Attachment::get>.
 
   my $client = BZ::Client->new( url       => $url,
                                 user      => $user,
@@ -204,13 +203,15 @@ Note: Private attachments will only be returned if you are in the insidergroup o
 
 Actual Bugzilla API method is "attachments".
 
+=head3 History
+
 Added in Bugzilla 3.6.
 
 =head3 Parameters
 
-Note: At least one of I<ids> or I<attachment_ids> is required.
+Note: At least one of L</ids> or L</attachment_ids> is required.
 
-In addition to the parameters below, this method also accepts the standard include_fields and exclude_fields arguments.
+In addition to the parameters below, this method also accepts the standard L<BZ::Client::Bug/include_fields> and L<BZ::Client::Bug/exclude_fields> arguments.
 
 =over 4
 
@@ -220,7 +221,7 @@ I<ids> (array) - An array that can contain both bug IDs and bug aliases. All of 
 
 =item attachment_ids
 
-I<attachment_ids> (array) - An array of integer attachment_ids.
+I<attachment_ids> (array) - An array of integer attachment ID's.
 
 =back
 
@@ -232,13 +233,13 @@ A hash containing two items is returned:
 
 =item bugs
 
-This is used for bugs specified in I<ids>. This is a hash, where the keys are the numeric ids of the bugs and the value is an array of attachment obects.
+This is used for bugs specified in L</ids>. This is a hash, where the keys are the numeric ID's of the bugs and the value is an array of attachment obejcts.
 
-Note that any individual bug will only be returned once, so if you specify an id multiple times in ids, it will still only be returned once.
+Note that any individual bug will only be returned once, so if you specify an ID multiple times in L</ids>, it will still only be returned once.
 
 =item attachments
 
-Each individual attachment requested in attachment_ids is returned here, in a hash where the numeric attachment_id is the key, and the value is the attachment object.
+Each individual attachment requested in L</attachment_ids> is returned here, in a hash where the numeric L</attachment_id> is the key, and the value is the attachment object.
 
 =back
 
@@ -259,10 +260,10 @@ The return value looks like this:
      attachments => {
          234 => { (attachment) },
          123 => { (attachment) },
-     }
+     },
  }
 
-A "attachment" as shown above is an object instance of this package.
+An "attachment" as shown above is an object instance of this package.
 
 =head3 Errors
 
@@ -274,15 +275,15 @@ If you specified an alias and there is no bug with that alias.
 
 =item 101 - Invalid Bug ID
 
-The bug_id you specified doesn't exist in the database.
+The C<bug_id> you specified doesn't exist in the database.
 
 =item 102 - Access Denied
 
-You do not have access to the I<bug_id> you specified.
+You do not have access to the C<bug_id> you specified.
 
 =item 304 - Auth Failure, Attachment is Private
 
-You specified the id of a private attachment in the L<attachment_ids> argument, and you are not in the "insider group" that can see private attachments.
+You specified the ID of a private attachment in the L</attachment_ids> argument, and you are not in the "insidergroup" that can see private attachments.
 
 =back
 
@@ -291,6 +292,8 @@ You specified the id of a private attachment in the L<attachment_ids> argument, 
 This allows you to add an attachment to a bug in Bugzilla.
 
 Actual Bugzilla API method is "add_attachment".
+
+=head3 History
 
 Added in Bugzilla 4.0.
 
@@ -304,7 +307,7 @@ An instance of this package or a hash containing:
 
 =item ids
 
-I<ids> (array) Required - An array of ints and/or strings--the ids or aliases of bugs that you want to add this attachment to. The same attachment and comment will be added to all these bugs.
+I<ids> (array) Required - An array of ints and/or strings--the ID's or aliases of bugs that you want to add this attachment to. The same attachment and comment will be added to all these bugs.
 
 =item data
 
@@ -324,7 +327,7 @@ I<comment> (string) - A comment to add along with this attachment.
 
 =item is_patch
 
-I<is_patch> (boolean) - True if Bugzilla should treat this attachment as a patch. If you specify this, you do not need to specify a L<content_type>. The L<content_type> of the attachment will be forced to C<text/plain>.
+I<is_patch> (boolean) - True if Bugzilla should treat this attachment as a patch. If you specify this, you do not need to specify a L</content_type>. The L</content_type> of the attachment will be forced to C<text/plain>.
 
 Defaults to False if not specified.
 
@@ -336,7 +339,7 @@ Defaults to False if not specified.
 
 =item flags
 
-An array of hashes with flags to add to the attachment. to create a flag, at least the status and the type_id or name must be provided. An optional requestee can be passed if the flag type is requestable to a specific user.
+An array of hashes with flags to add to the attachment. to create a flag, at least the C<status> and the C<type_id> or C<name> must be provided. An optional requestee can be passed if the flag type is requestable to a specific user.
 
 =over 4
 
@@ -346,7 +349,7 @@ I<name> (string) - The name of the flag type.
 
 =item type_id
 
-I<type_id> (int) - THe internal flag type id.
+I<type_id> (int) - THe internal flag type ID.
 
 =item status
 
@@ -362,7 +365,7 @@ I<requestee> (string) - The login of the requestee if the flag type is requestab
 
 =head3 Returns
 
-An array of the attachment id's created.
+An array of the attachment ID's created.
 
 =head3 Errors
 
@@ -374,11 +377,11 @@ If you specified an alias and there is no bug with that alias.
 
 =item 101 - Invalid Bug ID
 
-The bug_id you specified doesn't exist in the database.
+The C<bug_id> you specified doesn't exist in the database.
 
 =item 102 - Access Denied
 
-You do not have access to the I<bug_id> you specified.
+You do not have access to the C<bug_id> you specified.
 
 =item 129 - Flag Status Invalid
 
@@ -406,19 +409,19 @@ You tried to attach a file that was larger than Bugzilla will accept.
 
 =item 601 - Invalid MIME Type
 
-You specified a L<content_type> argument that was blank, not a valid MIME type, or not a MIME type that Bugzilla accepts for attachments.
+You specified a L</content_type> argument that was blank, not a valid MIME type, or not a MIME type that Bugzilla accepts for attachments.
 
 =item 603 - File Name Not Specified
 
-You did not specify a valid for the L<file_name> argument.
+You did not specify a valid for the L</file_name> argument.
 
 =item 604 - Summary Required
 
-You did not specify a value for the L<summary> argument.
+You did not specify a value for the L</summary> argument.
 
 =item 606 - Empty Data
 
-You set the "data" field to an empty string.
+You set the C<data> field to an empty string.
 
 =back
 
@@ -429,6 +432,8 @@ Returns the HTML rendering of the provided comment text.
 Actual Bugzilla API method is "render_comment".
 
 Note: this all takes place on your Bugzilla server.
+
+=head3 History
 
 Added in Bugzilla 5.0.
 
@@ -460,11 +465,11 @@ If you specified an alias and there is no bug with that alias.
 
 =item 101 - Invalid Bug ID
 
-The bug_id you specified doesn't exist in the database.
+The C<bug_id> you specified doesn't exist in the database.
 
 =item 102 - Access Denied
 
-You do not have access to the I<bug_id> you specified.
+You do not have access to the C<bug_id> you specified.
 
 =back
 
@@ -475,6 +480,8 @@ You do not have access to the I<bug_id> you specified.
 This allows you to update attachment metadata in Bugzilla.
 
 Actual Bugzilla API method is "update_attachments".
+
+=head3 History
 
 Added in Bugzilla 5.0.
 
@@ -500,11 +507,11 @@ I<comment> (string) - A comment to add along with this attachment.
 
 =item content_type
 
-I<content_type> (string) -  The MIME type of the attachment, like text/plain or image/png.
+I<content_type> (string) -  The MIME type of the attachment, like C<text/plain> or C<image/png>.
 
 =item is_patch
 
-I<is_patch> (boolean) - True if Bugzilla should treat this attachment as a patch. If you specify this, you do not need to specify a L<content_type>. The L<content_type> of the attachment will be forced to C<text/plain>.
+I<is_patch> (boolean) - True if Bugzilla should treat this attachment as a patch. If you specify this, you do not need to specify a L</content_type>. The L</content_type> of the attachment will be forced to C<text/plain>.
 
 =item is_private
 
@@ -560,7 +567,7 @@ I<id> (int) The id of the attachment that was updated.
 
 =item last_change_time
 
-I<last_change_time> (dateTime) - The exact time that this update was done at, for this attachment. If no update was done (that is, no fields had their values changed and no comment was added) then this will instead be the last time the attachment was updated.
+I<last_change_time> (L<DateTime>) - The exact time that this update was done at, for this attachment. If no update was done (that is, no fields had their values changed and no comment was added) then this will instead be the last time the attachment was updated.
 
 =item changes
 
@@ -582,22 +589,22 @@ I<removed> (string) - The values that were removed from this field.
 
 Here is an example of what a return value might look like:
 
-  [
-    {
-      id    => 123,
-      last_change_time => '2010-01-01T12:34:56',
-      changes => {
-        summary => {
-          removed => 'Sample ptach',
-          added   => 'Sample patch'
-        },
-        is_obsolete => {
-          removed => '0',
-          added   => '1',
-        }
-      },
-    }
-  ]
+ [
+   {
+     id    => 123,
+     last_change_time => '2010-01-01T12:34:56',
+     changes => {
+       summary => {
+         removed => 'Sample ptach',
+         added   => 'Sample patch'
+       },
+       is_obsolete => {
+         removed => '0',
+         added   => '1',
+       },
+     },
+   },
+ ]
 
 =head3 Errors
 
@@ -613,7 +620,7 @@ The bug_id you specified doesn't exist in the database.
 
 =item 102 - Access Denied
 
-You do not have access to the I<bug_id> you specified.
+You do not have access to the C<bug_id> you specified.
 
 =item 129 - Flag Status Invalid
 
@@ -629,7 +636,7 @@ You can't ask a specific person for the flag.
 
 =item 133 - Flag Type not Unique
 
-The flag type specified matches several flag types. You must specify the type id value to update or add a flag.
+The flag type specified matches several flag types. You must specify the type ID value to update or add a flag.
 
 =item 134 - Inactive Flag Type
 
@@ -637,18 +644,17 @@ The flag type is inactive and cannot be used to create new flags.
 
 =item 601 - Invalid MIME Type
 
-You specified a L<content_type> argument that was blank, not a valid MIME type, or not a MIME type that Bugzilla accepts for attachments.
+You specified a L</content_type> argument that was blank, not a valid MIME type, or not a MIME type that Bugzilla accepts for attachments.
 
 =item 603 - File Name Not Specified
 
-You did not specify a valid for the L<file_name> argument.
+You did not specify a valid for the L</file_name> argument.
 
 =item 604 - Summary Required
 
-You did not specify a value for the L<summary> argument.
+You did not specify a value for the L</summary> argument.
 
 =back
-
 
 =head2 new
 
@@ -659,11 +665,150 @@ You did not specify a value for the L<summary> argument.
                                           work_time  => 3.5
                                         );
 
-Creates a new instance with the given details. Doesn't actually touch
-your Bugzilla Server - see L<add> for that.
+Creates a new instance with the given details. Doesn't actually touch your Bugzilla Server - see L</add> for that.
 
 =head1 INSTANCE METHODS
 
-FIXME
+This section lists the modules instance methods.
+
+=head2 bug_id
+
+I<bug_id> (int) - The ID of the bug that this attachment is on when reading
+
+I<bug_id> (int or string) - The ID or alias of the bug to append a attachment to when writing. B<Required>.
+
+=head2 data
+
+I<data> (base64 or string) The content of the attachment.
+
+When writing, if the content of the attachment is not ASCII text, you must encode it in base64 and declare it as the C<base64> type.
+
+B<Required>, Read and Write.
+
+=head2 file_name
+
+I<file_name> (string) The "file name" that will be displayed in the UI for this attachment.
+
+B<Required>, Read and Write.
+
+=head2 summary
+
+I<summary> (string) A short string describing the attachment.
+
+B<Required>, Read and Write.
+
+=head2 content_type
+
+I<content_type> (string) The MIME type of the attachment, like C<text/plain> or C<image/png>.
+
+B<Required>, Read and Write.
+
+=head2 comment
+
+I<comment> (string or hash) A comment to add along with this attachment. If C<comment> is a hash, it has the following keys:
+
+Only useful when adding attachments.
+
+=over 4
+
+=item body
+
+I<body> (string) The body of the comment.
+
+=item is_markdown
+
+I<is_markdown> (boolean) If set to true, the comment has Markdown structures; otherwise, it is an ordinary text.
+
+=back
+
+=head2 is_patch
+
+I<is_patch> (boolean) True if the attachment should be private (restricted to the "insidergroup"), False if the attachment should be public.
+
+=head2 is_private
+
+I<is_private> (boolean) True if the attachment is private (only visible to a certain group called the "insidergroup"), False otherwise.
+
+=head2 is_obsolete
+
+I<is_obsolete> (boolean) - True if the attachment is obsolete, False otherwise.
+
+=head2 flags
+
+I<flags> (array) An array of hashes with flags to add to the attachment. to create a flag, at least the status and the type_id or name must be provided. An optional requestee can be passed if the flag type is requestable to a specific user.
+
+Read and Write.
+
+=over 4
+
+=item id
+
+I<id> (name) The ID of the flag.
+
+=item name
+
+I<name> (string) The name flag type.
+
+Read and Write.
+
+=item type_id
+
+I<type_id> (int) The internal flag type ID.
+
+Read and Write.
+
+=item creation_date
+
+I<creation_date> (L<DateTime>) The timestamp when this flag was originally created.
+
+Read only.
+
+=item modification_date
+
+I<modification_date> (L<DateTime>) The timestamp when the flag was last modified.
+
+Read only.
+
+=item status
+
+I<status> (string) The flags new status (i.e. "?", "+", "-" or "X" to clear a flag).
+
+Read and Write.
+
+=item setter
+
+I<setter> (string) The login name of the user who created or last modified the flag.
+
+Read only.
+
+=item requestee
+
+I<requestee> (string) The login of the requestee if the flag type is requestable to a specific user.
+
+=back
+
+=head2 size
+
+I<size> (int) The length (in bytes) of the attachment.
+
+Read only.
+
+=head2 creation_time
+
+I<creation_time> (L<DateTime>) The time the attachment was created.
+
+Read only.
+
+=head2 last_change_time
+
+I<last_change_time> (L<DateTime>) The last time the attachment was modified.
+
+=head2 attachment_id
+
+I<attachment_id> (int) The numeric id of the attachment.
+
+=head2 creator
+
+I<creator> (string) The login name of the user that created the attachment.
 
 =cut
