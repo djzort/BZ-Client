@@ -67,7 +67,7 @@ sub search {
 
 sub create {
     my($class, $client, $params) = @_;
-    return _create($client, 'Bug.create', $params);
+    return $class->_create($client, 'Bug.create', $params);
 }
 
 sub update {
