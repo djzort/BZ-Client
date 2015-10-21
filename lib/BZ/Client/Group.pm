@@ -228,7 +228,121 @@ You specified an invalid regular expression in the L</user_regexp> field.
 
 =head2 get
 
-Implemented but documentation is TODO FIXME
+
+
+Returns information about C<Bugzilla::Group>.
+
+=head3 History
+
+This function was added in Bugzilla 5.0.
+
+=head3 Parameters
+
+If neither L</ids> or L</names> is passed, and you are in the creategroups or editusers group, then all groups will be retrieved.
+
+Otherwise, only groups that you have bless privileges for will be returned.
+
+=over 4
+
+=item ids
+
+I<ids> (array) Contain IDs of groups to update.
+
+=item names
+
+I<names> (array) Contain names of groups to update.
+
+=item membership
+
+I<membership> (boolean) Set to C<1> then a list of members of the passed groups' names and IDs will be returned.
+
+=back
+
+=head3 Returns
+
+If the user is a member of the C<creategroups>" group they will receive information about all groups or groups matching the criteria that they passed. You have to be in the creategroups group unless you're requesting membership information.
+
+If the user is not a member of the Ccreategroups> group, but they are in the C<editusers> group or have bless privileges to the groups they require membership information for, the is_active, is_bug_group and user_regexp values are not supplied.
+
+The return value will be a hash containing group names as the keys, each group name will point to a hash that describes the group and has the following items:
+
+=over 4
+
+=item id
+
+I<id> (int) The unique integer ID that Bugzilla uses to identify this group. Even if the name of the group changes, this ID will stay the same.
+
+=item name
+
+I<name> (string) The name of the group.
+
+=item description
+
+I<description> (string) The description of the group.
+
+=item is_bug_group
+
+I<is_bug_group (int) Whether this groups is to be used for bug reports or is only administrative specific.
+
+=item user_regexp
+
+I<user_regexp> (string) A regular expression that allows users to be added to this group if their login matches.
+
+=item is_active
+
+I<is_active> (int) Whether this group is currently active or not.
+
+=item users
+
+I<users> (array) An array of hashes, each hash contains a user object for one of the members of this group, only returned if the user sets the C<membership> parameter to C<1>, the user hash has the following items:
+
+=over 4
+
+=item id
+
+I<id> (int) The ID of the user.
+
+=item real_name
+
+I<real_name> (string) The actual name of the user.
+
+=item email
+
+I<emaiL> (string) The email address of the user.
+
+=item name
+
+I<name> (string) The login name of the user. Note that in some situations this is different than their email.
+
+=item can_login
+
+I<can_login> (boolean) A boolean value to indicate if the user can login into bugzilla.
+
+=item email_enabled
+
+I<email_enabled> (boolean) A boolean value to indicate if bug-related mail will be sent to the user or not.
+
+=item disabled_text
+
+I<disabled_text> (string) A text field that holds the reason for disabling a user from logging into bugzilla, if empty then the user account is enabled otherwise it is disabled/closed.
+
+=back
+
+=back
+
+=head3 Errors
+
+=over 4
+
+=item 51 - Invalid Object
+
+A non existing group name was passed to the function, as a result no group object existed for that invalid name.
+
+=item 805 - Cannot view groups
+
+Logged-in users are not authorized to edit bugzilla groups as they are not members of the creategroups group in bugzilla, or they are not authorized to access group member's information as they are not members of the "editusers" group or can bless the group.
+
+=back
 
 =head1 INSTANCE METHODS
 

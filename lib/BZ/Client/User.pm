@@ -24,7 +24,7 @@ sub offer_account_by_email {
 
 sub get {
     my($class, $client, $params) = @_;
-    $client->log('debug', $class . '::get: Asking for (TODO)');
+    $client->log('debug', $class . '::get: Asking.');
     if ($params->{'include_disabled'}) {
         $params->{'include_disabled'} = BZ::Client::XMLRPC::boolean::TRUE()
     }
@@ -49,7 +49,7 @@ sub create {
 
 sub update {
     my($class, $client, $params) = @_;
-    $client->log('debug', $class . '::update: Updating for: TODO');
+    $client->log('debug', $class . '::update: Updating.');
     if (defined $params->{'email_enabled'}) {
         if ($params->{'email_enabled'}) {
             $params->{'email_enabled'} = BZ::Client::XMLRPC::boolean::TRUE()
