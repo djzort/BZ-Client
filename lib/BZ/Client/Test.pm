@@ -124,7 +124,8 @@ This section lists the class methods.
   my $tester = BZ::Client::Test->new(['config.pl', 't/config.pl']);
 
   # Create a new instance, providing configuration explicitly.
-  my $tester = BZ::Client->new( 'testUrl'      => $url,
+  my $tester = BZ::Client::Test->new(
+                                'testUrl'      => $url,
                                 'testUser'     => $user,
                                 'testPassword' => $password);
 
