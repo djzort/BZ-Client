@@ -282,7 +282,7 @@ I<description> (string) The description of the group.
 
 =item is_bug_group
 
-I<is_bug_group (int) Whether this groups is to be used for bug reports or is only administrative specific.
+I<is_bug_group> (int) Whether this groups is to be used for bug reports or is only administrative specific.
 
 =item user_regexp
 

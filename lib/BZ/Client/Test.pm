@@ -80,7 +80,11 @@ sub client {
     if ($self->isSkippingIntegrationTests()) {
         die 'Unable to create a client, as integration tests are being skipped.';
     }
-    return BZ::Client->new( url  => $self->testUrl(),
+    return BZ::Client->new(
+                 (defined $self->{'autologin'} ?
+        +( autologin => $self->{'autologin'} ) :
+                                           ()),
+                            url  => $self->testUrl(),
                             user  => $self->testUser(),
                             password  => $self->testPassword(),
                             logDirectory  => $self->logDirectory())

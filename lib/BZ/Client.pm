@@ -204,7 +204,9 @@ sub is_logged_in {
 
 sub api_call {
     my ( $self, $methodName, $params ) = @_;
+
     $params ||= {};
+
     if ( $self->autologin && not $self->is_logged_in() ) {
         $self->login();
     }

@@ -118,6 +118,8 @@ I<is_multiplicable> (boolean) Multiple flags of this type can be set for the sam
 
 =head3 Errors
 
+=over 4
+
 =item 106 - Product Access Denied
 
 Either the product does not exist or you don't have access to it.

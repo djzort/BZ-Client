@@ -55,7 +55,7 @@ sub web_agent {
         if (!defined($wa)) {
             $wa = HTTP::Tiny->new(
                 %$connect,
-                agent => sprintf('BZ::Client::XMLRPC %s (perl %s; %s)', $BZ::Clie    nt::XMLRPC::VERSION, $^V, $^O)
+                agent => sprintf('BZ::Client::XMLRPC %s (perl %s; %s)', $BZ::Client::XMLRPC::VERSION, $^V, $^O)
             );
             $self->web_agent($wa);
         }
