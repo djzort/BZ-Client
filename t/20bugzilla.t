@@ -3,6 +3,8 @@
 use strict;
 use warnings 'all';
 
+use lib 't/lib';
+
 use BZ::Client::Test();
 use BZ::Client::Bugzilla();
 use Test::More;
@@ -46,6 +48,10 @@ for my $server ( @bugzillas ) {
 
 my $tester = BZ::Client::Test->new( %$server, logDirectory => '/tmp/bz' );
 
+#use Data::Dumper;
+#$Data::Dumper::Indent = 1;
+#$Data::Dumper::Sortkeys = 1;
+
 SKIP: {
     skip('No Bugzilla server configured, skipping',11)
         if $tester->isSkippingIntegrationTests();
@@ -55,6 +61,7 @@ SKIP: {
     ok( ($version and ! ref $version), 'Got something from Version');
     like( $version, qr/^\d+\.\d+(\.\d+)?(\-\d+)?\+?$/, 'Resembles a version number' );
 }
+
 {
     my $tz = TestCall('timezone',$tester);
     ok( ($tz and ! ref($tz)), 'Got something from Timezone');

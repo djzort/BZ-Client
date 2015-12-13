@@ -5,7 +5,6 @@ use warnings 'all';
 
 use lib 't/lib';
 
-
 use BZ::Client::Test;
 use Test::More;
 # use Test::RequiresInternet ( 'www.something.com' => 80, other => 443 );
