@@ -1,5 +1,8 @@
 Revision history for Perl extension BZ::Client.
 
+2.0_11 Sunday December 13 17:07 2015
+    - Move Test.pm into t/lib/
+    - Replace Test with Test::More everywhere
     - Start using Test::RequiresInternet in t/
     - Proof read and update pod
     - Bug.pm: minor but important fix
