@@ -1,7 +1,7 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 
 use strict;
-use warnings "all";
+use warnings 'all';
 
 use BZ::Client::Test();
 use BZ::Client::Product();
@@ -10,15 +10,15 @@ use Test;
 my $tester;
 
 sub TestGetSelectableProducts() {
-    return TestGetList("get_selectable_products");
+    return TestGetList('get_selectable_products');
 }
 
 sub TestGetEnterableProducts() {
-    return TestGetList("get_enterable_products", 1);
+    return TestGetList('get_enterable_products', 1);
 }
 
 sub TestGetAccessibleProducts() {
-    return TestGetList("get_accessible_products");
+    return TestGetList('get_accessible_products');
 }
 
 sub TestGetList($) {
@@ -31,16 +31,16 @@ sub TestGetList($) {
     };
     if ($@) {
         my $err = $@;
-        if (ref($err) eq "BZ::Client::Exception") {
-            print STDERR "Error: " . (defined($err->http_code()) ? $err->http_code() : "undef")
-                . ", " . (defined($err->xmlrpc_code()) ? $err->xmlrpc_code() : "undef")
-                . ", " . (defined($err->message()) ? $err->message() : "undef") . "\n";
+        if (ref($err) eq 'BZ::Client::Exception') {
+            print STDERR 'Error: ' . (defined($err->http_code()) ? $err->http_code() : 'undef')
+                . ', ' . (defined($err->xmlrpc_code()) ? $err->xmlrpc_code() : 'undef')
+                . ', ' . (defined($err->message()) ? $err->message() : 'undef') . "\n";
         } else {
             print STDERR "Error $err\n";
         }
         return 0;
     }
-    if (!$ids  ||  ref($ids) ne "ARRAY"  ||  (!$allowEmpty &&  !@$ids)) {
+    if (!$ids  ||  ref($ids) ne 'ARRAY'  ||  (!$allowEmpty &&  !@$ids)) {
         print STDERR "No product ID's returned.\n";
         return 0;
     }
@@ -58,10 +58,10 @@ sub TestGet() {
     };
     if ($@) {
         my $err = $@;
-        if (ref($err) eq "BZ::Client::Exception") {
-            print STDERR "Error: " . (defined($err->http_code()) ? $err->http_code() : "undef")
-                . ", " . (defined($err->xmlrpc_code()) ? $err->xmlrpc_code() : "undef")
-                . ", " . (defined($err->message()) ? $err->message() : "undef") . "\n";
+        if (ref($err) eq 'BZ::Client::Exception') {
+            print STDERR 'Error: ' . (defined($err->http_code()) ? $err->http_code() : 'undef')
+                . ', ' . (defined($err->xmlrpc_code()) ? $err->xmlrpc_code() : 'undef')
+                . ', ' . (defined($err->message()) ? $err->message() : 'undef') . "\n";
         } else {
             print STDERR "Error $err\n";
         }
@@ -81,7 +81,7 @@ sub TestGet() {
     }
     foreach my $product (@$products) {
         if (!$product->name()) {
-            print STDERR "The name of product " . $product->id() . " is not set.\n";
+            print STDERR 'The name of product ' . $product->id() . " is not set.\n";
             return 0;
         }
     }
@@ -90,15 +90,14 @@ sub TestGet() {
 
 plan(tests => 4);
 
-$tester = BZ::Client::Test->new(["config.pl", "t/config.pl"]);
+$tester = BZ::Client::Test->new(['config.pl', 't/config.pl']);
 my $skipping;
 if ($tester->isSkippingIntegrationTests()) {
-    $skipping = "No Bugzilla server configured, skipping";
+    $skipping = 'No Bugzilla server configured, skipping';
 } else {
     $skipping = 0;
 }
-skip($skipping, \&TestGetSelectableProducts, 1, "TestGetSelectableProducts");
-skip($skipping, \&TestGetEnterableProducts, 1, "TestGetEnterableProducts");
-skip($skipping, \&TestGetAccessibleProducts, 1, "TestGetAccessibleProducts");
-skip($skipping, \&TestGet, 1, "TestGet");
-
+skip($skipping, \&TestGetSelectableProducts, 1, 'TestGetSelectableProducts');
+skip($skipping, \&TestGetEnterableProducts, 1, 'TestGetEnterableProducts');
+skip($skipping, \&TestGetAccessibleProducts, 1, 'TestGetAccessibleProducts');
+skip($skipping, \&TestGet, 1, 'TestGet');
