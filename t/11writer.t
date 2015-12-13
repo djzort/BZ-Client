@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 
 use strict;
 use warnings 'all';
@@ -6,7 +6,7 @@ use warnings 'all';
 use BZ::Client::XMLRPC();
 use DateTime();
 
-use Test;
+use Test::More tests => 2;
 
 my $tz = DateTime::TimeZone->new(name => 'CET');
 die 'Unable to create CET timezone' unless $tz;
@@ -21,7 +21,7 @@ my $now = DateTime->new(
            time_zone  => $tz,
       );
 
-sub TestBasic() {
+sub TestBasic {
     my $xmlrpc = BZ::Client::XMLRPC->new();
     my $input = [ '123', BZ::Client::XMLRPC::int->new(345),
                   BZ::Client::XMLRPC::double->new(4.6), [ 'a', 'b', 'c' ],
@@ -71,7 +71,7 @@ sub TestBasic() {
     return 1;
 }
 
-sub TestGetProducts() {
+sub TestGetProducts {
     my $xmlrpc = BZ::Client::XMLRPC->new();
     my $input = [ { 'ids' => [ '0', '1', '2' ] } ];
     my $contents = $xmlrpc->create_request('Product.get', $input);
@@ -99,7 +99,6 @@ sub TestGetProducts() {
     return 1;
 }
 
-plan(tests => 2);
-ok(TestBasic(), 1, 'TestBasic');
-ok(TestGetProducts(), 1, 'TestGetProducts');
+ok(TestBasic(), 'Test Basic');
+ok(TestGetProducts(), 'Test GetProducts');
 
