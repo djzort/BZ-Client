@@ -3,6 +3,9 @@
 use strict;
 use warnings 'all';
 
+use lib 't/lib';
+
+
 use BZ::Client::Test();
 use BZ::Client::Bug();
 use Test::More tests => 6;

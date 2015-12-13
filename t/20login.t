@@ -3,10 +3,15 @@
 use strict;
 use warnings 'all';
 
+use lib 't/lib';
+
+
 use BZ::Client::Test;
 use Test::More;
 # use Test::RequiresInternet ( 'www.something.com' => 80, other => 443 );
 use Data::Dumper;
+$Data::Dumper::Indent = 1;
+$Data::Dumper::Sortkeys = 1;
 
 plan tests => 10;
 

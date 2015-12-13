@@ -3,6 +3,8 @@
 use strict;
 use warnings 'all';
 
+use lib 't/lib';
+
 use Test::More;
 
 my @MODULES = qw(

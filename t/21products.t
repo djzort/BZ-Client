@@ -3,6 +3,9 @@
 use strict;
 use warnings 'all';
 
+use lib 't/lib';
+
+
 use BZ::Client::Test();
 use BZ::Client::Product();
 use Test;
@@ -40,7 +43,7 @@ sub TestGetList($) {
         }
         return 0;
     }
-    if (!$ids  ||  ref($ids) ne 'ARRAY'  ||  (!$allowEmpty &&  !@$ids)) {
+    if (!$ids || ref($ids) ne 'ARRAY' || (!$allowEmpty && !@$ids)) {
         print STDERR "No product ID's returned.\n";
         return 0;
     }
@@ -67,9 +70,9 @@ sub TestGet() {
         }
         return 0;
     }
-    foreach my $id (@$ids) {
+    for my $id (@$ids) {
         my $found;
-        foreach my $product (@$products) {
+        for my $product (@$products) {
             if ($product->id() eq $id) {
                 $found = 1;
             }
@@ -79,7 +82,7 @@ sub TestGet() {
             return 0;
         }
     }
-    foreach my $product (@$products) {
+    for my $product (@$products) {
         if (!$product->name()) {
             print STDERR 'The name of product ' . $product->id() . " is not set.\n";
             return 0;

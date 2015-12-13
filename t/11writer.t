@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 use strict;
-use warnings "all";
+use warnings 'all';
 
 use BZ::Client::XMLRPC();
 use DateTime();
