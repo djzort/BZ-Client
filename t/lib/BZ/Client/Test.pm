@@ -43,7 +43,8 @@ sub testUrl {
     my $self = shift;
     if (@_) {
         $self->{'testUrl'} = shift;
-    } else {
+    }
+    else {
         return $self->{'testUrl'};
     }
 }
@@ -52,7 +53,8 @@ sub testUser {
     my $self = shift;
     if (@_) {
         $self->{'testUser'} = shift;
-    } else {
+    }
+    else {
         return $self->{'testUser'};
     }
 }
@@ -61,8 +63,19 @@ sub testPassword {
     my $self = shift;
     if (@_) {
         $self->{'testPassword'} = shift;
-    } else {
+    }
+    else {
         return $self->{'testPassword'};
+    }
+}
+
+sub testApiKey {
+    my $self = shift;
+    if (@_) {
+        $self->{'testApiKey'} = shift;
+    }
+    else {
+        return $self->{'testApiKey'};
     }
 }
 
@@ -70,7 +83,8 @@ sub logDirectory {
     my $self = shift;
     if (@_) {
         $self->{'logDirectory'} = shift;
-    } else {
+    }
+    else {
         return $self->{'logDirectory'};
     }
 }
@@ -81,12 +95,15 @@ sub client {
         die 'Unable to create a client, as integration tests are being skipped.';
     }
     return BZ::Client->new(
-                 (defined $self->{'autologin'} ? +( autologin => $self->{'autologin'} )
-                                               : ()),
-                            url  => $self->testUrl(),
-                            user  => $self->testUser(),
-                            password  => $self->testPassword(),
-                            logDirectory  => $self->logDirectory())
+                    url  => $self->testUrl(),
+         (defined $self->{'autologin'} ? +( autologin => $self->{'autologin'} )
+                                       : ()),
+                    ($self->testUser() ? +(user  => $self->testUser(),
+                                           password  => $self->testPassword())
+                                       : ()),
+                    ($self->testApiKey() ? +(api_key  => $self->testApiKey())
+                                         : ()),
+                    logDirectory  => $self->logDirectory())
 }
 
 sub isSkippingIntegrationTests {
