@@ -28,19 +28,19 @@ sub parse {
         $self->{'result'} = $handler->result();
     });
     my $start = sub {
-        my($expat, $name, @args) = @_;
+        my(undef, $name) = @_;
         my $current = $self->{'current'};
         $self->error('Illegal state, no more handlers available on stack.') unless $current;
         $current->start($name);
     };
     my $end = sub {
-        my($expat, $name) = @_;
+        my(undef, $name) = @_;
         my $current = $self->{'current'};
         $self->error('Illegal state, no more handlers available on stack.') unless $current;
         $current->end($name);
     };
     my $chars = sub {
-        my($expat, $text) = @_;
+        my(undef, $text) = @_;
         my $current = $self->{'current'};
         $self->error('Illegal state, no more handlers available on stack.') unless $current;
         $current->characters($text);
