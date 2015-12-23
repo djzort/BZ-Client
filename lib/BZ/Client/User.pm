@@ -43,7 +43,7 @@ sub get {
 ## methods
 
 sub create {
-    my($class, $client, $params) = @_;
+    my(undef, $client, $params) = @_;
     return _create($client, 'User.create', $params);
 }
 
