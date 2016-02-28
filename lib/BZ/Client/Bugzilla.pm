@@ -7,6 +7,7 @@ use warnings 'all';
 
 package BZ::Client::Bugzilla;
 
+
 use parent qw( BZ::Client::API );
 
 ## functions

@@ -7,6 +7,7 @@ use warnings 'all';
 
 package BZ::Client::Exception;
 
+
 sub throw {
     my $class = shift;
     die $class->new(@_)

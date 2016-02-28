@@ -1,11 +1,13 @@
 #!/bin/false
 # PODNAME: BZ::Client::Product
 # ABSTRACT: Client side representation of a product in Bugzilla
+# vim: softtabstop=4 tabstop=4 shiftwidth=4 ft=perl expandtab smarttab
 
 use strict;
 use warnings 'all';
 
 package BZ::Client::Product;
+
 
 use parent qw( BZ::Client::API );
 
@@ -60,19 +62,19 @@ sub get_accessible_products {
 
 # do everything in one place
 sub _get {
-    my ($class, $client, $result) = @_;
+    my($class, $client, $result) = @_;
     my $products = $result->{'products'};
-    if (!$products || 'ARRAY' ne ref($products)) {
+    if (!$products or 'ARRAY' ne ref $products) {
         $class->error($client, 'Invalid reply by server, expected array of products.');
     }
     my @result;
     for my $product (@$products) {
-        push(@result, $class->new(
+        push @result, $class->new(
                 id          => $product->{'id'},
                 name        => $product->{'name'},
                 description => $product->{'description'},
-                internals   => $product->{'internals'})
-            );
+                internals   => $product->{'internals'}
+        );
     }
     return wantarray ? @result : \@result
 }
@@ -95,7 +97,8 @@ sub name {
     my $self = shift;
     if (@_) {
         $self->{'name'} = shift;
-    } else {
+    }
+    else {
         return $self->{name};
     }
 }
@@ -104,7 +107,8 @@ sub description {
     my $self = shift;
     if (@_) {
         $self->{'description'} = shift;
-    } else {
+    }
+    else {
         return $self->{'description'};
     }
 }
@@ -113,7 +117,8 @@ sub version {
     my $self = shift;
     if (@_) {
         $self->{'version'} = shift;
-    } else {
+    }
+    else {
         return $self->{'version'};
     }
 }
@@ -123,7 +128,8 @@ sub has_unconfirmed {
     my $self = shift;
     if (@_) {
         $self->{'has_unconfirmed'} = shift;
-    } else {
+    }
+    else {
         return $self->{'has_unconfirmed'};
     }
 }
@@ -132,7 +138,8 @@ sub classification {
     my $self = shift;
     if (@_) {
         $self->{'classification'} = shift;
-    } else {
+    }
+    else {
         return $self->{'classification'};
     }
 }
@@ -141,7 +148,8 @@ sub default_milestone {
     my $self = shift;
     if (@_) {
         $self->{'default_milestone'} = shift;
-    } else {
+    }
+    else {
         return $self->{'default_milestone'};
     }
 }
@@ -151,7 +159,8 @@ sub is_open {
     my $self = shift;
     if (@_) {
         $self->{'is_open'} = shift;
-    } else {
+    }
+    else {
         return $self->{'is_open'};
     }
 }
@@ -160,7 +169,8 @@ sub create_series {
     my $self = shift;
     if (@_) {
         $self->{'create_series'} = shift;
-    } else {
+    }
+    else {
         return $self->{'create_series'};
     }
 }

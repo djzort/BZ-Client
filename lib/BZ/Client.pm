@@ -7,6 +7,7 @@ use warnings 'all';
 
 package BZ::Client;
 
+
 use BZ::Client::XMLRPC;
 use BZ::Client::Exception;
 use HTTP::CookieJar;

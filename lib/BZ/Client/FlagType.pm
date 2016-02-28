@@ -7,6 +7,7 @@ use warnings 'all';
 
 package BZ::Client::FlagType;
 
+
 use parent qw( BZ::Client::API );
 
 # See https://www.bugzilla.org/docs/tip/en/html/api/Bugzilla/WebService/FlagType.html

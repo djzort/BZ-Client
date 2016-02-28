@@ -7,6 +7,7 @@ use warnings 'all';
 
 package BZ::Client::API;
 
+
 sub api_call {
     my(undef, $client, $methodName, $params) = @_;
     return $client->api_call($methodName, $params)
