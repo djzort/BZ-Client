@@ -11,8 +11,14 @@ use Test::More;
 
 # these next three lines need more thought
 use Test::RequiresInternet ('landfill.bugzilla.org' => 443);
-plan tests => 72;
+plan tests => 75;
 my @bugzillas = do 't/servers.cfg';
+
+my %quirks = (
+'5.0' => { 'extensions' => 0, parameters => 1, last_audit_time => 1 },
+'4.4' => { 'extensions' => 1, parameters => 1, last_audit_time => 1 },
+'4.2' => { 'extensions' => 0, parameters => 0, last_audit_time => 0 },
+);
 
 sub TestCall {
     my($method,$tester) = @_;
@@ -60,6 +66,9 @@ SKIP: {
     my $version = TestCall('version',$tester);
     ok( ($version and ! ref $version), 'Got something from Version');
     like( $version, qr/^\d+\.\d+(\.\d+)?(\-\d+)?\+?$/, 'Resembles a version number' );
+    diag( "Got; $version" );
+
+    like( $version, qr/^$server->{version}/, 'Server version matches server.cfg' );
 }
 
 {
@@ -85,21 +94,21 @@ SKIP: {
 }
 SKIP: {
     skip('I wont look at parameters for this server', 3)
-        unless $server->{tests}->{parameters};
+        unless $server->{version} && $quirks{$server->{version}}->{parameters};
     my $values = TestCall('parameters',$tester);
     ok( ($values and ref($values) eq 'HASH'), 'Got something from Parameters');
     ok( scalar keys %$values, 'Got something inside Parameters');
 }
 SKIP: {
     skip('I wont look at last_audit_time for this server', 2)
-        unless $server->{tests}->{last_audit_time};
+        unless $server->{version} && $quirks{$server->{version}}->{last_audit_time};
     my $values = TestCall('last_audit_time',$tester);
     ok( ($values and ref($values) eq 'DateTime'), 'Got DateTime from Last Audit Time');
 }
 
 SKIP: {
     skip('I wont look at extensions for this server', 3)
-        unless $server->{tests}->{extensions};
+        unless $server->{version} && $quirks{$server->{version}}->{extensions};
     my $values = TestCall('extensions',$tester);
     ok( ($values and ref($values) eq 'HASH'), 'Got something from Extensions');
     ok( scalar keys %$values, 'Got something inside Extensions');
