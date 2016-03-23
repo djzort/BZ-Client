@@ -15,8 +15,8 @@ $Data::Dumper::Sortkeys = 1;
 
 # these next three lines need more thought
 use Test::RequiresInternet ( 'landfill.bugzilla.org' => 443 );
-plan tests => 30;
 my @bugzillas = do 't/servers.cfg';
+plan tests => (scalar @bugzillas * 10);
 
 for my $server (@bugzillas) {
     diag(sprintf 'Server version: %s', $server->{version} || '???' );

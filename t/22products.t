@@ -12,8 +12,8 @@ use Test::More;
 
 # these next three lines need more thought
 use Test::RequiresInternet ( 'landfill.bugzilla.org' => 443 );
-plan tests => 39;
 my @bugzillas = do 't/servers.cfg';
+plan tests => (scalar @bugzillas * 13);
 
 my $tester;
 
