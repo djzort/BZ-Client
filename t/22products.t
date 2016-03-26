@@ -10,12 +10,33 @@ use BZ::Client::Test;
 use BZ::Client::Product;
 use Test::More;
 
+use Data::Dumper; $Data::Dumper::Indent = 1; $Data::Dumper::Sortkeys = 1;
+
 # these next three lines need more thought
 use Test::RequiresInternet ( 'landfill.bugzilla.org' => 443 );
 my @bugzillas = do 't/servers.cfg';
-plan tests => (scalar @bugzillas * 13);
+plan tests => (scalar @bugzillas * 13) + 16;
 
 my $tester;
+
+my %quirks = (
+
+    '5.0' => {},
+    '4.4' => {
+products => {
+    #1 => { name => "WorldControl", description => 'A small little program for controlling the world. Can be used\nfor good or for evil. Sub-components can be created using the WorldControl API to extend control into almost any aspect of reality.'
+    #    },
+        2 => { name => "FoodReplicator", description => "Software that controls a piece of hardware that will create any food item through a voice interface."}, 
+        3 => { name => "MyOwnBadSelf", description => "feh."}, 
+        #4 => { name => "Spider S��ret��ns", description => "Spider secretions"}, 
+        19 => { name => "Sam's Widget", description => "Special SAM widgets"}, 
+        20 => { name => "LJL Test Product", description => "Test product description"}, 
+        21 => { name => "testing-funky-hyphens", description => "Hyphen testing product"},
+
+    },
+    },
+
+);
 
 sub TestGetList {
     my($method,$allowEmpty) = @_;
@@ -71,6 +92,17 @@ sub TestGet {
         $products = BZ::Client::Product->get($client, { ids => $ids });
         $client->logout();
     };
+
+    for my $p (sort { $a->id <=> $b->id } @$products) {
+        my $product = $quirks{4.4}{products}{$p->id};
+        unless ($product) {
+            diag 'Server provided unknown product, ID: ' . $p->id;
+            next;
+        }
+        ok($product->{name} eq $p->name, 'Product name of ' . $p->id . ' matches') and
+        ok($product->{description} eq $p->description, 'Product description of '.$p->id.' matches') or
+        diag 'Got: ' .$p->id .' => { name => "' . $p->name . '", description => "' . $p->description .  qq|"}, \nAim: name = "| . $product->{name} . '" description = "' . $product->{description} . '"';
+    }
 
     if ($@) {
         my $err = $@;
