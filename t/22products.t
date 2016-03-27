@@ -26,7 +26,7 @@ my %quirks = (
 products => {
     #1 => { name => "WorldControl", description => 'A small little program for controlling the world. Can be used\nfor good or for evil. Sub-components can be created using the WorldControl API to extend control into almost any aspect of reality.'
     #    },
-        2 => { name => "FoodReplicator", description => "Software that controls a piece of hardware that will create any food item through a voice interface."}, 
+        2 => { name => "FoodReplicator", description => "Software that controls a piece of hardware that will create any food item through a voice interface."},
         3 => { name => "MyOwnBadSelf", description => "feh."}, 
         #4 => { name => "Spider S��ret��ns", description => "Spider secretions"}, 
         19 => { name => "Sam's Widget", description => "Special SAM widgets"}, 
