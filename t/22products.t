@@ -3,6 +3,7 @@
 
 use strict;
 use warnings 'all';
+use utf8;
 
 use lib 't/lib';
 
@@ -10,42 +11,90 @@ use BZ::Client::Test;
 use BZ::Client::Product;
 use Test::More;
 
-use Data::Dumper; $Data::Dumper::Indent = 1; $Data::Dumper::Sortkeys = 1;
+use Data::Dumper;
+$Data::Dumper::Indent   = 1;
+$Data::Dumper::Sortkeys = 1;
 
 # these next three lines need more thought
 use Test::RequiresInternet ( 'landfill.bugzilla.org' => 443 );
 my @bugzillas = do 't/servers.cfg';
-plan tests => (scalar @bugzillas * 13) + 16;
+plan tests => ( scalar @bugzillas * 16 ) + 20;
 
 my $tester;
 
+sub quoteme {
+    my @args = @_;
+    for my $foo (@args) {
+        $foo =~ s{\n}{\\n}g;
+        $foo =~ s{\r}{\\r}g;
+    }
+    @args;
+}
+
 my %quirks = (
 
-    '5.0' => {},
-    '4.4' => {
-products => {
-    #1 => { name => "WorldControl", description => 'A small little program for controlling the world. Can be used\nfor good or for evil. Sub-components can be created using the WorldControl API to extend control into almost any aspect of reality.'
-    #    },
-        2 => { name => "FoodReplicator", description => "Software that controls a piece of hardware that will create any food item through a voice interface."},
-        3 => { name => "MyOwnBadSelf", description => "feh."},
-        #4 => { name => "Spider S��ret��ns", description => "Spider secretions"},
-        19 => { name => "Sam's Widget", description => "Special SAM widgets"},
-        20 => { name => "LJL Test Product", description => "Test product description"},
-        21 => { name => "testing-funky-hyphens", description => "Hyphen testing product"},
-
+    '5.0' => {
+        products => {
+            1 => {
+                name => 'WorldControl',
+                description =>
+"A small little program for controlling the world. Can be used\r\nfor good or for evil. Sub-components can be created using the WorldControl API to extend control into almost any aspect of reality."
+            },
+            2 => {
+                name => 'FoodReplicator',
+                description =>
+'Software that controls a piece of hardware that will create any food item through a voice interface.'
+            },
+            3 => { name => 'MyOwnBadSelf', description => 'feh.' },
+            4 => {
+                name        => 'Ѕpїdєr Séçretíøns',
+                description => 'Spider secretions'
+            },
+            19 =>
+              { name => 'Sam\'s Widget', description => 'Special SAM widgets' },
+        },
     },
+
+    '4.4' => {
+        products => {
+            1 => {
+                name => 'WorldControl',
+                description =>
+"A small little program for controlling the world. Can be used\r\nfor good or for evil. Sub-components can be created using the WorldControl API to extend control into almost any aspect of reality."
+            },
+            2 => {
+                name => 'FoodReplicator',
+                description =>
+'Software that controls a piece of hardware that will create any food item through a voice interface.'
+            },
+            3 => { name => 'MyOwnBadSelf', description => 'feh.' },
+            4 => {
+                name        => 'Spider Séçretíøns',
+                description => 'Spider secretions'
+            },
+            19 =>
+              { name => 'Sam\'s Widget', description => 'Special SAM widgets' },
+            20 => {
+                name        => 'LJL Test Product',
+                description => 'Test product description'
+            },
+            21 => {
+                name        => 'testing-funky-hyphens',
+                description => 'Hyphen testing product'
+            },
+        },
     },
 
 );
 
 sub TestGetList {
-    my($method,$allowEmpty) = @_;
+    my ( $method, $allowEmpty ) = @_;
     my $client = $tester->client();
     my $ids;
-    SKIP: {
+  SKIP: {
         skip( "BZ::Client::Product cannot do method: $method ?", 1 )
-            unless ok( BZ::Client::Product->can($method),
-                       "BZ::Client::Product implements method: $method" );
+          unless ok( BZ::Client::Product->can($method),
+            "BZ::Client::Product implements method: $method" );
 
         eval {
             $ids = BZ::Client::Product->$method($client);
@@ -55,11 +104,18 @@ sub TestGetList {
         if ($@) {
             my $err = $@;
             my $msg;
-            if (ref($err) eq 'BZ::Client::Exception') {
-                $msg = 'Error: ' .
-                    (defined($err->http_code())   ? $err->http_code()   : 'undef') . ', ' .
-                    (defined($err->xmlrpc_code()) ? $err->xmlrpc_code() : 'undef') . ', ' .
-                    (defined($err->message())     ? $err->message()     : 'undef');
+            if ( ref($err) eq 'BZ::Client::Exception' ) {
+                $msg =
+                  'Error: '
+                  . (
+                    defined( $err->http_code() ) ? $err->http_code() : 'undef' )
+                  . ', '
+                  . (
+                    defined( $err->xmlrpc_code() )
+                    ? $err->xmlrpc_code()
+                    : 'undef' )
+                  . ', '
+                  . ( defined( $err->message() ) ? $err->message() : 'undef' );
             }
 
             else {
@@ -67,15 +123,15 @@ sub TestGetList {
             }
             ok( 0, 'No errors: ' . $method );
             diag($msg);
-            return
+            return;
         }
         else {
-            ok( 1, 'No errors: ' . $method )
+            ok( 1, 'No errors: ' . $method );
         }
 
-        if (!$ids or ref $ids ne 'ARRAY' or (!$allowEmpty and !@$ids)) {
+        if ( !$ids or ref $ids ne 'ARRAY' or ( !$allowEmpty and !@$ids ) ) {
             diag q/No product ID's returned./;
-            return
+            return;
         }
 
         return $ids
@@ -85,62 +141,103 @@ sub TestGetList {
 
 sub TestGet {
     my $client = $tester->client();
+
+####    warn Dumper $tester;
+
     my $ids;
     my $products;
     eval {
         $ids = BZ::Client::Product->get_accessible_products($client);
-        $products = BZ::Client::Product->get($client, { ids => $ids });
+        $products = BZ::Client::Product->get( $client, { ids => $ids } );
         $client->logout();
     };
-
-    for my $p (sort { $a->id <=> $b->id } @$products) {
-        my $product = $quirks{4.4}{products}{$p->id};
-        unless ($product) {
-            diag 'Server provided unknown product, ID: ' . $p->id;
-            next;
-        }
-        ok($product->{name} eq $p->name, 'Product name of ' . $p->id . ' matches') and
-        ok($product->{description} eq $p->description, 'Product description of '.$p->id.' matches') or
-        diag 'Got: ' .$p->id .' => { name => "' . $p->name . '", description => "' . $p->description .  qq|"}, \nAim: name = "| . $product->{name} . '" description = "' . $product->{description} . '"';
-    }
 
     if ($@) {
         my $err = $@;
         my $msg;
-        if (ref $err eq 'BZ::Client::Exception') {
-            $msg = 'Error: ' .
-                (defined($err->http_code())   ? $err->http_code()   : 'undef') . ', ' .
-                (defined($err->xmlrpc_code()) ? $err->xmlrpc_code() : 'undef') . ', ' .
-                (defined($err->message())     ? $err->message()     : 'undef');
+        if ( ref $err eq 'BZ::Client::Exception' ) {
+            $msg =
+                'Error: '
+              . ( defined( $err->http_code() ) ? $err->http_code() : 'undef' )
+              . ', '
+              . (
+                defined( $err->xmlrpc_code() ) ? $err->xmlrpc_code() : 'undef' )
+              . ', '
+              . ( defined( $err->message() ) ? $err->message() : 'undef' );
         }
         else {
             $msg = "Error $err\n";
         }
         ok( 0, 'No errors: get' );
         diag($msg);
-        return
+        return;
     }
     else {
-        ok( 1, 'No errors: get' )
+        ok( 1, 'No errors: get' );
     }
 
     my $return;
 
     # careful of the list context, scalar () forces it to be a number
-    ok( scalar (grep { my $id = $_; grep { $_->id() eq $id } @$products } @$ids),
-        'All product ID\'s were found.' )
-    and $return = 1;
+    ok(
+        scalar @$ids == scalar(
+            grep {
+                my $id = $_;
+                grep { $_->id() eq $id } @$products
+            } @$ids
+        ),
+'A corresponding product for every product ID returned by the server was found.'
+    ) and $return = 1;
 
-    my @unnamed = grep { ! $_->name() } @$products;
-    ok( ! @unnamed, 'All products have a name' )
-    and $return = 1;
+    {    # is_deeply might be better, or some list comparison
+        my $count = scalar keys %{ $quirks{ $tester->{version} }{products} };
+        for my $id (@$ids) {
+            $count-- if $quirks{ $tester->{version} }{products}{$id};
+        }
+        ok( $count == 0, 'Found every ID known to this test' )
+          ? $return = 1
+          : diag 'ID: ' . join( ', ', sort @$ids );
+    }
+
+    my @unnamed = grep { !$_->name() } @$products;
+    ok( !@unnamed, 'All products have a name' )
+      and $return = 1;
 
     diag( map { 'The name of product ' . $_->id() . ' is not set.' } @unnamed )
-        if @unnamed;
+      if @unnamed;
 
-    return $return
+    for my $p ( sort { $a->id <=> $b->id } @$products ) {
+        my $product = $quirks{ $tester->{version} }{products}{ $p->id };
+        unless ($product)
+        { # since landfill can be changed by *anyone*, we diag but otherwise ignore unknowns
+            diag 'Server provided unknown product, ID: ' . $p->id;
+            diag sprintf(
+                q|name: '%s' description: '%s'|,
+                quoteme( $p->name ),
+                quoteme( $p->description )
+            );
+            next;
+        }
+        ok( $product->{name} eq $p->name,
+            'Product name of ID: ' . $p->id . ' matches' )
+          and ok(
+            $product->{description} eq $p->description,
+            'Product description of ID: ' . $p->id . ' matches'
+          )
+          or diag 'Got: '
+          . $p->id
+          . ' => { name => "'
+          . $p->name
+          . '", description => "'
+          . $p->description
+          . qq|"}, \nAim: name = "|
+          . $product->{name}
+          . '" description = "'
+          . $product->{description} . '"';
+    }
+
+    return $return;
 }
-
 
 for my $server (@bugzillas) {
 
@@ -148,14 +245,23 @@ for my $server (@bugzillas) {
 
     $tester = BZ::Client::Test->new( %$server, logDirectory => '/tmp/bz' );
 
-    SKIP: {
+  SKIP: {
         skip( 'No Bugzilla server configured, skipping', 4 )
-            if $tester->isSkippingIntegrationTests();
+          if $tester->isSkippingIntegrationTests();
 
-        ok( TestGetList('get_selectable_products'),   'Test out get_selectable_products');
-        ok( TestGetList('get_enterable_products', 1), 'Test out get_enterable_products');
-        ok( TestGetList('get_accessible_products'),   'Test out get_accessible_products');
-        ok( TestGet(), 'Test out getting each product one by one');
+        ok(
+            TestGetList('get_selectable_products'),
+            'Test out get_selectable_products'
+        );
+        ok(
+            TestGetList( 'get_enterable_products', 1 ),
+            'Test out get_enterable_products'
+        );
+        ok(
+            TestGetList('get_accessible_products'),
+            'Test out get_accessible_products'
+        );
+        ok( TestGet(), 'Test out getting each product one by one' );
 
     }
 
