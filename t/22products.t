@@ -18,7 +18,7 @@ $Data::Dumper::Sortkeys = 1;
 # these next three lines need more thought
 use Test::RequiresInternet ( 'landfill.bugzilla.org' => 443 );
 my @bugzillas = do 't/servers.cfg';
-plan tests => ( scalar @bugzillas * 16 ) + 20;
+plan tests => ( scalar @bugzillas * 19 ) + 20;
 
 my $tester;
 
@@ -36,51 +36,119 @@ my %quirks = (
     '5.0' => {
         products => {
             1 => {
-                name => 'WorldControl',
+                get_enterable_products  => 1,
+                get_accessible_products => 1,
+                get_selectable_products => 1,
+                name                    => 'WorldControl',
                 description =>
 "A small little program for controlling the world. Can be used\r\nfor good or for evil. Sub-components can be created using the WorldControl API to extend control into almost any aspect of reality."
             },
             2 => {
-                name => 'FoodReplicator',
+                get_enterable_products  => 1,
+                get_accessible_products => 1,
+                get_selectable_products => 1,
+                name                    => 'FoodReplicator',
                 description =>
 'Software that controls a piece of hardware that will create any food item through a voice interface.'
             },
-            3 => { name => 'MyOwnBadSelf', description => 'feh.' },
-            4 => {
-                name        => 'Ѕpїdєr Séçretíøns',
-                description => 'Spider secretions'
+            3 => {
+                get_enterable_products  => 1,
+                get_accessible_products => 1,
+                get_selectable_products => 1,
+                name                    => 'MyOwnBadSelf',
+                description             => 'feh.'
             },
-            19 =>
-              { name => 'Sam\'s Widget', description => 'Special SAM widgets' },
+            4 => {
+                get_enterable_products  => 1,
+                get_accessible_products => 1,
+                get_selectable_products => 1,
+                name                    => 'Ѕpїdєr Séçretíøns',
+                description             => 'Spider secretions'
+            },
+            19 => {
+                get_enterable_products  => 1,
+                get_accessible_products => 1,
+                get_selectable_products => 1,
+                name                    => 'Sam\'s Widget',
+                description             => 'Special SAM widgets'
+            },
         },
     },
 
     '4.4' => {
         products => {
+
+        # Method: get_enterable_products
+        # # Data: $VAR1 = [
+        # #   '2',
+        # #   '3',
+        # #   '19',
+        # #   '1',
+        # #   '4'
+        # # ];
+        # ok 34 - Test out get_enterable_products
+        # ok 35 - BZ::Client::Product implements method: get_accessible_products
+        # ok 36 - No errors: get_accessible_products
+        # # Method: get_accessible_products
+        # # Data: $VAR1 = [
+        # #   '2',
+        # #   '3',
+        # #   '19',
+        # #   '1',
+        # #   '4'
+        # # ];
+        #
+
             1 => {
-                name => 'WorldControl',
+                get_enterable_products  => 1,
+                get_accessible_products => 1,
+                get_selectable_products => 1,
+                name                    => 'WorldControl',
                 description =>
-"A small little program for controlling the world. Can be used\r\nfor good or for evil. Sub-components can be created using the WorldControl API to extend control into almost any aspect of reality."
+"A small little program for controlling the world. Can be used\r\nfor good or for evil. Sub-components can be created using the WorldControl API to extend control into almost any aspect of reality.",
             },
             2 => {
-                name => 'FoodReplicator',
+                get_enterable_products  => 1,
+                get_accessible_products => 1,
+                get_selectable_products => 1,
+                name                    => 'FoodReplicator',
                 description =>
 'Software that controls a piece of hardware that will create any food item through a voice interface.'
             },
-            3 => { name => 'MyOwnBadSelf', description => 'feh.' },
-            4 => {
-                name        => 'Spider Séçretíøns',
-                description => 'Spider secretions'
+            3 => {
+                get_enterable_products  => 1,
+                get_accessible_products => 1,
+                get_selectable_products => 1,
+                name                    => 'MyOwnBadSelf',
+                description             => 'feh.'
             },
-            19 =>
-              { name => 'Sam\'s Widget', description => 'Special SAM widgets' },
+            4 => {
+                get_enterable_products  => 1,
+                get_accessible_products => 1,
+                get_selectable_products => 1,
+                name                    => 'Spider Séçretíøns',
+                description             => 'Spider secretions'
+            },
+            19 => {
+                get_enterable_products  => 1,
+                get_accessible_products => 1,
+                get_selectable_products => 1,
+                name                    => 'Sam\'s Widget',
+                description             => 'Special SAM widgets'
+            },
             20 => {
-                name        => 'LJL Test Product',
-                description => 'Test product description'
+                get_enterable_products  => 1,
+                get_accessible_products => 1,
+                get_selectable_products => 1,
+                name                    => 'LJL Test Product',
+                description             => 'Test product description'
             },
             21 => {
-                name        => 'testing-funky-hyphens',
-                description => 'Hyphen testing product'
+                get_enterable_products  => 1,
+                get_accessible_products => 1,
+                get_selectable_products => 1,
+                name                    => 'testing-funky-hyphens',
+                description             => 'Hyphen testing product'
             },
         },
     },
@@ -113,7 +181,8 @@ sub TestGetList {
                   . (
                     defined( $err->xmlrpc_code() )
                     ? $err->xmlrpc_code()
-                    : 'undef' )
+                    : 'undef'
+                  )
                   . ', '
                   . ( defined( $err->message() ) ? $err->message() : 'undef' );
             }
@@ -132,6 +201,18 @@ sub TestGetList {
         if ( !$ids or ref $ids ne 'ARRAY' or ( !$allowEmpty and !@$ids ) ) {
             diag q/No product ID's returned./;
             return;
+        }
+
+        {
+            is_deeply( # this may prove too fragile, as changes on landfil will break it
+                [ sort @$ids ],
+                [
+                    sort grep {
+                        $quirks{ $tester->{version} }{products}{$_}{$method}
+                    } keys %{ $quirks{ $tester->{version} }{products} }
+                ],
+                'IDs returned correctly for: ' . $method
+            ) or diag $method . ', ID: ' . join( ', ', sort @$ids );
         }
 
         return $ids
@@ -189,12 +270,17 @@ sub TestGet {
 'A corresponding product for every product ID returned by the server was found.'
     ) and $return = 1;
 
-    {    # is_deeply might be better, or some list comparison
-        my $count = scalar keys %{ $quirks{ $tester->{version} }{products} };
-        for my $id (@$ids) {
-            $count-- if $quirks{ $tester->{version} }{products}{$id};
-        }
-        ok( $count == 0, 'Found every ID known to this test' )
+    {
+        is_deeply(
+            [ sort @$ids ],
+            [
+                sort grep {
+                    $quirks{ $tester->{version} }{products}{$_}
+                      {get_accessible_products}
+                } keys %{ $quirks{ $tester->{version} }{products} }
+            ],
+            'Found every ID known to this test'
+          )
           ? $return = 1
           : diag 'ID: ' . join( ', ', sort @$ids );
     }
