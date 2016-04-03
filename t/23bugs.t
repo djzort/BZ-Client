@@ -6,12 +6,22 @@ use warnings 'all';
 
 use lib 't/lib';
 
-
 use BZ::Client::Test();
 use BZ::Client::Bug();
-use Test::More tests => 6;
+use Test::More;
+
+use Data::Dumper;
+$Data::Dumper::Indent   = 1;
+$Data::Dumper::Sortkeys = 1;
+
+# these next three lines need more thought
+# use Test::RequiresInternet ( 'landfill.bugzilla.org' => 443 );
+my @bugzillas = do 't/servers.cfg';
+plan tests => ( scalar @bugzillas * 8 );
 
 my $tester;
+
+my @_priority = qw/ P1 P2 P3 P4 P5 /;
 
 sub contains {
     my($value, $values) = @_;
@@ -22,14 +32,44 @@ sub contains {
     return 0
 }
 
+my %quirks = (
+
+    '5.0' => {
+        status => [
+            'UNCONFIRMED',
+            'CONFIRMED',
+            'IN_PROGRESS',
+            'RESOLVED',
+            'VERIFIED'
+        ],
+        priority => \@_priority,
+    },
+    '4.4' => {
+        status => [qw/ UNCONFIRMED NEW ASSIGNED REOPENED RESOLVED VERIFIED CLOSED /],
+        priority => \@_priority,
+    },
+
+
+);
+
 sub TestStatus {
     my $values = TestLegalValues('status');
-    return $values && contains('NEW', $values) && contains('CLOSED', $values);
+    # warn Dumper $tester;
+    # warn Dumper $values;
+    # warn Dumper $quirks{ $tester->{version} }{status};
+    return is_deeply( $quirks{ $tester->{version} }{status},
+                      $values,
+                      'Status values correct' )
+    ## return $values && contains('NEW', $values) && contains('CLOSED', $values);
 }
 
 sub TestPriority {
     my $values = TestLegalValues('priority');
-    return $values && contains('P1', $values) && contains('P5', $values);
+    # warn Dumper $values;
+    return is_deeply( $quirks{ $tester->{version} }{priority},
+                      $values,
+                      'Priority values correct' )
+    ## return $values && contains('P1', $values) && contains('P5', $values);
 }
 
 sub TestSeverity {
@@ -185,7 +225,11 @@ sub TestSearch {
     return $bugs;
 }
 
-$tester = BZ::Client::Test->new(['config.pl', 't/config.pl']);
+for my $server (@bugzillas) {
+
+    diag sprintf 'Trying server: %s', $server->{testUrl} || '???';
+
+    $tester = BZ::Client::Test->new( %$server, logDirectory => '/tmp/bz' );
 
 SKIP: {
 
@@ -206,3 +250,5 @@ SKIP: {
 #    ok(&TestSearchInvalidProduct, 'SearchInvalidProduct');
 
 };
+
+}

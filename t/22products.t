@@ -11,9 +11,9 @@ use BZ::Client::Test;
 use BZ::Client::Product;
 use Test::More;
 
-use Data::Dumper;
-$Data::Dumper::Indent   = 1;
-$Data::Dumper::Sortkeys = 1;
+#use Data::Dumper;
+#$Data::Dumper::Indent   = 1;
+#$Data::Dumper::Sortkeys = 1;
 
 # these next three lines need more thought
 use Test::RequiresInternet ( 'landfill.bugzilla.org' => 443 );
