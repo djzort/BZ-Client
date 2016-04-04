@@ -17,11 +17,19 @@ $Data::Dumper::Sortkeys = 1;
 # these next three lines need more thought
 # use Test::RequiresInternet ( 'landfill.bugzilla.org' => 443 );
 my @bugzillas = do 't/servers.cfg';
-plan tests => ( scalar @bugzillas * 8 );
+plan tests => ( scalar @bugzillas * 12 );
 
 my $tester;
 
 my @_priority = qw/ P1 P2 P3 P4 P5 /;
+
+my @_severity = ( 'blocker', 'critical', 'major', 'normal', 'minor', 'trivial', 'enhancement' );
+
+my @_op_sys = ( 'All', 'Windows 3.1', 'Windows 95', 'Windows 98', 'Windows ME', 'Windows 2000', 'Windows NT', 'Windows XP', 'Windows Server 2003', 'Mac System 7', 'Mac System 7.5', 'Mac System 7.6.1', 'Mac System 8.0', 'Mac System 8.5', 'Mac System 8.6', 'Mac System 9.x', 'Mac OS X 10.0', 'Mac OS X 10.1', 'Mac OS X 10.2', 'Linux', 'BSD/OS', 'FreeBSD', 'NetBSD', 'OpenBSD', 'AIX', 'BeOS', 'HP-UX', 'IRIX', 'Neutrino', 'OpenVMS', 'OS/2', 'OSF/1', 'Solaris', 'SunOS', "M\x{e1}\x{e7}\x{d8}\x{df}", 'Other'); 
+
+my @_platform = ( 'All', 'DEC', 'HP', 'Macintosh', 'PC', 'SGI', 'Sun', 'Other' );
+
+my @_resolution = ( '', 'FIXED', 'INVALID', 'WONTFIX', 'LATER', 'REMIND', 'DUPLICATE', 'WORKSFORME', 'MOVED' );
 
 sub contains {
     my($value, $values) = @_;
@@ -43,57 +51,22 @@ my %quirks = (
             'VERIFIED'
         ],
         priority => \@_priority,
+        severity => \@_severity,
+        op_sys => \@_op_sys,
+        platform => \@_platform,
+        resolution => [ '', 'FIXED', 'INVALID', 'WONTFIX', 'DUPLICATE', 'WORKSFORME', 'MOVED' ]
     },
     '4.4' => {
         status => [qw/ UNCONFIRMED NEW ASSIGNED REOPENED RESOLVED VERIFIED CLOSED /],
         priority => \@_priority,
+        severity => \@_severity,
+        op_sys => \@_op_sys,
+        platform => \@_platform,
+        resolution => \@_resolution,
     },
 
 
 );
-
-sub TestStatus {
-    my $values = TestLegalValues('status');
-    # warn Dumper $tester;
-    # warn Dumper $values;
-    # warn Dumper $quirks{ $tester->{version} }{status};
-    return is_deeply( $quirks{ $tester->{version} }{status},
-                      $values,
-                      'Status values correct' )
-    ## return $values && contains('NEW', $values) && contains('CLOSED', $values);
-}
-
-sub TestPriority {
-    my $values = TestLegalValues('priority');
-    # warn Dumper $values;
-    return is_deeply( $quirks{ $tester->{version} }{priority},
-                      $values,
-                      'Priority values correct' )
-    ## return $values && contains('P1', $values) && contains('P5', $values);
-}
-
-sub TestSeverity {
-    my $values = TestLegalValues('severity');
-    # these can be changed in bugzilla, so failure may simply indicate that a different value is present
-    return $values && (contains('blocker', $values) or contains('enhancement', $values));
-}
-
-sub TestOpSys {
-    my $values = TestLegalValues('op_sys');
-    # these can be changed in bugzilla, so failure may simply indicate that a different value is present
-    return $values && (contains('All', $values) or contains('other', $values));
-}
-
-sub TestPlatform {
-    my $values = TestLegalValues('platform');
-    # these can be changed in bugzilla, so failure may simply indicate that a different value is present
-    return $values && (contains('All', $values) or contains('Other', $values));
-}
-
-sub TestResolution {
-    my $values = TestLegalValues('resolution');
-    return $values && contains('FIXED', $values) && contains('DUPLICATE', $values);
-}
 
 sub TestLegalValues {
     my $field = shift;
@@ -121,6 +94,58 @@ sub TestLegalValues {
     }
     return $values;
 }
+
+sub TestStatus {
+    my $values = TestLegalValues('status');
+    return is_deeply( $quirks{ $tester->{version} }{status},
+                      $values,
+                      'Status values correct' )
+}
+
+sub TestPriority {
+    my $values = TestLegalValues('priority');
+    ## return $values && contains('P1', $values) && contains('P5', $values);
+    return is_deeply( $quirks{ $tester->{version} }{priority},
+                      $values,
+                      'Priority values correct' );
+}
+
+sub TestSeverity {
+    my $values = TestLegalValues('severity');
+    # these can be changed in bugzilla, so failure may simply indicate that a different value is present
+    return is_deeply( $quirks{ $tester->{version} }{severity},
+                      $values,
+                      'Severity values correct' );
+}
+
+sub TestOpSys {
+    my $values = TestLegalValues('op_sys');
+    # these can be changed in bugzilla, so failure may simply indicate that a different value is present
+    return is_deeply( $quirks{ $tester->{version} }{op_sys},
+                      $values,
+                      'Operating System values correct' );
+}
+
+sub TestPlatform {
+    my $values = TestLegalValues('platform');
+    # these can be changed in bugzilla, so failure may simply indicate that a different value is present
+    return is_deeply( $quirks{ $tester->{version} }{platform},
+                      $values,
+                      'Platform values correct' );
+}
+
+sub TestResolution {
+    my $values = TestLegalValues('resolution');
+    # these can be changed in bugzilla, so failure may simply indicate that a different value is present
+    my $res = is_deeply( $quirks{ $tester->{version} }{resolution},
+                      $values,
+                      'Resolution values corrent' );
+
+    diag Dumper $values unless $res;
+    return $res
+}
+
+###
 
 sub TestSearchAll {
     my $bugs = TestSearch({});
@@ -152,6 +177,33 @@ sub TestSearchOpen {
         }
     }
     return 1;
+}
+
+sub TestSearch {
+    my($params, $emptyOk) = @_;
+    my $client = $tester->client();
+    my $bugs;
+    eval {
+        $bugs = BZ::Client::Bug->search($client, $params);
+        $client->logout();
+    };
+    if ($@) {
+        my $err = $@;
+        if (ref($err) eq 'BZ::Client::Exception') {
+            print STDERR 'Error: ' . (defined($err->http_code()) ? $err->http_code() : 'undef')
+                . ', ' . (defined($err->xmlrpc_code()) ? $err->xmlrpc_code() : 'undef')
+                . ', ' . (defined($err->message()) ? $err->message() : 'undef') . '\n';
+        }
+        else {
+            print STDERR "Error $err\n";
+        }
+        return undef;
+    }
+    if (!$bugs  ||  ref($bugs) ne 'ARRAY'  ||  (!$emptyOk  &&  !@$bugs)) {
+        print STDERR "No bugs returned.\n";
+        return undef;
+    }
+    return $bugs;
 }
 
 sub TestSearchExistingProduct {
@@ -196,33 +248,6 @@ sub TestSearchProduct {
         }
     }
     return 1;
-}
-
-sub TestSearch {
-    my($params, $emptyOk) = @_;
-    my $client = $tester->client();
-    my $bugs;
-    eval {
-        $bugs = BZ::Client::Bug->search($client, $params);
-        $client->logout();
-    };
-    if ($@) {
-        my $err = $@;
-        if (ref($err) eq 'BZ::Client::Exception') {
-            print STDERR 'Error: ' . (defined($err->http_code()) ? $err->http_code() : 'undef')
-                . ', ' . (defined($err->xmlrpc_code()) ? $err->xmlrpc_code() : 'undef')
-                . ', ' . (defined($err->message()) ? $err->message() : 'undef') . '\n';
-        }
-        else {
-            print STDERR "Error $err\n";
-        }
-        return undef;
-    }
-    if (!$bugs  ||  ref($bugs) ne 'ARRAY'  ||  (!$emptyOk  &&  !@$bugs)) {
-        print STDERR "No bugs returned.\n";
-        return undef;
-    }
-    return $bugs;
 }
 
 for my $server (@bugzillas) {
