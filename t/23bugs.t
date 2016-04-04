@@ -95,6 +95,7 @@ sub TestLegalValues {
     return $values;
 }
 
+## TODO: These should all be smooshed in to one piece of code.
 sub TestStatus {
     my $values = TestLegalValues('status');
     return is_deeply( $quirks{ $tester->{version} }{status},
