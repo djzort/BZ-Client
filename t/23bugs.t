@@ -125,53 +125,11 @@ sub TestLegalValues {
     return $values;
 }
 
-## TODO: These should all be smooshed in to one piece of code.
-sub TestStatus {
-    my $values = TestLegalValues('status');
-    return is_deeply( $quirks{ $tester->{version} }{status},
-        $values, 'Status values correct' );
-}
-
-sub TestPriority {
-    my $values = TestLegalValues('priority');
-    ## return $values && contains('P1', $values) && contains('P5', $values);
-    return is_deeply( $quirks{ $tester->{version} }{priority},
-        $values, 'Priority values correct' );
-}
-
-sub TestSeverity {
-    my $values = TestLegalValues('severity');
-
-# these can be changed in bugzilla, so failure may simply indicate that a different value is present
-    return is_deeply( $quirks{ $tester->{version} }{severity},
-        $values, 'Severity values correct' );
-}
-
-sub TestOpSys {
-    my $values = TestLegalValues('op_sys');
-
-# these can be changed in bugzilla, so failure may simply indicate that a different value is present
-    return is_deeply( $quirks{ $tester->{version} }{op_sys},
-        $values, 'Operating System values correct' );
-}
-
-sub TestPlatform {
-    my $values = TestLegalValues('platform');
-
-# these can be changed in bugzilla, so failure may simply indicate that a different value is present
-    return is_deeply( $quirks{ $tester->{version} }{platform},
-        $values, 'Platform values correct' );
-}
-
-sub TestResolution {
-    my $values = TestLegalValues('resolution');
-
-# these can be changed in bugzilla, so failure may simply indicate that a different value is present
-    my $res = is_deeply( $quirks{ $tester->{version} }{resolution},
-        $values, 'Resolution values corrent' );
-
-    diag Dumper $values unless $res;
-    return $res;
+sub RunTest {
+    my $test = shift;
+    my $values = TestLegalValues($test);
+    return is_deeply( $quirks{ $tester->{version} }{$test},
+        $values, $test . ' values correct' )
 }
 
 ###
@@ -306,12 +264,12 @@ for my $server (@bugzillas) {
         skip( 'No Bugzilla server configured, skipping', 6 )
           if $tester->isSkippingIntegrationTests();
 
-        ok( &TestStatus,     'Status' );
-        ok( &TestPriority,   'Priority' );
-        ok( &TestSeverity,   'Severity' );
-        ok( &TestOpSys,      'OpSys' );
-        ok( &TestPlatform,   'Platform' );
-        ok( &TestResolution, 'Resolution' );
+        ok( &RunTest('status'),     'Status' );
+        ok( &RunTest('priority'),   'Priority' );
+        ok( &RunTest('severity'),   'Severity' );
+        ok( &RunTest('op_sys'),     'OpSys' );
+        ok( &RunTest('platform'),   'Platform' );
+        ok( &RunTest('resolution'), 'Resolution' );
 
         #these will time out on a large install
         #    ok(&TestSearchAll, 'SearchAll');
