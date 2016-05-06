@@ -17,7 +17,7 @@ $Data::Dumper::Sortkeys = 1;
 # these next three lines need more thought
 # use Test::RequiresInternet ( 'landfill.bugzilla.org' => 443 );
 my @bugzillas = do 't/servers.cfg';
-plan tests => ( scalar @bugzillas * 12 );
+plan tests => ( scalar @bugzillas * 3 );
 
 my $tester;
 
