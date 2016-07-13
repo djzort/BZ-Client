@@ -91,7 +91,7 @@ sub end {
                     $val = "$1-$2-$3$4";
                 }
                 $self->{'result'} =
-                  DateTime::Format::ISO8601->parse_datetime($val);
+                  DateTime::Format::ISO8601->parse_datetime($val)->set_time_zone('UTC');
             }
         }
     }
