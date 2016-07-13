@@ -672,6 +672,29 @@ FIXME
 
 Searches for bugs matching the given parameters.
 
+=head3 Parameters
+
+This is just a quick example, there are lot's of fields
+
+ %params = (
+   'alias' => 'ACONVENIENTALIAS',
+
+   'assigned_to' => 'hopefullynotme@domain.local',
+
+   'creator' => 'littlejohnnytables@school.local',
+
+   'severity' => 'major',
+
+   'status' => 'OPEN',
+
+ );
+
+Criteria are joined in a logical AND. That is, you will be returned bugs that match all of the criteria, not bugs that match any of the criteria.
+
+See also L<https://bugzilla.readthedocs.io/en/5.0/api/core/v1/bug.html#search-bugs>
+
+=head3 Returns
+
 Returns an array or arrayref of bug instance objects with the given ID's.
 
 See L<INSTANCE METHODS> for how to use them.

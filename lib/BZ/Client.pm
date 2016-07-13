@@ -388,6 +388,21 @@ A boolean that indicates whether to validate the SSL certificate of an
 
 =back
 
+=head3 Connect Via Socks Proxy
+
+Try something like:
+
+ use HTTP::Tiny; # load this manually
+ use IO::Socket::Socks::Wrapper (
+  'HTTP::Tiny::Handle::connect()' => {
+    ProxyAddr    => 'localhost',
+    ProxyPort    => 1080,
+    SocksVersion => 4,
+    Timeout      => 15
+    }
+  );
+  use BZ::Client ...etc
+
 =head1 INSTANCE METHODS
 
 This section lists the methods, which an instance of BZ::Client can
