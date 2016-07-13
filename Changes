@@ -1,5 +1,9 @@
 Revision history for Perl extension BZ::Client.
 
+2.0_13 Wednesday July 13 14:30 2016
+    - Ensure TZ is UTC in DateTime objects
+    - More pod added
+
 2.0_12 Wednesday March 23 21:18 2016
     - Disable tests against 4.2 on landfill for BZ#113288
 
