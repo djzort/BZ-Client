@@ -85,7 +85,7 @@ servers installation.
                                 user     => $user,
                                 password => $password );
 
-  my $ok    = BZ::Client::User->offer_account_by_email( $client, 'email@adress' );
+  my $ok    = BZ::Client::User->offer_account_by_email( $client, 'email@address' );
   my $users = BZ::Client::User->get( $client, \%params );
   my $id    = BZ::Client::User->create( $client, \%params );
   my $users = BZ::Client::User->update( $client, \%params );
