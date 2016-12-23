@@ -1,5 +1,9 @@
 Revision history for Perl extension BZ::Client.
 
+FLOATING
+
+    - t/300component.t: added, but doesnt do anything
+
 2.0_13 Wednesday July 13 14:30 2016
     - Ensure TZ is UTC in DateTime objects
     - More pod added
