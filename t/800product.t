@@ -223,8 +223,6 @@ sub TestGetList {
 sub TestGet {
     my $client = $tester->client();
 
-####    warn Dumper $tester;
-
     my $ids;
     my $products;
     eval {
