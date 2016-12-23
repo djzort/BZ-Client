@@ -186,19 +186,6 @@ for my $server (@bugzillas) {
                or print Dumper $class;
        }
 
-       # ok( &RunTest('status'),     'Status' );
-       # ok( &RunTest('priority'),   'Priority' );
-       # ok( &RunTest('severity'),   'Severity' );
-       # ok( &RunTest('op_sys'),     'OpSys' );
-       # ok( &RunTest('platform'),   'Platform' );
-       # ok( &RunTest('resolution'), 'Resolution' );
-
-        #these will time out on a large install
-        #    ok(&TestSearchAll, 'SearchAll');
-        #    ok(&TestSearchOpen, 'SearchOpen');
-        #    ok(&TestSearchExistingProduct, 'SearchExistingProduct');
-        #    ok(&TestSearchInvalidProduct, 'SearchInvalidProduct');
-
     }
 
-}
+} # for my $server
