@@ -1,3 +1,6 @@
 Bring all the objects together (like Search::Elasticsearch)
 
 testing
+ - swap from print STDERR to diag() throughout
+ - have tests for everything that bz4.4 can use
+ - has travis set up bugzilla and run admin function tests?
