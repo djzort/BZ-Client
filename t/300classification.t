@@ -147,24 +147,22 @@ sub TestClassification {
     };
     if ($@) {
         my $err = $@;
+        my $msg;
         if ( ref($err) eq 'BZ::Client::Exception' ) {
-            print STDERR 'Error: '
-              . ( defined( $err->http_code() ) ? $err->http_code() : 'undef' )
-              . ', '
-              . (
-                defined( $err->xmlrpc_code() ) ? $err->xmlrpc_code() : 'undef' )
-              . ', '
-              . ( defined( $err->message() ) ? $err->message() : 'undef' )
-              . '\n';
+            $msg = 'Error: '
+              . ( defined( $err->http_code() ) ? $err->http_code()     : 'undef' ) . ', '
+              . ( defined( $err->xmlrpc_code() ) ? $err->xmlrpc_code() : 'undef' ) . ', '
+              . ( defined( $err->message() ) ? $err->message()         : 'undef' );
         }
         else {
-            print STDERR "Error $err\n";
+            $msg = "Error: $err";
         }
-        return undef;
+        diag("$msg\n");
+        return;
     }
     if ( !$class || ref($class) ne 'ARRAY' || ( !$emptyOk && !@$class ) ) {
-        print STDERR "No class returned.\n";
-        return undef;
+        diag "No class returned.\n";
+        return;
     }
     return $class;
 }

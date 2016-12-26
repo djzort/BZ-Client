@@ -103,24 +103,22 @@ sub TestLegalValues {
     };
     if ($@) {
         my $err = $@;
+        my $msg;
         if ( ref($err) eq 'BZ::Client::Exception' ) {
-            print STDERR 'Error: '
-              . ( defined( $err->http_code() ) ? $err->http_code() : 'undef' )
-              . ', '
-              . (
-                defined( $err->xmlrpc_code() ) ? $err->xmlrpc_code() : 'undef' )
-              . ', '
-              . ( defined( $err->message() ) ? $err->message() : 'undef' )
-              . '\n';
+            $msg = 'Error: '
+              . ( defined( $err->http_code() ) ? $err->http_code()     : 'undef' ) . ', '
+              . ( defined( $err->xmlrpc_code() ) ? $err->xmlrpc_code() : 'undef' ) . ', '
+              . ( defined( $err->message() ) ? $err->message()         : 'undef' );
         }
         else {
-            print STDERR "Error $err\n";
+            $msg = "Error $err\n";
         }
-        return undef;
+        diag($msg);
+        return;
     }
     if ( !$values or ref($values) ne 'ARRAY' or !@$values ) {
-        print STDERR "No values returned.\n";
-        return undef;
+        diag "No values returned.\n";
+        return;
     }
     return $values;
 }
@@ -153,7 +151,7 @@ sub TestSearchOpen {
         }
         if ( $bug->is_open() ) {
             if ( !$found ) {
-                print STDERR 'Bug '
+                diag 'Bug '
                   . $bug->id()
                   . " is open, but not reported as open.\n";
                 return 0;
@@ -161,7 +159,7 @@ sub TestSearchOpen {
         }
         else {
             if ($found) {
-                print STDERR 'Bug '
+                diag 'Bug '
                   . $bug->id()
                   . " isn't open, but reported as open.\n";
                 return 0;
@@ -181,24 +179,22 @@ sub TestSearch {
     };
     if ($@) {
         my $err = $@;
+        my $msg;
         if ( ref($err) eq 'BZ::Client::Exception' ) {
-            print STDERR 'Error: '
-              . ( defined( $err->http_code() ) ? $err->http_code() : 'undef' )
-              . ', '
-              . (
-                defined( $err->xmlrpc_code() ) ? $err->xmlrpc_code() : 'undef' )
-              . ', '
-              . ( defined( $err->message() ) ? $err->message() : 'undef' )
-              . '\n';
+            $msg = 'Error: '
+              . ( defined( $err->http_code() ) ? $err->http_code()     : 'undef' ) . ', '
+              . ( defined( $err->xmlrpc_code() ) ? $err->xmlrpc_code() : 'undef' ) . ', '
+              . ( defined( $err->message() ) ? $err->message()         : 'undef' );
         }
         else {
-            print STDERR "Error $err\n";
+            $msg = "Error: $err";
         }
-        return undef;
+        diag "$msg\n";
+        return;
     }
     if ( !$bugs || ref($bugs) ne 'ARRAY' || ( !$emptyOk && !@$bugs ) ) {
-        print STDERR "No bugs returned.\n";
-        return undef;
+        diag "No bugs returned.\n";
+        return;
     }
     return $bugs;
 }
