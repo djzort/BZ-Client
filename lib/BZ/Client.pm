@@ -221,9 +221,6 @@ sub _api_call {
 
     my ( $self, $methodName, $params, $options ) = @_;
 
-    use Data::Dumper; $Data::Dumper::Indent = 1;
-    warn '$options is :' . Dumper $options;
-
     $self->log( 'debug',
         "BZ::Client::_api_call, sending request for method $methodName to "
           . $self->url() );
