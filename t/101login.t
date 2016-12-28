@@ -51,20 +51,12 @@ for my $server (@bugzillas) {
                 if ( ref($err) eq 'BZ::Client::Exception' ) {
                     $msg =
                       'Error: '
-                      . (
-                        defined( $err->http_code() ) ? $err->http_code()
-                        : 'undef' )
-                      . ', '
-                      . (
-                        defined( $err->xmlrpc_code() ) ? $err->xmlrpc_code()
-                        : 'undef' )
-                      . ', '
-                      . (
-                        defined( $err->message() ) ? $err->message()
-                        : 'undef' );
+                      . ( defined( $err->http_code() )   ? $err->http_code()   : 'undef' ) . ', '
+                      . ( defined( $err->xmlrpc_code() ) ? $err->xmlrpc_code() : 'undef' ) . ', '
+                      . ( defined( $err->message() )     ? $err->message()     : 'undef' );
                 }
                 else {
-                    $msg = "Error $err";
+                    $msg = "Error: $err";
                 }
                 ok( 0, 'No errors from ->login' ) or diag($msg);
             }
@@ -72,7 +64,8 @@ for my $server (@bugzillas) {
                 ok( 1, 'No errors from ->login' );
             }
 
-            ok( $ret,                    '->login returned true' );
+            ok( $ret,                    '->login returned true' )
+                or diag 'Expected true, got: ' . ( defined $ret ? $ret : 'undef' );
             ok( $client->is_logged_in(), 'The client IS now logged in' )
               or BAIL_OUT('Not logged in, cannot proceed');
 
@@ -94,16 +87,18 @@ for my $server (@bugzillas) {
                       . ( defined( $err->message() )     ? $err->message()     : 'undef' );
                 }
                 else {
-                    $msg = "Error $err";
+                    $msg = "Error: $err";
                 }
-                ok( 0, 'No errors from ->logout' ) or diag($msg);
+                ok( 0, 'No errors from ->logout when already logged in' ) or diag($msg);
             }
             else {
-                ok( 1, 'No errors from ->logout' );
+                ok( 1, 'No errors from ->logout when already logged in' );
             }
 
-            ok( $ret, '->logout returned true' );
+            ok( $ret, '->logout returned true when already logged in' )
+                or diag 'Expected true, got: ' . ( defined $ret ? $ret : 'undef' );
             diag( sprintf 'apikey: %s', $server->{testApiKey} || 'NaN' );
+
           SKIP: {
                 skip( 'Always logged in when using apikey', 1 )
                   if $server->{testApiKey};
@@ -123,28 +118,21 @@ for my $server (@bugzillas) {
                 if ( ref($err) eq 'BZ::Client::Exception' ) {
                     $msg =
                       'Error: '
-                      . (
-                        defined( $err->http_code() ) ? $err->http_code()
-                        : 'undef' )
-                      . ', '
-                      . (
-                        defined( $err->xmlrpc_code() ) ? $err->xmlrpc_code()
-                        : 'undef' )
-                      . ', '
-                      . (
-                        defined( $err->message() ) ? $err->message()
-                        : 'undef' );
+                      . ( defined( $err->http_code() )   ? $err->http_code()   : 'undef' ) . ', '
+                      . ( defined( $err->xmlrpc_code() ) ? $err->xmlrpc_code() : 'undef' ) . ', '
+                      . ( defined( $err->message() )     ? $err->message()     : 'undef' );
                 }
                 else {
-                    $msg = "Error $err";
+                    $msg = "Error: $err";
                 }
-                ok( 0, 'No errors from ->logout (again)' ) or diag($msg);
+                ok( 0, 'No errors from ->logout when not logged in' ) or diag($msg);
             }
             else {
-                ok( 1, 'No errors from ->logout (again)' );
+                ok( 1, 'No errors from ->logout when not logged in' );
             }
 
-            ok( $ret, '->logout (again) returned true' );
+            ok( $ret, '->logout when not logged in, returned true' )
+                or diag 'Expected true, got: ' . ( defined $ret ? $ret : 'undef' );
             diag( sprintf 'apikey: %s', $server->{testApiKey} || 'NaN' );
           SKIP: {
                 skip( 'Always logged in when using apikey', 1 )
