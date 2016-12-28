@@ -123,6 +123,10 @@ nothing if successful
 
 =over 4
 
+=item 50 - Email parameter missing
+
+The email parameter was not provided.
+
 =item 500 - Account Already Exists
 
 An account with that email address already exists in Bugzilla.
