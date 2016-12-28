@@ -43,6 +43,7 @@ my %quirks = (
                         xmlrpc => 50,
                         message => 'The function requires a email argument, and that argument was not set.',
                 },
+                response => undef,
             },
             # test error 500
             {
@@ -51,6 +52,7 @@ my %quirks = (
                         xmlrpc => 500,
                         message => 'There is already an account with the login name djzort@cpan.org.'
                 },
+                response => undef,
             },
             # test error 500 with lazy syntax
             {
@@ -59,6 +61,7 @@ my %quirks = (
                         xmlrpc => 500,
                         message => 'There is already an account with the login name djzort@cpan.org.'
                 },
+                response => undef,
             },
             # test error 501
             {
@@ -67,10 +70,12 @@ my %quirks = (
                         xmlrpc => 501,
                         message => q|The e-mail address you entered (djzortATcpan.org) didn't pass our syntax checking for a legal email address. A legal address must contain exactly one '@', and at least one '.' after the @. It also must not contain any illegal characters.|,
                 },
+                response => undef,
             },
             {
 
                 params => { email => sprintf('bz-client-testing-%s@cpan.org',$pp->generate) },
+                response => 1,
 
             },
         ]
@@ -160,9 +165,6 @@ sub TestOffer {
 
             }
 
-            ok( ! defined $ok, 'offer_account_by_email response should be undefined' )
-                or diag sprintf( 'offer_account_by_email reponse should be undef but was: %s', $ok || 'undef');
-
             unless ($error) {
                 diag($msg);
                 ok( 0, 'No errors: offer_account_by_email. Test # ' . $cnt );
@@ -179,12 +181,13 @@ sub TestOffer {
                 $return = 0;
             }
             else {
-                ok( defined $ok, 'offer_account_by_email response should be defined' )
-                    or diag sprintf( 'offer_account_by_email reponse was: %s', $ok || 'undef');
-
                 ok( 1, 'No errors: offer_account_by_email, test # ' .$cnt );
             }
         } # if ($@)
+
+        is( $ok, $data->{response}, 'offer_account_by_email response check' )
+            if exists $data->{response};
+
 
     } # for my $data (@$list)
 
