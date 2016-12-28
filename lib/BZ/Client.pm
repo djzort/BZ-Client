@@ -159,7 +159,7 @@ sub login {
     $self->log( 'debug', 'BZ::Client::login, going to log in with username and password' );
 
     my $cookies = HTTP::CookieJar->new();
-    my $response = $self->_api_call( 'User.login', \%params, $cookies );
+    my $response = $self->_api_call( 'User.login', \%params, { cookies => $cookies } );
     if ( not defined( $response->{'id'} )
         or $response->{'id'} !~ m/^\d+$/s )
     {
@@ -183,11 +183,11 @@ sub logout {
     my $cookies = $self->{'cookies'};
     my $token = $self->{'token'};
     if ($cookies or $token) {
-        # cannot use _api_call() as response from logout is empty
-        my $params = {};
-        $params->{'token'} = $self->{'token'}
+        my %params;
+        $params{'token'} = $self->{'token'}
             if $self->{'token'};
-        $self->xmlrpc->request( 'methodName' => 'User.logout', params => [$params] );
+        # Note: A good response from User.logout is empty
+        my $response = $self->_api_call( 'User.logout', \%params, { empty_reply_ok => 1 } );
         $cookies->clear() if $cookies;
         delete $self->{'token'};
         delete $self->{'cookies'};
@@ -204,20 +204,25 @@ sub is_logged_in {
 }
 
 sub api_call {
-    my ( $self, $methodName, $params ) = @_;
 
-    $params ||= {};
+    my ( $self, $methodName, $params, $options ) = @_;
+
+    $params  ||= {};
+    $options ||= {};
 
     if ( $self->autologin && not $self->is_logged_in() ) {
         $self->login();
     }
 
-    return $self->_api_call( $methodName, $params )
+    return $self->_api_call( $methodName, $params, $options )
 }
 
 sub _api_call {
 
-    my ( $self, $methodName, $params, $cookies ) = @_;
+    my ( $self, $methodName, $params, $options ) = @_;
+
+    use Data::Dumper; $Data::Dumper::Indent = 1;
+    warn '$options is :' . Dumper $options;
 
     $self->log( 'debug',
         "BZ::Client::_api_call, sending request for method $methodName to "
@@ -225,8 +230,8 @@ sub _api_call {
 
     my $xmlrpc = $self->xmlrpc();
 
-    if ($cookies) {
-        $xmlrpc->web_agent->{cookie_jar} = $cookies;
+    if ($options->{cookies}) {
+        $xmlrpc->web_agent->{cookie_jar} = $options->{cookies};
     }
 
     $params->{Bugzilla_token} = $self->{'token'}
@@ -242,16 +247,38 @@ sub _api_call {
     my $response =
       $xmlrpc->request( 'methodName' => $methodName, params => [$params] );
 
-    if ( not $response ) {
-        $self->error('Empty response from server.');
+    if ($options->{empty_response_ok}) {
+
+        if ( ref $response and ref($response) ne 'HASH' ) {
+            $self->error("Invalid response from server: $response");
+        }
+
+        if ($response) {
+            $self->log( 'debug',
+                "BZ::Client::_api_call, got response for method $methodName" );
+        }
+        else {
+            $self->log( 'debug',
+                "BZ::Client::_api_call, got empty response for method $methodName but thats OK" );
+            $response = 1
+        }
+
+    }
+    else {
+
+        if ( not $response ) {
+            $self->error('Empty response from server.');
+        }
+
+        if ( ref($response) ne 'HASH' ) {
+            $self->error("Invalid response from server: $response");
+        }
+
+        $self->log( 'debug',
+            "BZ::Client::_api_call, got response for method $methodName" );
+
     }
 
-    if ( ref($response) ne 'HASH' ) {
-        $self->error("Invalid response from server: $response");
-    }
-
-    $self->log( 'debug',
-        "BZ::Client::_api_call, got response for method $methodName" );
 
     return $response
 }
@@ -477,11 +504,32 @@ Sends log messages to whatever is loaded via L</logger>.
 
 =head2 api_call
 
- $response = $client->api_call( $methodName, $params );
+ $response = $client->api_call( $methodName, $params, $options );
 
 Used by subclasses of L<BZ::Client::API> to invoke methods of the Bugzilla
-API. Takes a method name and a hash ref of parameters as input. Returns a
-hash ref of named result objects.
+API. The method name and the hash ref of parameters are sent to the Bugzilla server.
+The options hash ref adjusts the behaviour of this function when calls are made.
+
+The params and options hash refs are optional, although certain param values may be required
+depending on the method name being called. This client library relies upon the Bugzilla
+server to enforce any method parameter requirements, so insufficient requests will still be
+sent to the server for it to then reject them.
+
+Returns a hash ref of named result objects.
+
+=head3 options
+
+=over 4
+
+=item empty_response_ok
+
+With this set, an empty response is not considered an error.
+
+=item cookies
+
+This is used internally to set cookies with the log in functions. Don't touch this.
+
+=back
 
 =head1 ERROR CODES
 

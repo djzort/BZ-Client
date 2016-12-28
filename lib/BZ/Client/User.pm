@@ -20,7 +20,7 @@ sub offer_account_by_email {
         $params = { email => $params }
     }
     $client->log('debug', $class . '::offer_account_by_email: Inviting');
-    return $class->api_call($client, 'User.offer_account_by_email', $params);
+    return $class->api_call($client, 'User.offer_account_by_email', $params, { empty_response_ok => 1});
 }
 
 sub get {
