@@ -514,13 +514,14 @@ sent to the server for it to then reject them.
 
 Returns a hash ref of named result objects.
 
-=head3 options
+=head3 Options
 
 =over 4
 
 =item empty_response_ok
 
-With this set, an empty response is not considered an error.
+With this set, an empty response is not considered an error. In this case, api_call returns 1 to indicate
+success.
 
 =item cookies
 
