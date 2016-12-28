@@ -20,7 +20,7 @@ $Data::Dumper::Sortkeys = 1;
 # these next three lines need more thought
 use Test::RequiresInternet ( 'landfill.bugzilla.org' => 443 );
 my @bugzillas = do 't/servers.cfg';
-plan tests => ( scalar @bugzillas * 21 );
+plan tests => ( scalar @bugzillas * 21 + 13 );
 
 my $tester;
 
@@ -82,6 +82,16 @@ $quirks{'5.0'}->{'offer_account_by_email'} = [
 $quirks{'4.4'}->{'offer_account_by_email'} = $quirks{'5.0'}->{'offer_account_by_email'};
 
 $quirks{'5.0'}->{get} = [
+    # test insufficient arguments
+    {
+        params => { },
+        error => {
+            xmlrpc => 50,
+            message => 'The function User.get requires that you set one of the following parameters: ids, names, match',
+        },
+        response => undef,
+    },
+    # search by name
     {
         params => { names => [ 'djzort@cpan.org' ] },
         response => [{
@@ -106,7 +116,32 @@ $quirks{'5.0'}->{get} = [
             'saved_searches' => []
           }],
     },
-    # check for no result search
+    # search by ids
+    {
+        params => { ids => [ 64995 ] },
+        response => [{
+            'can_login' => '1',
+            'email' => 'djzort@cpan.org',
+            'groups' => [
+              {
+                'description' => 'Can confirm a bug.',
+                'id' => '7',
+                'name' => 'canconfirm'
+              },
+              {
+                'description' => 'Can edit all aspects of any bug.',
+                'id' => '6',
+                'name' => 'editbugs'
+              },
+            ],
+            'id' => '64995',
+            'name' => 'djzort@cpan.org',
+            'real_name' => 'Cpan Testing',
+            'saved_reports' => [],
+            'saved_searches' => []
+          }],
+    },
+    # check for no result search. error #51
     {
         params => { names => 'oremipsumdolorsitametconsecteturadipiscingelitnvariusodioeumagnaultriciesquisefficiturloremvenenatisaecenasauctor@cpan.org' },
         error => {
@@ -115,6 +150,35 @@ $quirks{'5.0'}->{get} = [
         },
         response => undef,
 
+    },
+    # check no result
+    {
+        params => { ids => 0e0, },
+        response => [], # intentionally empty
+    },
+    # check error 52
+    {
+        params => { ids => 'asdf' },
+        error => {
+            xmlrpc => 52,
+            message => q|Invalid parameter passed to Bugzilla::User::new_from_list: It must be numeric.|,
+        },
+        response => undef,
+    },
+    # check error 304 - TODO find a case that manifests this error number
+    #{
+    #    params => { ids => 1, },
+    #    response => [], # intentionally empty
+    #},
+    # TODO error 505
+    # check error 804
+    {
+        params => { names => [ 'djzort@cpan.org' ] ,groups => 'asdf' },
+        error => {
+            xmlrpc => 804,
+            message => q|The group you specified, asdf, is not valid here.|,
+        },
+        response => undef,
     },
 ];
 
@@ -347,8 +411,13 @@ sub TestGet {
             }
         } # if ($@)
 
-        is_deeply( $ok, $data->{response}, 'offer_account_by_email response check' )
-            if exists $data->{response};
+        if (exists $data->{response}) {
+            is_deeply( $ok, $data->{response}, 'offer_account_by_email response check' )
+                or diag sprintf( '$got %s $expected %s',
+                                Dumper($ok),
+                                defined $data->{response} ? $data->{response}
+                                                          : 'undef');
+        }
 
 
     } # for my $data (@$list)
