@@ -179,14 +179,14 @@ sub login {
 sub logout {
     my $self    = shift;
     return 1 unless $self->is_logged_in;
-    my $response;
+    my $response = 1; # if have not cookie or token, return 1
     my $cookies = $self->{'cookies'};
     my $token = $self->{'token'};
     if ($cookies or $token) {
         my %params;
         $params{'token'} = $self->{'token'}
             if $self->{'token'};
-        # Note: A good response from User.logout is empty
+        # Note: A good response from User.logout is empty so, empty_response_ok => 1
         $response = $self->_api_call( 'User.logout', \%params, { empty_response_ok => 1 } );
         $cookies->clear() if $cookies;
         delete $self->{'token'};
