@@ -89,17 +89,9 @@ for my $server (@bugzillas) {
                 if ( ref($err) eq 'BZ::Client::Exception' ) {
                     $msg =
                       'Error: '
-                      . (
-                        defined( $err->http_code() ) ? $err->http_code()
-                        : 'undef' )
-                      . ', '
-                      . (
-                        defined( $err->xmlrpc_code() ) ? $err->xmlrpc_code()
-                        : 'undef' )
-                      . ', '
-                      . (
-                        defined( $err->message() ) ? $err->message()
-                        : 'undef' );
+                      . ( defined( $err->http_code() )   ? $err->http_code()   : 'undef' ) . ', '
+                      . ( defined( $err->xmlrpc_code() ) ? $err->xmlrpc_code() : 'undef' ) . ', '
+                      . ( defined( $err->message() )     ? $err->message()     : 'undef' );
                 }
                 else {
                     $msg = "Error $err";
