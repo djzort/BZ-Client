@@ -187,7 +187,7 @@ sub logout {
         $params{'token'} = $self->{'token'}
             if $self->{'token'};
         # Note: A good response from User.logout is empty
-        my $response = $self->_api_call( 'User.logout', \%params, { empty_reply_ok => 1 } );
+        my $response = $self->_api_call( 'User.logout', \%params, { empty_response_ok => 1 } );
         $cookies->clear() if $cookies;
         delete $self->{'token'};
         delete $self->{'cookies'};
