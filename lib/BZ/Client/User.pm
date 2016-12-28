@@ -151,7 +151,7 @@ Added in Bugzilla 3.4
 
 Note: At least one of L</ids>, L</names>, or L</match> must be specified.
 
-Note: Users will not be returned more than once, so even if a user is matched by more than one argument, only one user will be returned.
+Note: Users will only appear once in the returned list, even if that user is matched by more than one search argument.
 
 In addition to the parameters below, this method also accepts the standard L<BZ::Client::Bug/include_fields> and L<BZ::Client::Bug/exclude_fields> arguments.
 
