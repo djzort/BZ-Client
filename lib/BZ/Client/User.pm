@@ -470,6 +470,10 @@ Logged-in users are not authorized to edit other users.
 
 =back
 
+=head1 EXCEPTION HANDLING
+
+See L<BZ::Client::Exception>
+
 =head1 SEE ALSO
 
 L<BZ::Client>, L<BZ::Client::API>, L<Bugzilla API|https://www.bugzilla.org/docs/tip/en/html/api/Bugzilla/WebService/User.html>

@@ -372,6 +372,10 @@ Example:
  BZ::Client::User->get( $client,
     { ids => [1], include_fields => ['_all'] })
 
+=head1 EXCEPTION HANDLING
+
+See L<BZ::Client::Exception>
+
 =head1 UTILITY FUNCTIONS
 
 This section lists the utility functions provided by this module.

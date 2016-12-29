@@ -531,6 +531,10 @@ This is used internally to set cookies with the log in functions. Don't touch th
 
 =back
 
+=head1 EXCEPTION HANDLING
+
+See L<BZ::Client::Exception>
+
 =head1 ERROR CODES
 
 =head2 300 (Invalid Username or Password)

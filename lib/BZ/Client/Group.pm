@@ -347,7 +347,11 @@ Logged-in users are not authorized to edit bugzilla groups as they are not membe
 
 =head1 INSTANCE METHODS
 
-Not yet implemented
+FIXME Not yet implemented
+
+=head1 EXCEPTION HANDLING
+
+See L<BZ::Client::Exception>
 
 =head1 SEE ALSO
 

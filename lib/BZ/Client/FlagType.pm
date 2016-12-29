@@ -489,7 +489,11 @@ This flag type is not available for the products you can administer. Therefore y
 
 =head1 INSTANCE METHODS
 
-Not yet implemented
+FIXME Not yet implemented
+
+=head1 EXCEPTION HANDLING
+
+See L<BZ::Client::Exception>
 
 =head1 SEE ALSO
 

@@ -261,6 +261,10 @@ Also, Bugzilla has depreceated but not yet removed this API call
 
 Returns the Bugzilla servers version.
 
+=head1 EXCEPTION HANDLING
+
+See L<BZ::Client::Exception>
+
 =head1 SEE ALSO
 
 L<BZ::Client>, L<BZ::Client::API>, L<Bugzilla API|https://www.bugzilla.org/docs/tip/en/html/api/Bugzilla/WebService/Bugzilla.html>

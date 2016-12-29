@@ -780,6 +780,10 @@ Added in Bugzilla 4.2 as a replacement for L</internals>.
 Returned by L</get> until version 4.2, at which point it was dropped.
 Remains for compatibility. Please move away from using it asap.
 
+=head1 EXCEPTION HANDLING
+
+See L<BZ::Client::Exception>
+
 =head1 SEE ALSO
 
 L<BZ::Client>, L<BZ::Client::API>, L<Bugzilla API|https://www.bugzilla.org/docs/tip/en/html/api/Bugzilla/WebService/Product.html>

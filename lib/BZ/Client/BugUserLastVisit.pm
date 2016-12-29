@@ -119,6 +119,10 @@ I<last_visit_ts> (string) The timestamp the user last visited the bug.
 
 =back
 
+=head1 EXCEPTION HANDLING
+
+See L<BZ::Client::Exception>
+
 =head1 SEE ALSO
 
 L<BZ::Client>, L<BZ::Client::API>, L<Bugzilla API|https://www.bugzilla.org/docs/tip/en/html/api/Bugzilla/WebService/BugUserLastVisit.html>
