@@ -449,12 +449,14 @@ for my $server (@bugzillas) {
     $tester = BZ::Client::Test->new( %$server, logDirectory => '/tmp/bz' );
 
   SKIP: {
-        skip( 'No Bugzilla server configured, skipping', 4 )
+        skip( 'No Bugzilla server configured, skipping', 2 )
           if $tester->isSkippingIntegrationTests();
         diag sprintf 'Server %s is version %s', $server->{testUrl}, $server->{version};
 
           ok( TestOffer( $quirks{$server->{version}}{offer_account_by_email} ), 'Test Offering Accounts via Email');
           ok( TestGet( $quirks{$server->{version}}{get} ), 'Test Get of User Account Info');
+
+          # TODO create() and update() tests, which we cant really do on landfill.bugzilla.org
 
     }
 
