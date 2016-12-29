@@ -297,7 +297,7 @@ For 5.1 and later, which have a totally different REST API, please see L<Net::Bu
 As such, I welcome all patches (via pull request) for functionality relating to 5.0 and earlier.
 
 I will only actively hunt down bugs relating to the 'maintained' Bugzilla server softwares. Please upgrade
-your server and duplicate the problem, or see the above commitment to accept patches to fix for older 
+your server and duplicate the problem, or see the above commitment to accept patches to fix for older
 versions.
 
 =head1 SYNOPSIS
