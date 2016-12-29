@@ -288,15 +288,17 @@ __END__
 
 =encoding utf8
 
-=head1 WARNING
+=head1 BUGZILLA VERSIONS
 
-USE THIS 2.0 DEVELOPMENT VERSION AT YOUR OWN RISK!
+Please note that this L<BZ::Client> module is aimed at the XMLRPC API available in Bugzilla 5.0 and earlier.
 
-(Which is actually, a clause in the open source license this software is provided under)
+For 5.1 and later, which have a totally different REST API, please see L<Net::Bugzilla>.
 
-THE API IS CHANGING, STUFF IS BREAKING, YMMV!
+As such, I welcome all patches (via pull request) for functionality relating to 5.0 and earlier.
 
-USE THE 1.x SERIES UNLESS YOU PREFER DEBUGGING TO GETTING THINGS DONE.
+I will only actively hunt down bugs relating to the 'maintained' Bugzilla server softwares. Please upgrade
+your server and duplicate the problem, or see the above commitment to accept patches to fix for older 
+versions.
 
 =head1 SYNOPSIS
 
