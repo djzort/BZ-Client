@@ -1,6 +1,6 @@
 Bring all the objects together (like Search::Elasticsearch)
 
 testing
- - swap from print STDERR to diag() throughout
  - have tests for everything that bz4.4 can use
- - has travis set up bugzilla and run admin function tests?
+ - User.pm tests, need to test create() & update(). Needs something other than landfill.bugzilla.org
+ - have travis set up bugzilla and run admin function tests? docker is doable
