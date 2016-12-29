@@ -21,7 +21,7 @@ sub parse {
         } else {
             $msg = $@;
         }
-        print STDERR "$msg\n";
+        diag $msg;
         return undef;
     }
     return $result;
@@ -35,11 +35,11 @@ sub parse_error {
         $result = $parser->parse($contents);
     };
     if (!$@) {
-        print STDERR "Expected exception, got none.\n";
+        diag 'Expected exception, got none.';
         return undef;
     }
     if (ref($@) ne 'BZ::Client::Exception') {
-        print STDERR "$@\n";
+        diag $@;
         return undef;
     }
     return $@;
