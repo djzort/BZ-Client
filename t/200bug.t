@@ -229,18 +229,14 @@ sub TestSearchProduct {
         }
         if ( $bug->product() eq $productName ) {
             if ( !$found ) {
-                print STDERR "Bug "
-                  . $bug->id()
+                diag 'Bug ' . $bug->id()
                   . " has product $productName, but not reported to have it.\n";
                 return 0;
             }
         }
         else {
             if ($found) {
-                print STDERR 'Bug '
-                  . $bug->id()
-                  . ' has product '
-                  . $bug->product()
+                diag 'Bug ' . $bug->id() . ' has product ' . $bug->product()
                   . ", but reported to have $productName.\n";
                 return 0;
             }
