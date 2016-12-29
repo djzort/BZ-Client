@@ -1,10 +1,14 @@
 Revision history for Perl extension BZ::Client.
 
-FLOATING
-
+4.4
     - Client.pm: logout() now returns 1 (true) if logout is successful
     - User.pm: offer_account_by_email returns 1 (true) if successful
     - t/300component.t: added, but doesnt do anything
+    - All tests now use diag() rather than printing to STDERR
+    - t/700user.t: added, does as much as it can without admin privileges
+    - Added README.md file for github etc.
+    - t/500group.t: added, doesnt do much
+    - Release as 4.4, as all Bugzilla 4.4 functionality is implemented and at least partially tested
 
 2.0_13 Wednesday July 13 14:30 2016
     - Ensure TZ is UTC in DateTime objects
