@@ -7,7 +7,7 @@ use warnings 'all';
 use BZ::Client::XMLRPC();
 use DateTime();
 
-use Test::More tests => 2;
+use Test::More tests => 4;
 
 my $tz = DateTime::TimeZone->new(name => 'CET');
 die 'Unable to create CET timezone' unless $tz;
@@ -64,12 +64,7 @@ sub TestBasic {
       .   "</param>"
       . "</params>"
       ."</methodCall>\n";
-    if ($contents ne $expect) {
-        print STDERR "Expect: $expect\n";
-        print STDERR "Got:    $contents\n";
-        return 0;
-    }
-    return 1;
+    return is( $contents, $expect, 'Check return value of create_request (someMethod)');
 }
 
 sub TestGetProducts {
@@ -92,12 +87,7 @@ sub TestGetProducts {
       .   "</param>"
       . "</params>"
       ."</methodCall>\n";
-    if ($contents ne $expect) {
-        print STDERR "Expect: $expect\n";
-        print STDERR "Got:    $contents\n";
-        return 0;
-    }
-    return 1;
+    return is( $contents, $expect, 'Check return value of create_request (Product.get)');
 }
 
 ok(TestBasic(), 'Test Basic');
