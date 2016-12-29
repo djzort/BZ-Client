@@ -9,6 +9,7 @@ use lib 't/lib';
 
 use BZ::Client::Test;
 use BZ::Client::User;
+use Clone 'clone';
 use Test::More;
 use Text::Password::Pronounceable;
 my $pp = Text::Password::Pronounceable->new(10,14);
@@ -20,7 +21,7 @@ $Data::Dumper::Sortkeys = 1;
 # these next three lines need more thought
 use Test::RequiresInternet ( 'landfill.bugzilla.org' => 443 );
 my @bugzillas = do 't/servers.cfg';
-plan tests => ( scalar @bugzillas * 21 + 13 );
+plan tests => ( scalar @bugzillas * 21 + 16 );
 
 my $tester;
 
@@ -170,10 +171,19 @@ $quirks{'5.0'}->{get} = [
     #    params => { ids => 1, },
     #    response => [], # intentionally empty
     #},
-    # TODO error 505
+    # check error 505
+    {
+        logged_out => 1,
+        params => { ids => [ 64995 ] },
+        error => {
+            message => 'Logged-out users cannot use the "ids" argument to this function to access any user information.',
+            xmlrpc => 505,
+        },
+        response => undef,
+    },
     # check error 804
     {
-        params => { names => [ 'djzort@cpan.org' ] ,groups => 'asdf' },
+        params => { names => [ 'djzort@cpan.org' ], groups => 'asdf' },
         error => {
             xmlrpc => 804,
             message => q|The group you specified, asdf, is not valid here.|,
@@ -217,7 +227,6 @@ sub TestOffer {
 
         eval {
             $ok = BZ::Client::User->offer_account_by_email($client, $data->{params});
-            $client->logout();
         };
 
         my $error = $data->{error};
@@ -314,19 +323,24 @@ sub TestOffer {
 
 sub TestGet {
     my $list = shift;
-    my $client = $tester->client();
 
     my $cnt = 0;
     my $return = 1;
 
     for my $data (@$list) {
 
+        my $client = $tester->client();
+        if ($data->{logged_out}) {
+            $client = clone $client;
+            $client->logout;
+            $client->api_key('') if $client->api_key();
+        }
+
         $cnt++;
         my $ok;
 
         eval {
             $ok = BZ::Client::User->get($client, $data->{params});
-            $client->logout();
         };
 
         my $error = $data->{error};
