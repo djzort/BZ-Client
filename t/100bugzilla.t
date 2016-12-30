@@ -12,7 +12,14 @@ use Test::More;
 
 # these next three lines need more thought
 use Test::RequiresInternet ( 'landfill.bugzilla.org' => 443 );
-plan tests => 61; #89;
+
+if (not $ENV{TEST_AUTHOR}) {
+    plan tests => 61; #89;
+}
+else {
+    plan skip_all => 'Author test. Set $ENV{TEST_AUTHOR} to a true value to run.';
+}
+
 my @bugzillas = do 't/servers.cfg';
 
 my $tester;
