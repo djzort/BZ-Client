@@ -84,7 +84,7 @@ my $nagiospipe = '/usr/local/nagios/var/rw/cmd.pipe';
 my $cmd = Nagios::Cmd->new( $nagiospipe );
 
 # fire up logging
-Log::Log4perl->init('talktobugzilla.log4perl.conf');
+Log::Log4perl->init('talktobugzilla-log4perl.conf');
 my $log = Log::Log4perl->get_logger('N2B');
 
 $log->info('BEGIN');
