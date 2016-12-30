@@ -24,7 +24,7 @@ use BZ::Client::Bug;
 use BZ::Client::Bug::Comment;
 use BZ::Client::Bugzilla;
 use Path::Tiny;
-use Try::Tiny; # nb this is slow
+use Try::Tiny; # nb this is slow. see http://perladvent.org/2016/2016-12-12.html
 use Sys::Hostname qw/ hostname /;
 use Log::Log4perl;
 use DateTime;
