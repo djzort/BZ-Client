@@ -501,9 +501,9 @@ I<sort_key> (int) Values, when displayed in a list, are sorted first by this int
 
 =item sortkey
 
-DEPRECATED - Use L</sort_key> instead.
+B<DEPRECATED> - Use L</sort_key> instead.
 
-Renamed to sort_key in Bugzilla 4.2.
+Renamed to C<sort_key> in Bugzilla 4.2.
 
 =item visibility_values
 
@@ -669,7 +669,7 @@ You do not have access to the bug_id you specified.
 
 =head2 search
 
-FIXME
+FIXME Documentation not fully fleshed out
 
  @bugs = BZ::Client::Bug->search( $client, \%params );
  $bugs = BZ::Client::Bug->search( $client, \%params );
@@ -1010,7 +1010,389 @@ Allows you to update the fields of a bug.
 
 (Your Bugzilla server may automatically sends emails out about the changes)
 
-FIXME more details needed
+=head3 History
+
+Added in Bugzilla B<4.0>.
+
+=head3 Parameters
+
+=over 4
+
+=item ids
+
+I<ids> (Array of C<int>s or C<string>s) -  The ids or aliases of the bugs that you want to modify.
+
+B<Note:> All following fields specify the values you want to set on the bugs you are updating.
+
+=item alias
+
+I<alias> (string) - The alias of the bug. You can only set this if you are modifying a single bug. If there is more than one bug specified in C<ids>, passing in a value for C<alias> will cause an error to be thrown.
+
+=item assigned_to
+
+I<assigned_to> (string) -  The full login name of the user this bug is assigned to.
+
+=item blocks
+
+I<blocks> (hash) -  These specify the bugs that this bug blocks. To set these, you should pass a hash as the value. The hash may contain the following fields:
+
+=over 4
+
+=item add
+
+I<add> (Array of C<int>s) - Bug ids to add to this field.
+
+=item remove
+
+I<remove> (Array of C<int>s) -  Bug ids to remove from this field. If the bug ids are not already in the field, they will be ignored.
+
+=item set
+
+I<set> (Array of C<int>s) - An exact set of bug ids to set this field to, overriding the current value. If you specify C<set>, then C<add> and C<remove> will be ignored.
+
+=back
+
+=item depends_on
+
+I<depends_on> (hash) -  These specify the bugs that this depends on. To set these, you should pass a hash as the value. The hash may contain the following fields:
+
+=over 4
+
+=item add
+
+I<add> (Array of C<int>s) - Bug ids to add to this field.
+
+=item remove
+
+I<remove> (Array of C<int>s) -  Bug ids to remove from this field. If the bug ids are not already in the field, they will be ignored.
+
+=item set
+
+I<set> (Array of C<int>s) - An exact set of bug ids to set this field to, overriding the current value. If you specify C<set>, then C<add> and C<remove> will be ignored.
+
+=back
+
+=item cc
+
+I<cc> (hash) -  The users on the cc list. To modify this field, pass a hash, which may have the following fields:
+
+=over 4
+
+=item add
+
+I<add> (Array of C<string>s) - User names to add to the CC list. They must be full user names, and an error will be thrown if you pass in an invalid user name.
+
+=item remove
+
+I<remove> (Array of C<string>s) - User names to remove from the CC list. They must be full user names, and an error will be thrown if you pass in an invalid user name.
+
+=back
+
+=item is_cc_accessible
+
+I<is_cc_accessible> (boolean) -  Whether or not users in the CC list are allowed to access the bug, even if they aren't in a group that can normally access the bug.
+
+=item comment
+
+I<comment> (hash) -  A comment on the change. The hash may contain the following fields:
+
+=over 4
+
+=item body
+
+I<body> (string) -  The actual text of the comment. B<Note:> For compatibility with the parameters to L</add_comment>, you can also call this field C<comment>, if you wish.
+
+=item is_private
+
+I<is_private> (boolean) - Whether the comment is private or not. If you try to make a comment private and you don't have the permission to, an error will be thrown.
+
+=back
+
+=item comment_is_private
+
+I<comment_is_private> (hash) - This is how you update the privacy of comments that are already on a bug. This is a hash, where the keys are the C<int> id of comments (not their count on a bug, like #1, #2, #3, but their globally-unique id, as returned by L</comments>) and the value is a C<boolean> which specifies whether that comment should become private (C<true>) or public (C<false>).
+
+The comment ids must be valid for the bug being updated. Thus, it is not practical to use this while updating multiple bugs at once, as a single comment id will never be valid on multiple bugs.
+
+=item component
+I<component> (string) - The Component the bug is in.
+
+=item deadline
+
+I<deadline> (string) -  The Deadline field--a date specifying when the bug must be completed by, in the format C<YYYY-MM-DD>.
+
+=item dupe_of
+
+I<dupe_of> (int) -  The bug that this bug is a duplicate of. If you want to mark a bug as a duplicate, the safest thing to do is to set this value and not set the C<status> or C<resolution> fields. They will automatically be set by Bugzilla to the appropriate values for duplicate bugs.
+
+=item estimated_time
+
+I<estimated_time> (double) - The total estimate of time required to fix the bug, in hours. This is the I<total> estimate, not the amount of time remaining to fix it.
+
+=item groups
+
+I<groups> (hash) -  The groups a bug is in. To modify this field, pass a hash, which may have the following fields:
+
+=over 4
+
+=item add
+
+I<add> (Array of C<string>s) - The names of groups to add. Passing in an invalid group name or a group that you cannot add to this bug will cause an error to be thrown.
+
+=item remove
+
+I<remove> (Array of C<string>s) - The names of groups to remove. Passing in an invalid group name or a group that you cannot remove from this bug will cause an error to be thrown.
+
+=back
+
+=item keywords
+
+I<keywords> (hash) -  Keywords on the bug. To modify this field, pass a hash, which may have the following fields:
+
+=over 4
+
+=item add
+
+I<add> (An array of C<string>s) - The names of keywords to add to the field on the bug. Passing something that isn't a valid keyword name will cause an error to be thrown.
+
+=item remove
+
+I<remove> (An array of C<string>s) - The names of keywords to remove from the field on the bug. Passing something that isn't a valid keyword name will cause an error to be thrown.
+
+=item set
+
+I<set> (An array of C<string>s) - An exact set of keywords to set the field to, on the bug. Passing something that isn't a valid keyword name will cause an error to be thrown. Specifying C<set> overrides C<add> and C<remove>.
+
+=back
+
+=item op_sys
+
+I<op_sys> (string) -  The Operating System ("OS") field on the bug.
+
+=item platform
+
+I<platform> (string) - The Platform or "Hardware" field on the bug.
+
+=item priority
+
+I<priority> (string) -  The Priority field on the bug.
+
+=item product
+
+I<product> (string) - The name of the product that the bug is in. If you change this, you will probably also want to change C<target_milestone>, C<version>, and C<component>, since those have different legal values in every product.
+
+If you cannot change the C<target_milestone> field, it will be reset to the default for the product, when you move a bug to a new product.
+
+You may also wish to add or remove groups, as which groups are valid on a bug depends on the product. Groups that are not valid in the new product will be automatically removed, and groups which are mandatory in the new product will be automaticaly added, but no other automatic group changes will be done.
+
+B<Note:> that users can only move a bug into a product if they would normally have permission to file new bugs in that product.
+
+=item qa_contact
+
+I<qa_contact> (string) - The full login name of the bug's QA Contact.
+
+=item is_creator_accessible
+
+I<is_creator_accessible> (boolean) - Whether or not the bug's reporter is allowed to access the bug, even if he or she isn't in a group that can normally access the bug.
+
+=item remaining_time
+
+I<remaining_time> (double) - How much work time is remaining to fix the bug, in hours. If you set C<work_time> but don't explicitly set C<remaining_time>, then the C<work_time> will be deducted from the bug's C<remaining_time>.
+
+=item reset_assigned_to
+
+I<reset_assigned_to> (boolean) - If true, the C<assigned_to> field will be reset to the default for the component that the bug is in. (If you have set the component at the same time as using this, then the component used will be the new component, not the old one.)
+
+=item reset_qa_contact
+
+I<reset_qa_contact> (boolean) - If true, the C<qa_contact> field will be reset to the default for the component that the bug is in. (If you have set the component at the same time as using this, then the component used will be the new component, not the old one.)
+
+=item resolution
+
+I<resolution> (string) The current resolution. May only be set if you are closing a bug or if you are modifying an already-closed bug. Attempting to set the resolution to I<any> value (even an empty or null string) on an open bug will cause an error to be thrown.
+
+If you change the C<status> field to an open status, the resolution field will automatically be cleared, so you don't have to clear it manually.
+
+=item see_also
+
+I<see_also> (hash) - The See Also field on a bug, specifying URLs to bugs in other bug trackers. To modify this field, pass a hash, which may have the following fields:
+
+=over 4
+
+=item add
+
+I<add> (An array of C<string>s) - URLs to add to the field. Each URL must be a valid URL to a bug-tracker, or an error will be thrown.
+
+=item remove
+
+I<remove> (An array of C<string>s) - URLs to remove from the field. Invalid URLs will be ignored.
+
+=back
+
+=item severity
+
+I<severity> (string) - The Severity field of a bug.
+
+=item status
+
+I<status> (string) - The status you want to change the bug to. Note that if a bug is changing from open to closed, you should also specify a resolution.
+
+
+=item summary
+
+I<summary> (string) - The Summary field of the bug.
+
+=item target_milestone
+
+I<target_milestone> (string) -  The bug's Target Milestone.
+
+=item url
+
+I<url> (string) - The "URL" field of a bug.
+
+=item version
+
+I<version> (string) -  The bug's Version field.
+
+=item whiteboard
+
+I<whiteboard> (string) - The Status Whiteboard field of a bug.
+
+=item work_time
+
+I<work_time> (double) - The number of hours worked on this bug as part of this change. If you set C<work_time> but don't explicitly set C<remaining_time>, then the C<work_time> will be deducted from the bug's remaining_time.
+
+=back
+
+B<Note:> You can also set the value of any custom field by passing its name as a parameter, and the value to set the field to. For multiple-selection fields, the value should be an array of strings.
+
+=head3 Returns
+
+A C<hash> with a single field, "bugs". This points to an array of hashes with the following fields:
+
+=over 4
+
+=item id
+
+I<id> (int) - The id of the bug that was updated.
+
+=item alias
+
+I<alias> (string) - The alias of the bug that was updated, if this bug has an alias.
+
+=item last_change_time
+
+I<last_change_time> (dateTime) - The exact time that this update was done at, for this bug. If no update was done (that is, no fields had their values changed and no comment was added) then this will instead be the last time the bug was updated.
+
+=item changes
+
+I<changes> (hash) - The changes that were actually done on this bug. The keys are the names of the fields that were changed, and the values are a hash with two keys:
+
+=over 4
+
+=item added
+
+I<added> (string) - The values that were added to this field, possibly a comma-and-space-separated list if multiple values were added.
+
+=item removed
+
+I<removed> (string) - The values that were removed from this field, possibly a comma-and-space-separated list if multiple values were removed.
+
+=back
+
+=back
+
+Here's an example of what a return value might look like:
+
+ {
+   bugs => [
+     {
+       id    => 123,
+       alias => 'foo',
+       last_change_time => '2010-01-01T12:34:56',
+       changes => {
+         status => {
+           removed => 'NEW',
+           added   => 'ASSIGNED'
+         },
+         keywords => {
+           removed => 'bar',
+           added   => 'qux, quo, qui',
+         },
+       },
+     },
+   ],
+ }
+
+B<Note:> Currently, some fields are not tracked in changes: C<comment>, C<comment_is_private>, and C<work_time>. This means that they will not show up in the return value even if they were successfully updated. This may change in a future version of Bugzilla.
+
+=head3 Errors
+
+This function can throw all of the errors that L</get>, L</create>, and L</add_comment> can throw, plus:
+
+=over 4
+
+=item 50 - Empty Field
+
+You tried to set some field to be empty, but that field cannot be empty. The error message will have more details.
+
+=item 52 - Input Not A Number
+
+You tried to set a numeric field to a value that wasn't numeric.
+
+=item 54 - Number Too Large
+
+You tried to set a numeric field to a value larger than that field can accept.
+
+=item 55 - Number Too Small
+
+You tried to set a negative value in a numeric field that does not accept negative values.
+
+=item 56 - Bad Date/Time
+
+You specified an invalid date or time in a date/time field (such as the deadline field or a custom date/time field).
+
+=item 112 - See Also Invalid
+
+You attempted to add an invalid value to the see_also field.
+
+=item 115 - Permission Denied
+
+You don't have permission to change a particular field to a particular value. The error message will have more detail.
+
+=item 116 - Dependency Loop
+
+You specified a value in the blocks or depends_on fields that causes a dependency loop.
+
+=item 117 - Invalid Comment ID
+
+You specified a comment id in comment_is_private that isn't on this bug.
+
+=item 118 - Duplicate Loop
+
+You specified a value for dupe_of that causes an infinite loop of duplicates.
+
+=item 119 - dupe_of Required
+
+You changed the resolution to DUPLICATE but did not specify a value for the dupe_of field.
+
+=item 120 - Group Add/Remove Denied
+
+You tried to add or remove a group that you don't have permission to modify for this bug, or you tried to add a group that isn't valid in this product.
+
+=item 121 - Resolution Required
+
+You tried to set the status field to a closed status, but you didn't specify a resolution.
+
+=item 122 - Resolution On Open Status
+
+This bug has an open status, but you specified a value for the resolution field.
+
+=item 123 - Invalid Status Transition
+
+You tried to change from one status to another, but the status workflow rules don't allow that change.
+
+=back
 
 =head2 update_see_also
 
@@ -1049,7 +1431,7 @@ If you specify a URL that is not in the I<See Also> field of a particular bug, i
 
 =back
 
-NOTE: If you specify the same URL in both L</add> and L</remove>, it will be added. (That is, L</add> overrides L</remove>.)
+B<Note:> If you specify the same URL in both L</add> and L</remove>, it will be added. (That is, L</add> overrides L</remove>.)
 
 =head3 Returns
 
