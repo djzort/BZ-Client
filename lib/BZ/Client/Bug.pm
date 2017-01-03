@@ -741,7 +741,7 @@ I<alias> (array) The alias of this bug. If there is no alias, this will be undef
 
 =item history
 
-An array of hashes, each hash having the following keys:
+I<history> (An array of hashes) - Each hash having the following keys:
 
 =over 4
 
@@ -1282,7 +1282,7 @@ I<alias> (string) - The alias of the bug that was updated, if this bug has an al
 
 =item last_change_time
 
-I<last_change_time> (dateTime) - The exact time that this update was done at, for this bug. If no update was done (that is, no fields had their values changed and no comment was added) then this will instead be the last time the bug was updated.
+I<last_change_time> (L<DateTime>) - The exact time that this update was done at, for this bug. If no update was done (that is, no fields had their values changed and no comment was added) then this will instead be the last time the bug was updated.
 
 =item changes
 
@@ -1716,4 +1716,6 @@ these are yet to be specifically implemented.
 
 L<BZ::Client>, L<BZ::Client::Bug::Attachment>, L<BZ::Client::Bug::Comment>
 
-L<BZ::Client::API>, L<Bugzilla WebService 4.4 API|https://www.bugzilla.org/docs/4.4/en/html/api/Bugzilla/WebService/Bug.html>
+L<BZ::Client::API>,
+L<Bugzilla WebService 4.4 API|https://www.bugzilla.org/docs/4.4/en/html/api/Bugzilla/WebService/Bug.html>,
+L<Bugzilla WebService 5.0 API|https://www.bugzilla.org/docs/5.0/en/html/integrating/api/Bugzilla/WebService/Bug.html>
