@@ -1501,6 +1501,8 @@ Before Bugzilla 3.6, error 115 had a generic error code of 32000.
 
 Adds or removes tags on bugs.
 
+Unlike Keywords which are global and visible by all users, Tags are personal and can only be viewed and edited by their author. Editing them won't send any notification to other users. Use them to tag and keep track of bugs.
+
 =head3 History
 
 This is marked as B<UNSTABLE> in Bugzilla 4.4
