@@ -16,6 +16,9 @@ use parent qw( BZ::Client::API );
 
 sub get {
     my($class, $client, $params) = @_;
+    unless (ref $params) {
+        $params = { id => $params };
+    }
     $client->log('debug', __PACKAGE__ . "::get: Asking for $params");
     my $result = $class->api_call($client, 'Bug.comments', $params);
 
@@ -153,6 +156,9 @@ This section lists the class methods, which are available in this module.
 
 =head2 get
 
+  my $comments = BZ::Client::Bug::Comment->get( $client, 1234 );
+  my $comments = BZ::Client::Bug::Comment->get( $client, { ids => \@list, commend_ids => \@list } );
+
 This allows you to get data about comments, given a list of bugs and/or comment ids.
 
 Actual Bugzilla API method is "comments".
@@ -162,6 +168,8 @@ Actual Bugzilla API method is "comments".
 Added in Bugzilla 3.4
 
 =head3 Parameters
+
+A single scalar is considered a search for L</ids>, otherwise a hash reference must be provided.
 
 Note: At least one of L</ids> or L</comment_ids> is required.
 
@@ -185,7 +193,7 @@ I<new_since> (L<DateTime>) - If specified, the method will only return comments 
 
 =head3 Returns
 
-A hash containing two items is returned:
+A hash reference containing two items is returned:
 
 =over 4
 
@@ -201,7 +209,7 @@ Each individual comment requested in L</comment_ids> is returned here, in a hash
 
 =back
 
-A "comment" as described above is an object instance of this package.
+A L</comment> as described above is an object instance of this package.
 
 =head3 Errors
 
