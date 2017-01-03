@@ -1503,6 +1503,10 @@ Adds or removes tags on bugs.
 
 Unlike Keywords which are global and visible by all users, Tags are personal and can only be viewed and edited by their author. Editing them won't send any notification to other users. Use them to tag and keep track of bugs.
 
+Bugzilla will lower case the text of the tags. This doesn't seem to be documented.
+
+B<Reminder:> to retrieve these tags, specify C<_extra> or the field name C<tags> in L</include_fields> when searching etc.
+
 =head3 History
 
 This is marked as B<UNSTABLE> in Bugzilla 4.4
