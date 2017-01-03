@@ -681,6 +681,7 @@ Searches for bugs matching the given parameters.
 This is just a quick example, there are lot's of fields
 
  %params = (
+
    'alias' => 'ACONVENIENTALIAS',
 
    'assigned_to' => 'hopefullynotme@domain.local',
@@ -849,9 +850,157 @@ Listed here in order of what you most likely want to do... maybe?
 
   my $id = BZ::Client::Bug->create( $client, \%params );
 
-Creates a new bug in your Bugzilla server and returns the bug ID.
+This allows you to create a new bug in Bugzilla. If you specify any invalid fields, an error will be thrown stating which field is invalid. If you specify any fields you are not allowed to set, they will just be set to their defaults or ignored.
 
-FIXME more details needed
+You cannot currently set all the items here that you can set on enter_bug.cgi (i.e. the web page to enter bugs).
+
+The Bugzilla WebService API itself may allow you to set things other than those listed here, but realize that anything undocumented is B<UNSTABLE> and will very likely change in the future.
+
+=head3 History
+
+Before Bugzilla 3.0.4, parameters marked as B<Defaulted> were actually B<Required>, due to a bug in Bugzilla itself.
+
+The groups argument was added in Bugzilla B<4.0>. Before Bugzilla 4.0, bugs were only added into Mandatory groups by this method. Since Bugzilla B<4.0.2>, passing an illegal group name will throw an error. In Bugzilla 4.0 and 4.0.1, illegal group names were silently ignored.
+
+The C<comment_is_private> argument was added in Bugzilla B<4.0>. Before Bugzilla 4.0, you had to use the undocumented C<commentprivacy> argument.
+
+Error C<116> was added in Bugzilla B<4.0>. Before that, dependency loop errors had a generic code of C<32000>.
+
+The ability to file new bugs with a C<resolution> was added in Bugzilla B<4.4>.
+
+=head3 Parameters
+
+Some params must be set, or an error will be thrown. These params are marked B<Required>.
+
+Some parameters can have defaults set in Bugzilla, by the administrator. If these parameters have defaults set, you can omit them. These parameters are marked B<Defaulted>.
+
+Clients that want to be able to interact uniformly with multiple Bugzillas should always set both the params marked B<Required> and those marked B<Defaulted>, because some Bugzillas may not have defaults set for B<Defaulted> parameters, and then this method will throw an error if you don't specify them.
+
+The descriptions of the parameters below are what they mean when Bugzilla is being used to track software bugs. They may have other meanings in some installations.
+
+=over 4
+
+=item product (string) B<Required> - The name of the product the bug is being filed against.
+
+I<product> (string) B<Required> - The name of the product the bug is being filed against.
+
+=item component
+
+I<component> (string) B<Required> - The name of a component in the product above.
+
+=item summary
+
+I<summary> (string) B<Required> - A brief description of the bug being filed.
+
+=item version
+
+I<version> (string) B<Required> - A version of the product above; the version the bug was found in.
+
+=item description
+
+I<description> (string) B<Defaulted> - The initial description for this bug. Some Bugzilla installations require this to not be blank.
+
+=item op_sys
+
+I<op_sys> (string) B<Defaulted> - The operating system the bug was discovered on.
+
+=item platform
+
+I<platform> (string) B<Defaulted> - What type of hardware the bug was experienced on.
+
+=item priority
+
+I<priority> (string) B<Defaulted> - What order the bug will be fixed in by the developer, compared to the developer's other bugs.
+
+=item severity
+
+I<severity> (string) B<Defaulted> - How severe the bug is.
+
+=item alias
+
+I<alias> (string) - A brief alias for the bug that can be used instead of a bug number when accessing this bug. Must be unique in all of this Bugzilla.
+
+=item assigned_to
+
+I<assigned_to> (username) - A user to assign this bug to, if you don't want it to be assigned to the component owner.
+
+=item cc
+
+I<cc> (array) - An array of usernames to CC on this bug.
+
+=item comment_is_private
+
+I<comment_is_private> (boolean) - If set to true, the description is private, otherwise it is assumed to be public.
+
+=item groups
+
+I<groups> (array) - An array (ref) of group names to put this bug into. You can see valid group names on the I<Permissions tab> of the I<Preferences screen>, or, if you are an administrator, in the I<Groups control panel>. If you don't specify this argument, then the bug will be added into all the groups that are set as being "Default" for this product. (If you want to avoid that, you should specify C<groups> as an empty array.)
+
+=item qa_contact
+
+I<qa_contact> (username) - If this installation has QA Contacts enabled, you can set the QA Contact here if you don't want to use the component's default QA Contact.
+
+=item status
+
+I<status> (string) - The status that this bug should start out as. Note that only certain statuses can be set on bug creation.
+
+=item resolution
+
+I<resolution> (string) - If you are filing a closed bug, then you will have to specify a resolution. You cannot currently specify a resolution of C<DUPLICATE> for new bugs, though. That must be done with L</update>.
+
+=item target_milestone
+
+I<target_milestone> (string) - A valid target milestone for this product.
+
+=back
+
+B<Note:> In addition to the above parameters, if your installation has any custom fields, you can set them just by passing in the name of the field and its value as a string.
+
+=head3 Returns
+
+A hash with one element, C<id>. This is the id of the newly-filed bug.
+
+=head3 Errors
+
+=over 4
+
+=item 51 - Invalid Object
+
+You specified a field value that is invalid. The error message will have more details.
+
+=item 103 - Invalid Alias
+
+The alias you specified is invalid for some reason. See the error message for more details.
+
+=item 104 - Invalid Field
+
+One of the drop-down fields has an invalid value, or a value entered in a text field is too long. The error message will have more detail.
+
+=item 105 - Invalid Component
+
+You didn't specify a component.
+
+=item 106 - Invalid Product
+
+Either you didn't specify a product, this product doesn't exist, or you don't have permission to enter bugs in this product.
+
+=item 107 - Invalid Summary
+
+You didn't specify a summary for the bug.
+
+=item 116 - Dependency Loop
+
+You specified values in the blocks or depends_on fields that would cause a circular dependency between bugs.
+
+=item 120 - Group Restriction Denied
+
+You tried to restrict the bug to a group which does not exist, or which you cannot use with this product.
+
+=item 504 - Invalid User
+
+Either the QA Contact, Assignee, or CC lists have some invalid user in them. The error message will have more details.
+
+=back
 
 =head2 update
 
@@ -1183,4 +1332,4 @@ these are yet to be specifically implemented.
 
 L<BZ::Client>, L<BZ::Client::Bug::Attachment>, L<BZ::Client::Bug::Comment>
 
-L<BZ::Client::API>, L<Bugzilla API|https://www.bugzilla.org/docs/tip/en/html/api/Bugzilla/WebService/Bug.html>
+L<BZ::Client::API>, L<Bugzilla WebService 4.4 API|https://www.bugzilla.org/docs/4.4/en/html/api/Bugzilla/WebService/Bug.html>
