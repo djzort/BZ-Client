@@ -193,23 +193,42 @@ I<new_since> (L<DateTime>) - If specified, the method will only return comments 
 
 =head3 Returns
 
-A hash reference containing two items is returned:
+A hash reference containing two items is returned. e.g.
+
+ {
+
+     bugs => {
+         123 => { comments => \@comments },
+         456 => { comments => \@comments },
+     },
+
+     comments => {
+         789 => $comment,
+     },
+
+ }
+
+More details on the above example:
 
 =over 4
 
 =item bugs
 
-This is used for bugs specified in L</ids>. This is a hash, where the keys are the numeric IDs of the bugs, and the value is a hash with a single key, I<comments>, which is an array of comments. (The format of comments is described below)
+This is used for bugs specified in L</ids> parameter.
+
+This is a hash, where the keys are the numeric IDs of the bugs, and the value is a hash with a single key, I<comments>, which is an array of comments.
 
 Note that any individual bug will only be returned once, so if you specify an ID multiple times in ID's, it will still only be returned once.
 
 =item comments
 
-Each individual comment requested in L</comment_ids> is returned here, in a hash where the numeric comment ID is the key, and the value is the comment. (The format of comments is described below)
+Each individual comment requested in L</comment_ids> is returned here.
+
+This is a hash where the numeric comment ID is the key, and the value is the comment.
 
 =back
 
-A L</comment> as described above is an object instance of this package.
+A "comment" as described above is an object instance of this package i.e. L<BZ::Client::Bug::Comment>.
 
 =head3 Errors
 
