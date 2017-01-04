@@ -198,8 +198,8 @@ A hash reference containing two items is returned. e.g.
  {
 
      bugs => {
-         123 => { comments => \@comments },
-         456 => { comments => \@comments },
+         123 => \@comments,
+         456 => \@comments,
      },
 
      comments => {
@@ -216,7 +216,7 @@ More details on the above example:
 
 This is used for bugs specified in L</ids> parameter.
 
-This is a hash, where the keys are the numeric IDs of the bugs, and the value is a hash with a single key, I<comments>, which is an array of comments.
+This is a hash, wherein the keys are the numeric IDs of the bugs, and the corresponding value is an array ref of comment objects.
 
 Note that any individual bug will only be returned once, so if you specify an ID multiple times in ID's, it will still only be returned once.
 
@@ -224,7 +224,7 @@ Note that any individual bug will only be returned once, so if you specify an ID
 
 Each individual comment requested in L</comment_ids> is returned here.
 
-This is a hash where the numeric comment ID is the key, and the value is the comment.
+This is a hash wherein the keys are the numeric comment ID, and the corresponding value is the comment object.
 
 =back
 
