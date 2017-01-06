@@ -208,6 +208,8 @@ A hash reference containing two items is returned. e.g.
 
  }
 
+The Bugzilla WebService documentation doesnt state what order the comments will be in, however they seem to be returned [ oldest, newest ]. If this order is important to you, then you should sort them just to be sure.
+
 More details on the above example:
 
 =over 4
