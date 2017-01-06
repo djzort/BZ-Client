@@ -952,6 +952,18 @@ I<resolution> (string) - If you are filing a closed bug, then you will have to s
 
 I<target_milestone> (string) - A valid target milestone for this product.
 
+=item depends_on
+
+I<depends_on> (array) - An array of bug id's that this new bug should depend upon.
+
+As of Bugzilla 5.0 this option isn't included in the WebService API docks for =create()=, although it is mentioned in it's error codes.
+
+=item blocks
+
+I<blocks> (array) - An array of bug id's that this new bug should block.
+
+As of Bugzilla 5.0 this option isn't included in the WebService API docks for =create()=, although it is mentioned in it's error codes.
+
 =back
 
 B<Note:> In addition to the above parameters, if your installation has any custom fields, you can set them just by passing in the name of the field and its value as a string.
