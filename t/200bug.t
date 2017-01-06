@@ -15,7 +15,7 @@ $Data::Dumper::Indent   = 1;
 $Data::Dumper::Sortkeys = 1;
 
 # these next three lines need more thought
-# use Test::RequiresInternet ( 'landfill.bugzilla.org' => 443 );
+use Test::RequiresInternet ( 'landfill.bugzilla.org' => 443 );
 my @bugzillas = do 't/servers.cfg';
 
 if ( not $ENV{TEST_AUTHOR}) {
