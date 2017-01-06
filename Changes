@@ -1,5 +1,8 @@
 Revision history for Perl extension BZ::Client.
 
+4.4001_002 Friday January 1 13:42 2017
+    - Add IO::Socket::SSL to the test requirements, as this is why most of cpantesters is failing
+
 4.4001_001 Friday January 1 12:17 2017
     - Mention exception handling in pod, closes RT #91405
     - Add an example nagios script
