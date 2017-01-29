@@ -1,5 +1,11 @@
 #!/usr/bin/env perl
 # vim: softtabstop=4 tabstop=4 shiftwidth=4 ft=perl expandtab smarttab
+BEGIN {
+    unless ($ENV{TEST_AUTHOR}) {
+        print qq{1..0 # SKIP these tests only run with TEST_AUTHOR set\n};
+        exit
+    }
+}
 
 use strict;
 use warnings 'all';
@@ -13,12 +19,7 @@ use Test::More;
 # these next three lines need more thought
 use Test::RequiresInternet ( 'landfill.bugzilla.org' => 443 );
 
-if (not $ENV{TEST_AUTHOR}) {
-    plan skip_all => 'Author test. Set $ENV{TEST_AUTHOR} to a true value to run.';
-}
-else {
-    plan tests => 61; #89;
-}
+plan tests => 61; #89;
 
 my @bugzillas = do 't/servers.cfg';
 

@@ -1,5 +1,8 @@
 Revision history for Perl extension BZ::Client.
 
+4.4001_003 Sundary January 29 16:44 2016
+    - Adjustments to test suite per RT119718
+
 4.4001_002 Friday January 1 13:42 2017
     - Add IO::Socket::SSL to the test requirements, as this is why most of cpantesters is failing
 
