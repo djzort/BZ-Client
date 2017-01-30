@@ -1,5 +1,8 @@
 Revision history for Perl extension BZ::Client.
 
+4.4001 Monday January 30 17:49 2016
+    - No changes, just release
+
 4.4001_003 Sundary January 29 16:44 2016
     - Adjustments to test suite per RT119718
 
