@@ -48,7 +48,11 @@ sub get {
 
 sub add {
     my($class, $client, $params) = @_;
-    $client->log('debug', 'BZ::Client::Bug::add: Creating');
+    # $params = { ids => [], file_name => basename($file), content_type => '?', summary=> $filename, data => \$content
+    $client->log('debug', __PACKAGE__ . '::add: Attaching a file');
+    if ( ref $params eq 'HASH' ) {
+
+    }
     my $result = $class->api_call($client, 'Bug.add_attachment', $params);
     my $id = $result->{'id'};
     if (!$id) {
@@ -320,6 +324,10 @@ I<file_name> (string) Required - The "file name" that will be displayed in the U
 =item summary
 
 I<summary> (string) Required - A short string describing the attachment.
+
+=item content_type
+
+I<content_type> (string) Required - The MIME type of the attachment, like I<text/plain> or I<image/png>.
 
 =item comment
 
