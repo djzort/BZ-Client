@@ -18,18 +18,22 @@ sub start {
         if ('methodResponse' ne $name) {
             $self->error("Expected methodResponse element, got $name");
         }
-    } elsif ($l == 1) {
+    }
+    elsif ($l == 1) {
         if ('fault' eq $name) {
             $self->{'in_fault'} = 1;
-        } elsif ('params' eq $name) {
+        }
+        elsif ('params' eq $name) {
             if (defined($self->{'result'})) {
                 $self->error('Multiple elements methodResponse/params found.');
             }
             $self->{'in_fault'} = 0;
-        } else {
+        }
+        else {
             $self->error("Unexpected element methodResponse/$name, expected fault|params");
         }
-    } elsif ($l == 2) {
+    }
+    elsif ($l == 2) {
         if ($self->{'in_fault'}) {
             if ('value' ne $name) {
                 $self->error("Unexpected element methodResponse/fault/$name, expected value");
@@ -46,7 +50,8 @@ sub start {
                                                                   'xmlrpc_code' => $faultCode);
             });
             $handler->start($name);
-        } else {
+        }
+        else {
             if ('param' ne $name) {
                 $self->error("Unexpected element methodResponse/params/$name, expected param");
             }
@@ -54,10 +59,12 @@ sub start {
                 $self->error('Multiple elements methodResponse/params/param found.');
             }
         }
-    } elsif ($l == 3) {
+    }
+    elsif ($l == 3) {
         if ($self->{'in_fault'}) {
             $self->error("Unexpected element $name found at level $l");
-        } else {
+        }
+        else {
             if ('value' ne $name) {
                 $self->error("Unexpected element methodResponse/params/param/$name, expected value");
             }
