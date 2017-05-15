@@ -1,6 +1,7 @@
 #!/bin/false
 # PODNAME: BZ::Client::XMLRPC
 # ABSTRACT: Performs XML-RPC calls on behalf of the client.
+# vim: softtabstop=4 tabstop=4 shiftwidth=4 ft=perl expandtab smarttab
 
 use strict;
 use warnings 'all';
@@ -9,7 +10,7 @@ package BZ::Client::XMLRPC;
 
 
 use URI;
-use Encode;
+use Encode qw/ encode_utf8 /;
 use XML::Writer;
 use HTTP::Tiny;
 use File::Spec;
@@ -17,6 +18,8 @@ use BZ::Client::Exception;
 use BZ::Client::XMLRPC::Parser;
 use DateTime::Format::Strptime;
 use DateTime::TimeZone;
+use MIME::Base64 qw( encode_base64 );
+
 
 
 my $counter;
@@ -56,7 +59,8 @@ sub web_agent {
         if (!defined($wa)) {
             $wa = HTTP::Tiny->new(
                 %$connect,
-                agent => sprintf('BZ::Client::XMLRPC %s (perl %s; %s)', $BZ::Client::XMLRPC::VERSION, $^V, $^O)
+                agent => sprintf('BZ::Client::XMLRPC %s (perl %s; %s)',
+                                 $BZ::Client::XMLRPC::VERSION, $^V, $^O)
             );
             $self->web_agent($wa);
         }
@@ -110,6 +114,15 @@ my %actions = (
         $writer->startTag('i4');
         $writer->characters($$value);
         $writer->endTag('i4');
+        $writer->endTag('value');
+    },
+
+    'BZ::Client::XMLRPC::base64' => sub {
+        my($self, $writer, $value) = @_;
+        $writer->startTag('value');
+        $writer->startTag('base64');
+        $writer->characters( encode_base64($$value,'') );
+        $writer->endTag('base64');
         $writer->endTag('value');
     },
 
@@ -179,7 +192,7 @@ sub create_request {
     $writer->endTag('params');
     $writer->endTag('methodCall');
     $writer->end();
-    return encode('utf8', $contents)
+    return encode_utf8($contents)
 }
 
 sub get_response {
@@ -318,6 +331,13 @@ sub logDirectory {
 }
 
 package BZ::Client::XMLRPC::int;
+
+sub new {
+    my($class, $value) = @_;
+    return bless(\$value, (ref($class) || $class))
+}
+
+package BZ::Client::XMLRPC::base64;
 
 sub new {
     my($class, $value) = @_;
