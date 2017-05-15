@@ -60,7 +60,7 @@ sub start {
 sub end {
     my($self,$name) = @_;
     my $l = $self->SUPER::end($name);
-    if ($l == 2 && defined($self->{'parsing_name'})) {
+    if ($l == 2 and defined($self->{'parsing_name'})) {
         $self->{'current_name'} = $self->{'parsing_name'};
     }
     return $l
@@ -69,7 +69,7 @@ sub end {
 sub characters {
     my($self, $text) = @_;
     my $l = $self->level();
-    if ($l == 3 && defined($self->{'parsing_name'})) {
+    if ($l == 3 and defined($self->{'parsing_name'})) {
         $self->{'parsing_name'} .= $text;
     }
     else {
