@@ -23,7 +23,8 @@ sub parser {
     my $self = shift;
     if (@_) {
         $self->{'parser'} = shift;
-    } else {
+    }
+    else {
         return $self->{'parser'};
     }
 }
@@ -32,7 +33,8 @@ sub level {
     my $self = shift;
     if (@_) {
         $self->{'level'} = shift;
-    } else {
+    }
+    else {
         return $self->{'level'};
     }
 }
@@ -56,7 +58,7 @@ sub error {
 
 sub characters {
     my($self, $text) = @_;
-    if ($text !~ /^\s*$/s) {
+    if ($text !~ m/^\s*$/s) {
         $self->error("Unexpected non-whitespace: $text");
     }
 }
