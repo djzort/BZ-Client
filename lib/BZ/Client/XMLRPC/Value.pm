@@ -43,12 +43,12 @@ sub start {
             $handler->start($name);
         }
         elsif ('i4'               eq $name
-            || 'int'              eq $name
-            || 'string'           eq $name
-            || 'double'           eq $name
-            || 'dateTime.iso8601' eq $name
-            || 'base64'           eq $name
-            || 'boolean'          eq $name )
+            or 'int'              eq $name
+            or 'string'           eq $name
+            or 'double'           eq $name
+            or 'dateTime.iso8601' eq $name
+            or 'base64'           eq $name
+            or 'boolean'          eq $name )
         {
             $self->{'level1_elem'}    = $name;
             $self->{'level1_content'} = q();
