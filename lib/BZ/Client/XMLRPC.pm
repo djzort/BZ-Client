@@ -291,10 +291,13 @@ sub request {
     my $self = shift;
     my %args = @_;
     my $methodName = $args{'methodName'};
-    $self->error('Missing argument: methodName') unless defined($methodName);
+    $self->error('Missing argument: methodName')
+        unless defined($methodName);
     my $params = $args{'params'};
-    $self->error('Missing argument: params') unless defined($params);
-    $self->error('Invalid argument: params (Expected array)') unless ref($params) eq 'ARRAY';
+    $self->error('Missing argument: params')
+        unless defined($params);
+    $self->error('Invalid argument: params (Expected array)')
+        unless ref($params) eq 'ARRAY';
     my $contents = $self->create_request($methodName, $params);
     $self->log('debug', "BZ::Client::XMLRPC::request: Sending method $methodName to " . $self->url());
     my $response = $self->get_response($contents);
