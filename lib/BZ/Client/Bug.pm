@@ -315,7 +315,7 @@ Invalid field names are ignored.
 
 Example:
 
- BZ::Client::User->get( $client,
+ BZ::Client::Bug->get( $client,
     { ids => [1], include_fields => ['id', 'name'] })
 
 would return something like:
@@ -336,7 +336,7 @@ Specifying fields here overrides L</include_fields>, so if you specify a field i
 
 Example:
 
- BZ::Client::User->get( $client,
+ BZ::Client::Bug->get( $client,
     { ids => [1], exclude_fields => ['name'] })
 
 would return something like:
@@ -369,7 +369,7 @@ Only custom fields are returned if C<_custom> is specified in L</include_fields>
 
 Example:
 
- BZ::Client::User->get( $client,
+ BZ::Client::Bug->get( $client,
     { ids => [1], include_fields => ['_all'] })
 
 =head1 EXCEPTION HANDLING
