@@ -28,8 +28,16 @@ sub legal_values {
 
 sub get {
     my($class, $client, $params) = @_;
-    $params->{'permissive'} = BZ::Client::XMLRPC::boolean::TRUE()
-        if $params->{'permissive'};
+    unless (ref $params) {
+        $params = [ $params ]
+    }
+    if (ref $params eq 'ARRAY') {
+        $params = { ids => $params }
+    }
+    elsif (ref $params eq 'HASH') {
+        $params->{'permissive'} = BZ::Client::XMLRPC::boolean::TRUE()
+            if $params->{'permissive'};
+    }
     my $bugs = $class->_returns_array($client, 'Bug.get', $params, 'bugs');
     my @result;
     for my $bug (@$bugs) {
@@ -289,7 +297,7 @@ This class provides methods for accessing and managing bugs in Bugzilla.
                                 user     => $user,
                                 password => $password );
 
-  my $bugs = BZ::Client::Bug->get( $client, $ids );
+  my $bugs = BZ::Client::Bug->get( $client, \%params );
 
 =head1 COMMON PARAMETERS
 
@@ -614,12 +622,18 @@ Listed here in order of what you most likely want to do... maybe?
 
 =head2 get
 
+ @bugs = BZ::Client::Bug->get( $client, $id );
+ $bugs = BZ::Client::Bug->get( $client, $id );
+ @bugs = BZ::Client::Bug->get( $client, \@ids );
+ $bugs = BZ::Client::Bug->get( $client, \@ids );
  @bugs = BZ::Client::Bug->get( $client, \%params );
  $bugs = BZ::Client::Bug->get( $client, \%params );
 
 Gets information about particular bugs in the database.
 
 =head3 Parameters
+
+A single I<$id> or array ref of I<@ids> may be provided, otherwise a hash ref with the following:
 
 =over 4
 
