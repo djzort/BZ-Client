@@ -18,7 +18,6 @@ use BZ::Client::Exception;
 use BZ::Client::XMLRPC::Parser;
 use DateTime::Format::Strptime;
 use DateTime::TimeZone;
-use MIME::Base64 qw( encode_base64 );
 
 
 
@@ -112,7 +111,7 @@ my %actions = (
         my($self, $writer, $value) = @_;
         $writer->startTag('value');
         $writer->startTag('i4');
-        $writer->characters($$value);
+        $writer->characters( $value->stringify() );
         $writer->endTag('i4');
         $writer->endTag('value');
     },
@@ -121,7 +120,7 @@ my %actions = (
         my($self, $writer, $value) = @_;
         $writer->startTag('value');
         $writer->startTag('base64');
-        $writer->characters( encode_base64($$value,'') );
+        $writer->characters( $value->base64() );
         $writer->endTag('base64');
         $writer->endTag('value');
     },
@@ -130,7 +129,7 @@ my %actions = (
         my($self, $writer, $value) = @_;
         $writer->startTag('value');
         $writer->startTag('boolean');
-        $writer->characters($$value ? '1' : '0');
+        $writer->characters( $value->stringify() );
         $writer->endTag('boolean');
         $writer->endTag('value');
     },
@@ -139,7 +138,7 @@ my %actions = (
         my($self, $writer, $value) = @_;
         $writer->startTag('value');
         $writer->startTag('double');
-        $writer->characters($$value);
+        $writer->characters( $value->stringify() );
         $writer->endTag('double');
         $writer->endTag('value');
     },
@@ -197,10 +196,14 @@ sub create_request {
 
 sub get_response {
     my($self, $contents) = @_;
-    return _get_response($self,
-                        { 'url' => $self->url() . '/xmlrpc.cgi',
-                          'contentType' => 'text/xml',
-                          'contents' => encode_utf8($contents) })
+    return _get_response(
+            $self,
+            {
+                'url'         => $self->url() . '/xmlrpc.cgi',
+                'contentType' => 'text/xml',
+                'contents'    => encode_utf8($contents)
+            }
+    )
 }
 
 sub _get_response {
@@ -333,6 +336,8 @@ sub logDirectory {
     }
 }
 
+### Objects to represent data types
+
 package BZ::Client::XMLRPC::int;
 
 sub new {
@@ -340,11 +345,43 @@ sub new {
     return bless(\$value, (ref($class) || $class))
 }
 
+sub stringify {
+    my $self = shift;
+    return $$self
+}
+
 package BZ::Client::XMLRPC::base64;
+
+use MIME::Base64 qw( encode_base64 decode_base64 );
 
 sub new {
     my($class, $value) = @_;
-    return bless(\$value, (ref($class) || $class))
+    return bless(
+        {
+            raw    => $value,
+            base64 => encode_base64($value, '')
+        },
+        (ref($class) || $class))
+}
+
+sub new64 {
+    my($class, $value) = @_;
+    return bless(
+        {
+            raw    => decode_base64($value),
+            base64 => $value
+        },
+        (ref($class) || $class))
+}
+
+sub base64 {
+    my $self = shift;
+    return $self->{base64}
+}
+
+sub raw {
+    my $self = shift;
+    return $self->{raw}
 }
 
 package BZ::Client::XMLRPC::boolean;
@@ -352,6 +389,11 @@ package BZ::Client::XMLRPC::boolean;
 sub new {
     my($class, $value) = @_;
     return bless(\$value, (ref($class) || $class))
+}
+
+sub stringfy {
+    my $self = shift;
+    return $$self ? '1' : '0';
 }
 
 {
@@ -369,6 +411,11 @@ package BZ::Client::XMLRPC::double;
 sub new {
     my($class, $value) = @_;
     return bless(\$value, (ref($class) || $class))
+}
+
+sub stringify {
+    my $self = shift;
+    return $$self
 }
 
 1;
