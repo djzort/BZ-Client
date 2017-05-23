@@ -1,6 +1,7 @@
 #!/bin/false
 # PODNAME: BZ::Client::Bug::Attachment
 # ABSTRACT: Client side representation of an Attachment to a Bug in Bugzilla
+# vim: softtabstop=4 tabstop=4 shiftwidth=4 ft=perl expandtab smarttab
 
 use strict;
 use warnings 'all';
@@ -9,10 +10,20 @@ package BZ::Client::Bug::Attachment;
 
 use parent qw( BZ::Client::API );
 
+use File::Basename qw/ basename /;
+
 # See https://www.bugzilla.org/docs/tip/en/html/api/Bugzilla/WebService/Bug.html
 # These are in order as per the above
 
 ## functions
+
+sub new {
+    my $class = shift;
+    my $self = $class->SUPER::new(@_);
+    $self->data($self->{data}) # This will make it a ::base64 object
+        if $self->{data};
+    return $self
+}
 
 sub get {
     my($class, $client, $params) = @_;
@@ -20,24 +31,26 @@ sub get {
     my $result = $class->api_call($client, 'Bug.attachments', $params);
 
     if (my $attachments = $result->{attachments}) {
-        if (!$attachments || 'HASH' ne ref($attachments)) {
-            $class->error($client,
-                'Invalid reply by server, expected hash of attachments.');
-        }
+        $class->error($client,
+            'Invalid reply by server, expected hash of attachments.')
+                unless ($attachments and 'HASH' eq ref($attachments));
         for my $id (keys %$attachments) {
+            $attachments->{$id}->{data} =
+                BZ::Client::XMLRPC::base64->new64($attachments->{$id}->{data});
             $attachments->{$id} = __PACKAGE__
                                     ->new( %{$attachments->{$id}} );
         }
     }
 
     if (my $bugs = $result->{bugs}) {
-        if (!$bugs || 'HASH' ne ref($bugs)) {
-            $class->error($client,
-                'Invalid reply by server, expected array of bugs.');
-        }
+        $class->error($client,
+            'Invalid reply by server, expected array of bugs.')
+                unless ($bugs and 'HASH' eq ref($bugs));
         for my $id (keys %$bugs) {
             $bugs->{$id} = [
-                map { __PACKAGE__->new( %$_  ) } @{$bugs->{$id}} ];
+                map { __PACKAGE__->new( %$_  ) }
+                map { $_->{data} = BZ::Client::XMLRPC::base64->new64($_->{data}) if $_->{data}; $_ }
+                @{$bugs->{$id}} ];
         }
     }
 
@@ -51,13 +64,25 @@ sub add {
     # $params = { ids => [], file_name => basename($file), content_type => '?', summary=> $filename, data => \$content
     $client->log('debug', __PACKAGE__ . '::add: Attaching a file');
     if ( ref $params eq 'HASH' ) {
-
+        my $filename;
+        if ( ! $params->{data}
+            and $filename = $params->{file_name}
+            and -f $filename ) {
+            $params->{data} = do {
+                local $/;
+                open( my $fh, '<', $filename );
+                binmode $fh;
+                <$fh>
+            };
+            $params->{file_name} = basename($params->{file_name});
+        }
+        $params->{data} = BZ::Client::XMLRPC::base64->new($params->{data})
+            if (exists $params->{data} and ref $params->{data} eq '');
     }
     my $result = $class->api_call($client, 'Bug.add_attachment', $params);
     my $id = $result->{'id'};
-    if (!$id) {
-        $class->error($client, 'Invalid reply by server, expected attachment ID.');
-    }
+    $class->error($client, 'Invalid reply by server, expected attachment ID.')
+        unless $id;
     return $id
 }
 
@@ -82,7 +107,9 @@ sub id {
 sub data {
     my $self = shift;
     if (@_) {
-        $self->{'data'} = shift;
+        my $data = shift;
+        $self->{'data'} = ref $data ?
+                  $data : BZ::Client::XMLRPC::base64->new($data);
     }
     else {
         return $self->{'data'}
@@ -189,11 +216,13 @@ __END__
 
 This class provides methods for accessing and managing attachments in Bugzilla. Instances of this class are returned by L<BZ::Client::Bug::Attachment::get>.
 
-  my $client = BZ::Client->new( url       => $url,
-                                user      => $user,
-                                password  => $password );
+ my $client = BZ::Client->new(
+                        url       => $url,
+                        user      => $user,
+                        password  => $password
+                    );
 
-  my $comments = BZ::Client::Bug::Attachment->get( $client, $ids );
+ my $comments = BZ::Client::Bug::Attachment->get( $client, $ids );
 
 =head1 CLASS METHODS
 
