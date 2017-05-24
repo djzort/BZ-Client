@@ -391,7 +391,7 @@ sub new {
     return bless(\$value, (ref($class) || $class))
 }
 
-sub stringfy {
+sub stringify {
     my $self = shift;
     return $$self ? '1' : '0';
 }
