@@ -80,10 +80,10 @@ sub add {
             if (exists $params->{data} and ref $params->{data} eq '');
     }
     my $result = $class->api_call($client, 'Bug.add_attachment', $params);
-    my $id = $result->{'id'};
+    my $ids = $result->{'ids'};
     $class->error($client, 'Invalid reply by server, expected attachment ID.')
-        unless $id;
-    return $id
+        unless $ids;
+    return wantarray ? @$ids : $ids
 }
 
 sub update {
