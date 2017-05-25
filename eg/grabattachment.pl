@@ -12,11 +12,19 @@ use BZ::Client::Bug::Attachment;
 my $bz = BZ::Client->new(
     'api_key' => '8k2xZlv666WTk0hCtJtuFqcRecwpo3lHG0GJefqp',
     url => 'https://landfill.bugzilla.org/bugzilla-5.0-branch/',
+#'user' => 'djzort@cpan.org',
+#'password' => 'cvuA6REFGLrRNU-K',
+#url => 'https://landfill.bugzilla.org/bugzilla-4.4-branch/',
+
 );
 
-my $bug = BZ::Client::Bug::Attachment->get( $bz, { ids => 42508 } );
+#my $no = 5125 ; # 42508
+my $no = 42580 ;
+eval {
 
-my $attachment = $bug->{bugs}->{42508}->[0];
+my $bug = BZ::Client::Bug::Attachment->get( $bz, { ids => $no } );
+
+my $attachment = $bug->{bugs}->{$no}->[0];
 
 # p $attachment;
 
@@ -35,6 +43,9 @@ print $base64 $data->base64();
 close $base64;
 printf("Length is %d\n", length($data->base64));
 
-
+};
+if ($@) {
+p $@
+}
 
 
