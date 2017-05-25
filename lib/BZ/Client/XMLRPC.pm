@@ -260,9 +260,7 @@ sub _get_response {
                 }
             }
             print $fh "\n";
-            if ($res->{success}) {
-                print $fh $response;
-            }
+            print $fh $res->{content} if $res->{content};
             close($fh);
         }
     }
