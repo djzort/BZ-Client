@@ -340,15 +340,23 @@ An instance of this package or a hash containing:
 
 =item ids
 
-I<ids> (array) Required - An array of ints and/or strings--the ID's or aliases of bugs that you want to add this attachment to. The same attachment and comment will be added to all these bugs.
+I<ids> (array) Required - An array of ints and/or strings - the ID's or aliases of bugs that you want to add this attachment to. The same attachment and comment will be added to all these bugs.
 
 =item data
 
-I<data> (string or base64) Required - The content of the attachment. If the content of the attachment is not ASCII text, you must encode it in base64 and declare it as the C<base64> type.
+I<data> (string or base64) Mostly Required - The content of the attachment.
+
+The content will be base64 encoded. Of you can do it yourself by providing this option as a L<BZ::Client::XMPRPC::base64> object.
+
+What is I<"Mostly Required"> you ask? If you provide L</file_name> only, this module will attempt to slurp it to provide this I<data> parameter. See L</file_name> options for more details.
 
 =item file_name
 
 I<file_name> (string) Required - The "file name" that will be displayed in the UI for this attachment.
+
+If no I</data> parameter is provided, this module will attempt to open, slurp the contents of a file with path I<file_name>, base64 encod that data,  placed it into the I</data> parameter, then I<file_name> is truncted to just the files basename.
+
+Failures to open the file (for anyreason) will be silently ignored and the I<file_name> parameter will not be touched.
 
 =item summary
 
@@ -718,7 +726,13 @@ I<bug_id> (int or string) - The ID or alias of the bug to append a attachment to
 
 I<data> (base64 or string) The content of the attachment.
 
-When writing, if the content of the attachment is not ASCII text, you must encode it in base64 and declare it as the C<base64> type.
+When writing, either provide a string (which will be C<base46> encoded for you) or a L<BZ::Client::XMLRPC::base64> object if you'd like to DIY.
+
+When reading, a L<BZ::Client::XMLRPC::base64> object will be returned. To save you the trip, this object has a C<raw()> and a C<base64()> method. Here is an example.
+
+ my $data = $attachment->data();
+ my $file_content_base64_encoded = $data->base64();
+ my $original_file_content = $data->raw();
 
 B<Required>, Read and Write.
 
