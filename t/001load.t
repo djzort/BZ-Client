@@ -1,7 +1,9 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 
 use strict;
 use warnings 'all';
+
+use lib 't/lib';
 
 use Test::More;
 
@@ -16,7 +18,14 @@ my @MODULES = qw(
         BZ::Client::XMLRPC::Struct
         BZ::Client::XMLRPC::Parser
         BZ::Client::Bug
+        BZ::Client::Bug::Attachment
+        BZ::Client::Bug::Comment
+        BZ::Client::BugUserLastVisit
         BZ::Client::Bugzilla
+        BZ::Client::Classification
+        BZ::Client::Component
+        BZ::Client::FlagType
+        BZ::Client::Group
         BZ::Client::User
         BZ::Client::API
         BZ::Client::Test

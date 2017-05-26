@@ -1,20 +1,20 @@
 #!/bin/false
 # PODNAME: BZ::Client::XMLRPC::Parser
 # ABSTRACT: A parser for an XML-RPC response.
+# vim: softtabstop=4 tabstop=4 shiftwidth=4 ft=perl expandtab smarttab
 
 use strict;
 use warnings 'all';
 
 package BZ::Client::XMLRPC::Parser;
 
-use BZ::Client::XMLRPC::Response ();
+use BZ::Client::XMLRPC::Response;
+use BZ::Client::Exception;
 use XML::Parser ();
 
 sub new {
     my $class = shift;
-    my $self = { @_ };
-    bless($self, ref($class) || $class);
-    return $self
+    return bless({ @_ }, ref($class) || $class);
 }
 
 sub parse {
@@ -27,28 +27,33 @@ sub parse {
         $self->{'result'} = $handler->result();
     });
     my $start = sub {
-        my($expat, $name, @args) = @_;
+        my(undef, $name) = @_;
         my $current = $self->{'current'};
         $self->error('Illegal state, no more handlers available on stack.') unless $current;
         $current->start($name);
     };
     my $end = sub {
-        my($expat, $name) = @_;
+        my(undef, $name) = @_;
         my $current = $self->{'current'};
         $self->error('Illegal state, no more handlers available on stack.') unless $current;
         $current->end($name);
     };
     my $chars = sub {
-        my($expat, $text) = @_;
+        my(undef, $text) = @_;
         my $current = $self->{'current'};
-        $self->error('Illegal state, no more handlers available on stack.') unless $current;
+        $self->error('Illegal state, no more handlers available on stack.')
+            unless $current;
         $current->characters($text);
     };
-    my $parser = XML::Parser->new(Handlers => {Start => $start,
-                                               End   => $end,
-                                               Char  => $chars});
+    my $parser = XML::Parser->new(
+                            Handlers => {
+                                Start => $start,
+                                End   => $end,
+                                Char  => $chars
+                            });
     $parser->parse($content);
-    die $self->{'exception'} if ($self->{'exception'});
+    die $self->{'exception'}
+        if $self->{'exception'};
     return $self->{'result'}
 }
 
@@ -59,7 +64,7 @@ sub register {
         $parent->dec_level();
     }
     $self->{'current'} = $handler;
-    push(@{$self->{'stack'}}, $current);
+    push @{$self->{'stack'}}, $current;
     $handler->init($self)
 }
 
@@ -76,7 +81,6 @@ sub remove {
 
 sub error {
     my($self, $message) = @_;
-    require BZ::Client::Exception;
     BZ::Client::Exception->throw('message' => $message)
 }
 

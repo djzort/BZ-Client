@@ -7,6 +7,7 @@ use warnings 'all';
 
 package BZ::Client::Exception;
 
+
 sub throw {
     my $class = shift;
     die $class->new(@_)
@@ -38,7 +39,9 @@ sub http_code {
 
 __END__
 
-=encoding utf-8
+=pod
+
+=encoding utf8
 
 =head1 SYNOPSIS
 
@@ -77,12 +80,49 @@ Returns the http code (200, 404, etc)
 
 =head1 EXAMPLE
 
- my $client = BZ::Client->new( url => $url, user => $user, password => $pass);
- $client->login();
+Here are two examples. The first uses Perl's inbuilt eval() function, the
+second uses the Try::Tiny module. Further alternatives exist and may be
+perfectly good options if they suit you.
 
- # FIXME need to finish example
+=head2 eval
+
+ use BZ::Client;
+ use BZ::Client::Bug::Attachment;
+ use v5.10;
+
+ my $client = BZ::Client->new( %etc );
+
+ eval {
+     my $att = BZ::Client::Bug::Attachment->get($client, { ids => 30505 });
+ };
+
+ if ($@) {
+     say 'An Error Occured';
+     say 'Message: ', $@->message();
+     say 'HTTP Code: ', $@->http_code() if $@->http_code();
+     say 'XMLrpc Code: ', $@->xmlrpc_code() if $@->xmlrpc_code();
+ };
+
+=head2 Try::Tiny
+
+ use BZ::Client;
+ use BZ::Client::Bug::Attachment;
+ use Try::Tiny;
+ use v5.10;
+
+ my $client = BZ::Client->new( %etc );
+
+ try {
+     my $att = BZ::Client::Bug::Attachment->get($client, { ids => 30505 });
+ }
+
+ catch {
+     say 'An Error Occured';
+     say 'Message: ', $_->message();
+     say 'HTTP Code: ', $_->http_code() if $_->http_code();
+     say 'XMLrpc Code: ', $_->xmlrpc_code() if $_->xmlrpc_code();
+ };
 
 =head1 SEE ALSO
 
-  L<BZ::Client>
-
+L<BZ::Client>

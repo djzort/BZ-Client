@@ -7,10 +7,9 @@ use warnings 'all';
 
 package BZ::Client::XMLRPC::Response;
 
-use BZ::Client::XMLRPC::Handler ();
-use BZ::Client::XMLRPC::Value ();
-
-our @ISA = qw(BZ::Client::XMLRPC::Handler);
+use parent qw( BZ::Client::XMLRPC::Handler );
+use BZ::Client::XMLRPC::Value;
+use BZ::Client::Exception;
 
 sub start {
     my($self,$name) = @_;
@@ -19,18 +18,22 @@ sub start {
         if ('methodResponse' ne $name) {
             $self->error("Expected methodResponse element, got $name");
         }
-    } elsif ($l == 1) {
+    }
+    elsif ($l == 1) {
         if ('fault' eq $name) {
             $self->{'in_fault'} = 1;
-        } elsif ('params' eq $name) {
+        }
+        elsif ('params' eq $name) {
             if (defined($self->{'result'})) {
                 $self->error('Multiple elements methodResponse/params found.');
             }
             $self->{'in_fault'} = 0;
-        } else {
+        }
+        else {
             $self->error("Unexpected element methodResponse/$name, expected fault|params");
         }
-    } elsif ($l == 2) {
+    }
+    elsif ($l == 2) {
         if ($self->{'in_fault'}) {
             if ('value' ne $name) {
                 $self->error("Unexpected element methodResponse/fault/$name, expected value");
@@ -43,12 +46,12 @@ sub start {
                 }
                 my $faultCode = $result->{'faultCode'};
                 my $faultString = $result->{'faultString'};
-                require BZ::Client::Exception;
                 $self->{'exception'} = BZ::Client::Exception->new('message' => $faultString,
                                                                   'xmlrpc_code' => $faultCode);
             });
             $handler->start($name);
-        } else {
+        }
+        else {
             if ('param' ne $name) {
                 $self->error("Unexpected element methodResponse/params/$name, expected param");
             }
@@ -56,10 +59,12 @@ sub start {
                 $self->error('Multiple elements methodResponse/params/param found.');
             }
         }
-    } elsif ($l == 3) {
+    }
+    elsif ($l == 3) {
         if ($self->{'in_fault'}) {
             $self->error("Unexpected element $name found at level $l");
-        } else {
+        }
+        else {
             if ('value' ne $name) {
                 $self->error("Unexpected element methodResponse/params/param/$name, expected value");
             }

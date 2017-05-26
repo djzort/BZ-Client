@@ -1,22 +1,31 @@
 #!/bin/false
 # PODNAME: BZ::Client::XMLRPC
 # ABSTRACT: Performs XML-RPC calls on behalf of the client.
+# vim: softtabstop=4 tabstop=4 shiftwidth=4 ft=perl expandtab smarttab
 
 use strict;
 use warnings 'all';
 
 package BZ::Client::XMLRPC;
 
-use LWP();
-use XML::Writer();
-use Encode;
-use BZ::Client::XMLRPC::Parser();
-use DateTime::Format::Strptime();
-use DateTime::TimeZone();
 
-our $counter;
-our $fmt = DateTime::Format::Strptime->new( pattern=> '%C%Y-%m-%dT%T', time_zone => 'UTC' );
-our $tz = DateTime::TimeZone->new( name => 'UTC' );
+use URI;
+use Encode qw/ encode_utf8 /;
+use XML::Writer;
+use HTTP::Tiny;
+use File::Spec;
+use BZ::Client::Exception;
+use BZ::Client::XMLRPC::Parser;
+use DateTime::Format::Strptime;
+use DateTime::TimeZone;
+
+
+
+my $counter;
+my $fmt = DateTime::Format::Strptime->new(
+                    pattern   => '%C%Y-%m-%dT%T',
+                    time_zone => 'UTC' );
+my $tz = DateTime::TimeZone->new( name => 'UTC' );
 
 
 sub new {
@@ -30,37 +39,47 @@ sub url {
     my $self = shift;
     if (@_) {
         $self->{'url'} = shift;
-    } else {
+    }
+    else {
         return $self->{'url'};
     }
 }
 
-sub user_agent {
+sub web_agent {
     my $self = shift;
     if (@_) {
-        $self->{'user_agent'} = shift;
-    } else {
-        my $ua = $self->{'user_agent'};
-        if (!defined($ua)) {
-            $ua = LWP::UserAgent->new();
-            $ua->agent("BZ::Client::XMLRPC $BZ::Client::XMLRPC::VERSION");
-            $self->user_agent($ua);
+        $self->{'web_agent'} = shift;
+    }
+    else {
+        my $wa = $self->{'web_agent'};
+        my $connect = $self->{'connect'} || {};
+        $self->error(q/'connect' parameter in new() not a hashref/)
+            unless ref $connect eq 'HASH';
+        if (!defined($wa)) {
+            $wa = HTTP::Tiny->new(
+                %$connect,
+                agent => sprintf('BZ::Client::XMLRPC %s (perl %s; %s)',
+                                 $BZ::Client::XMLRPC::VERSION, $^V, $^O)
+            );
+            $self->web_agent($wa);
         }
-        return $ua;
+        return $wa;
     }
 }
 
 sub error {
     my($self, $message, $http_code, $xmlrpc_code) = @_;
-    require BZ::Client::Exception;
-    BZ::Client::Exception->throw('message' => $message,
-                                 'http_code' => $http_code,
+    BZ::Client::Exception->throw('message'     => $message,
+                                 'http_code'   => $http_code,
                                  'xmlrpc_code' => $xmlrpc_code)
 }
 
-sub value {
-    my($self, $writer, $value) = @_;
-    if (ref($value) eq 'HASH') {
+{
+
+my %actions = (
+
+    'HASH' => sub {
+        my($self, $writer, $value) = @_;
         $writer->startTag('value');
         $writer->startTag('struct');
         for my $key (sort keys %$value) {
@@ -73,7 +92,10 @@ sub value {
         }
         $writer->endTag('struct');
         $writer->endTag('value');
-    } elsif (ref($value) eq 'ARRAY') {
+    },
+
+    'ARRAY' => sub {
+        my($self, $writer, $value) = @_;
         $writer->startTag('value');
         $writer->startTag('array');
         $writer->startTag('data');
@@ -83,25 +105,46 @@ sub value {
         $writer->endTag('data');
         $writer->endTag('array');
         $writer->endTag('value');
-    } elsif (ref($value) eq 'BZ::Client::XMLRPC::int') {
+    },
+
+    'BZ::Client::XMLRPC::int' => sub {
+        my($self, $writer, $value) = @_;
         $writer->startTag('value');
         $writer->startTag('i4');
-        $writer->characters($$value);
+        $writer->characters( $value->stringify() );
         $writer->endTag('i4');
         $writer->endTag('value');
-    } elsif (ref($value) eq 'BZ::Client::XMLRPC::boolean') {
+    },
+
+    'BZ::Client::XMLRPC::base64' => sub {
+        my($self, $writer, $value) = @_;
+        $writer->startTag('value');
+        $writer->startTag('base64');
+        $writer->characters( $value->base64() );
+        $writer->endTag('base64');
+        $writer->endTag('value');
+    },
+
+    'BZ::Client::XMLRPC::boolean' => sub {
+        my($self, $writer, $value) = @_;
         $writer->startTag('value');
         $writer->startTag('boolean');
-        $writer->characters($$value ? '1' : '0');
+        $writer->characters( $value->stringify() );
         $writer->endTag('boolean');
         $writer->endTag('value');
-    } elsif (ref($value) eq 'BZ::Client::XMLRPC::double') {
+    },
+
+    'BZ::Client::XMLRPC::double' => sub {
+        my($self, $writer, $value) = @_;
         $writer->startTag('value');
         $writer->startTag('double');
-        $writer->characters($$value);
+        $writer->characters( $value->stringify() );
         $writer->endTag('double');
         $writer->endTag('value');
-    } elsif (ref($value) eq 'DateTime') {
+    },
+
+    'DateTime' => sub {
+        my($self, $writer, $value) = @_;
         my $clone = $value->clone();
         $clone->set_time_zone($tz);
         $clone->set_formatter($fmt);
@@ -110,17 +153,31 @@ sub value {
         $writer->characters($clone->iso8601(). 'Z');
         $writer->endTag('dateTime.iso8601');
         $writer->endTag('value');
-    } else {
+    },
+
+);
+
+sub value {
+    my($self, $writer, $value) = @_;
+
+    if ($actions{ ref($value) }) {
+        $actions{ ref($value) }->($self, $writer, $value);
+    }
+    else {
         $writer->startTag('value');
         $writer->characters($value);
         $writer->endTag('value');
     }
 }
 
+}
+
 sub create_request {
     my($self, $methodName, $params) = @_;
     my $contents;
-    my $writer = XML::Writer->new(OUTPUT => \$contents, ENCODING => 'UTF-8');
+    my $writer = XML::Writer->new(
+                OUTPUT   => \$contents,
+                ENCODING => 'UTF-8' );
     $writer->startTag('methodCall');
     $writer->startTag('methodName');
     $writer->characters($methodName);
@@ -134,14 +191,19 @@ sub create_request {
     $writer->endTag('params');
     $writer->endTag('methodCall');
     $writer->end();
-    return encode('utf8', $contents)
+    return encode_utf8($contents)
 }
 
 sub get_response {
     my($self, $contents) = @_;
-    return _get_response($self, { 'url' => $self->url() . '/xmlrpc.cgi',
-                                  'contentType' => 'text/xml',
-                                  'contents' => encode_utf8($contents) })
+    return _get_response(
+            $self,
+            {
+                'url'         => $self->url() . '/xmlrpc.cgi',
+                'contentType' => 'text/xml',
+                'contents'    => encode_utf8($contents)
+            }
+    )
 }
 
 sub _get_response {
@@ -150,34 +212,32 @@ sub _get_response {
     my $contentType = $params->{'contentType'};
     my $contents = $params->{'contents'};
     if (ref($contents) eq 'ARRAY') {
-        require URI;
         my $uri = URI->new('http:');
         $uri->query_form($contents);
         $contents = $uri->query();
     }
 
-    my $req = HTTP::Request->new(POST => $url);
-    $req->content_type($contentType);
-    $req->content($contents);
-    if ($self->{'request_only'}) {
-        return $req;
-    }
-    my $ua = $self->user_agent();
+    my %options = (
+        headers => {
+            'Content-Type' => $contentType,
+        },
+        content => $contents, # carefull of the s
+    );
+
+    my $wa = $self->web_agent();
 
     my($logDir,$logId) = $self->logDirectory();
 
     if ($logDir) {
         $logId = ++$counter;
-        require File::Spec;
         my $fileName = File::Spec->catfile($logDir, "$$.$logId.request.log");
         if (open(my $fh, '>', $fileName)) {
-            for my $header ($req->header_field_names()) {
-                for my $value ($req->header($header)) {
-                    print $fh "$header: $value\n";
-                }
+            while (my($header,$value) = each %{$options{headers}} ) {
+                print $fh "$header: $value\n";
             }
-            if ($ua->cookie_jar()) {
-                print $fh $ua->cookie_jar()->as_string();
+            print $fh 'user-agent: ', $wa->agent(), "\n";
+            if ($wa->{cookie_jar}) {
+                print $fh join("\n", $wa->{cookie_jar}->dump_cookies());
             }
             print $fh "\n";
             print $fh $contents;
@@ -185,32 +245,37 @@ sub _get_response {
         }
     }
 
-    my $res = $ua->request($req);
-    my $response = $res->is_success() ? $res->content() : undef;
+    my $res = $wa->request(POST => $url, \%options);
+    my $response = $res->{success} ? $res->{content} : undef;
     if ($logDir) {
         my $fileName = File::Spec->catfile($logDir, "$$.$logId.response.log");
         if (open(my $fh, '>', $fileName)) {
-            for my $header ($res->header_field_names()) {
-                for my $value ($res->header($header)) {
+            for my $header (sort keys %{$res->{headers}}) {
+                my $value = $res->{headers}->{$header};
+                if (ref $value) {
+                    print $fh "$header: $_\n" for @$value;
+                }
+                else {
                     print $fh "$header: $value\n";
                 }
             }
             print $fh "\n";
-            if ($res->is_success) {
-                print $fh $response;
-            }
+            print $fh $res->{content} if $res->{content};
             close($fh);
         }
     }
-    if (!$res->is_success()) {
-        my $msg = $res->status_line();
-        my $code = $res->code();
+    if (!$res->{success}) {
+        my $code = $res->{status};
         if ($code == 401) {
-           $self->error('Authorization error, perhaps invalid user name and/or password', $code);
-        } elsif ($code == 404) {
-           $self->error('Bugzilla server not found, perhaps invalid URL.', $code);
-        } else {
-           $self->error("Unknown error: $msg", $code);
+            $self->error('Authorization error, perhaps invalid user name and/or password', $code);
+        }
+        elsif ($code == 404) {
+            $self->error('Bugzilla server not found, perhaps invalid URL.', $code);
+        }
+        else {
+            my $msg = $res->{reason};
+            $msg .= ' : ' . $res->{content} if $res->{content};
+            $self->error("Unknown error: $msg", $code);
         }
     }
 
@@ -227,10 +292,13 @@ sub request {
     my $self = shift;
     my %args = @_;
     my $methodName = $args{'methodName'};
-    $self->error('Missing argument: methodName') unless defined($methodName);
+    $self->error('Missing argument: methodName')
+        unless defined($methodName);
     my $params = $args{'params'};
-    $self->error('Missing argument: params') unless defined($params);
-    $self->error('Invalid argument: params (Expected array)') unless ref($params) eq 'ARRAY';
+    $self->error('Missing argument: params')
+        unless defined($params);
+    $self->error('Invalid argument: params (Expected array)')
+        unless ref($params) eq 'ARRAY';
     my $contents = $self->create_request($methodName, $params);
     $self->log('debug', "BZ::Client::XMLRPC::request: Sending method $methodName to " . $self->url());
     my $response = $self->get_response($contents);
@@ -250,7 +318,8 @@ sub logger {
     my($self) = shift;
     if (@_) {
         $self->{'logger'} = shift;
-    } else {
+    }
+    else {
         return $self->{'logger'};
     }
 }
@@ -259,16 +328,58 @@ sub logDirectory {
     my($self) = shift;
     if (@_) {
         $self->{'logDirectory'} = shift;
-    } else {
+    }
+    else {
         return $self->{'logDirectory'};
     }
 }
+
+### Objects to represent data types
 
 package BZ::Client::XMLRPC::int;
 
 sub new {
     my($class, $value) = @_;
     return bless(\$value, (ref($class) || $class))
+}
+
+sub stringify {
+    my $self = shift;
+    return $$self
+}
+
+package BZ::Client::XMLRPC::base64;
+
+use MIME::Base64 qw( encode_base64 decode_base64 );
+
+sub new {
+    my($class, $value) = @_;
+    return bless(
+        {
+            raw    => $value,
+            base64 => encode_base64($value, '')
+        },
+        (ref($class) || $class))
+}
+
+sub new64 {
+    my($class, $value) = @_;
+    return bless(
+        {
+            raw    => decode_base64($value),
+            base64 => $value
+        },
+        (ref($class) || $class))
+}
+
+sub base64 {
+    my $self = shift;
+    return $self->{base64}
+}
+
+sub raw {
+    my $self = shift;
+    return $self->{raw}
 }
 
 package BZ::Client::XMLRPC::boolean;
@@ -278,8 +389,20 @@ sub new {
     return bless(\$value, (ref($class) || $class))
 }
 
-use constant TRUE => BZ::Client::XMLRPC::boolean->new(1);
-use constant FALSE => BZ::Client::XMLRPC::boolean->new(0);
+sub stringify {
+    my $self = shift;
+    return $$self ? '1' : '0';
+}
+
+{
+
+my $true = BZ::Client::XMLRPC::boolean->new(1);
+my $false = BZ::Client::XMLRPC::boolean->new(0);
+
+sub TRUE  { $true }
+sub FALSE { $false }
+
+}
 
 package BZ::Client::XMLRPC::double;
 
@@ -288,11 +411,18 @@ sub new {
     return bless(\$value, (ref($class) || $class))
 }
 
+sub stringify {
+    my $self = shift;
+    return $$self
+}
+
 1;
 
 __END__
 
-=encoding utf-8
+=pod
+
+=encoding utf8
 
 =head1 SYNOPSIS
 
@@ -336,4 +466,4 @@ errors.
 
 =head1 SEE ALSO
 
-  L<BZ::Client>, L<BZ::Client::Exception>
+L<BZ::Client>, L<BZ::Client::Exception>
