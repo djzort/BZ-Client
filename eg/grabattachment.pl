@@ -47,5 +47,3 @@ printf("Length is %d\n", length($data->base64));
 if ($@) {
 p $@
 }
-
-
