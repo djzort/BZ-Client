@@ -2,3 +2,4 @@
 .perl-version
 cpanfile.snapshot
 local/
+BZ-Client-.*
