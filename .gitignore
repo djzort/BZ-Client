@@ -1,1 +1,4 @@
 .build
+.perl-version
+cpanfile.snapshot
+local/
