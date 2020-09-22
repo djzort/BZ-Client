@@ -19,6 +19,7 @@ perl:
    - '5.12'
    - '5.10'
    - '5.8'
+
 matrix:
    allow_failures:
       - perl: 'blead'
@@ -27,6 +28,7 @@ matrix:
    include:
      - perl: '5.26'
        env: COVERAGE=1
+
 before_install:
   - git config --global user.name "TravisCI"
   - git config --global user.email $HOSTNAME":not-for-mail@travis-ci.org"
@@ -37,9 +39,13 @@ before_install:
   - build-dist
   - cp dist.ini $BUILD_DIR/
   - cd $BUILD_DIR
+
 install:
    - perl -M5.014 -e1 2>/dev/null || cpan-install Dist::Zilla@5.047
    - perl -M5.020 -e1 2>/dev/null || cpan-install Dist::Zilla::Plugin::Covenant@0.1.1
    - cpan-install --deps
+   - "dzil authordeps          --missing | grep -vP '[^\\w:]' | xargs -n 5 -P 10 cpanm --quiet --notest"
+   - "dzil listdeps   --author --missing | grep -vP '[^\\w:]' | cpanm --quiet --notest"
+
 script:
    - dzil smoke --release --author
