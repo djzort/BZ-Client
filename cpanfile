@@ -50,6 +50,7 @@ on develop => sub {
 	requires "Dist::Zilla::Plugin::PkgVersion";
 	requires "Dist::Zilla::Plugin::PodWeaver";
 	requires "Dist::Zilla::Plugin::Git::Remote::Check";
+	requires "Dist::Zilla::Plugin::Git::GatherDir";
 	requires "Dist::Zilla::Plugin::Git::Tag";
 	requires "Dist::Zilla::Plugin::PruneCruft";
 	requires "Dist::Zilla::Plugin::Clean";
