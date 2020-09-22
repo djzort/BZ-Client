@@ -24,12 +24,21 @@ matrix:
       - perl: 'blead'
       - perl: '5.8'
    fast_finish: true
+   include:
+     - perl: '5.26'
+       env: COVERAGE=1
 before_install:
-   - git config --global user.name "TravisCI"
-   - git config --global user.email $HOSTNAME":not-for-mail@travis-ci.org"
+  - git config --global user.name "TravisCI"
+  - git config --global user.email $HOSTNAME":not-for-mail@travis-ci.org"
+  - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
+  - source ~/travis-perl-helpers/init
+  - build-perl
+  - perl -V
+  - build-dist
+  - cd $BUILD_DIR
 install:
-   - cpanm --quiet --notest --skip-satisfied Dist::Zilla
-   - "dzil authordeps          --missing | grep -vP '[^\\w:]' | xargs -n 5 -P 10 cpanm --quiet --notest"
-   - "dzil listdeps   --author --missing | grep -vP '[^\\w:]' | cpanm --quiet --notest"
+   - perl -M5.014 -e1 2>/dev/null || cpan-install Dist::Zilla@5.047
+   - perl -M5.020 -e1 2>/dev/null || cpan-install Dist::Zilla::Plugin::Covenant@0.1.1
+   - cpan-install --deps
 script:
    - dzil smoke --release --author
