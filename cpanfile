@@ -54,4 +54,11 @@ on develop => sub {
 	requires "Dist::Zilla::Plugin::PruneCruft";
 	requires "Dist::Zilla::Plugin::Clean";
 	requires "Dist::Zilla::Plugin::Prereqs";
+
+	# Author test depends
+	requires "Test::CPAN::Meta";
+	requires "Test::EOL";
+	requires "Test::Kwalitee";
+	requires "Test::NoTabs";
+	requires "Test::Pod";
 };
