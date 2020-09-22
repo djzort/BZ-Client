@@ -29,7 +29,7 @@ on test => sub {
 on develop => sub {
     requires "Dist::Zilla::PluginBundle::Basic";
 
-    requires "Dist::Zilla::Plugin::Prereqs::FromCPANFile";
+    requires "Dist::Zilla::Plugin::Prereqs::FromCPANfile";
     requires "Dist::Zilla::Plugin::GithubMeta";
     requires "Dist::Zilla::Plugin::MetaJSON";
     requires "Dist::Zilla::Plugin::MetaTests";
@@ -51,6 +51,8 @@ on develop => sub {
     requires "Dist::Zilla::Plugin::PkgVersion";
     requires "Dist::Zilla::Plugin::PodWeaver";
     requires "Dist::Zilla::Plugin::Git::Remote::Check";
+    requires "Dist::Zilla::Plugin::Git::Check";
+    requires "Dist::Zilla::Plugin::Git::Commit";
     requires "Dist::Zilla::Plugin::Git::Tag";
     requires "Dist::Zilla::Plugin::PruneCruft";
     requires "Dist::Zilla::Plugin::Clean";
