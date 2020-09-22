@@ -35,6 +35,7 @@ before_install:
   - build-perl
   - perl -V
   - build-dist
+  - cp dist.ini $BUILD_DIR/
   - cd $BUILD_DIR
 install:
    - perl -M5.014 -e1 2>/dev/null || cpan-install Dist::Zilla@5.047
