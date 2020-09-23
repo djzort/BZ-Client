@@ -17,13 +17,14 @@ perl:
    - '5.16'
    - '5.14'
    - '5.12'
-   - '5.10'
-   - '5.8'
+# Dist::Zilla makes these impossible to test on
+#   - '5.10'
+#   - '5.8'
 
 matrix:
    allow_failures:
       - perl: 'blead'
-      - perl: '5.8'
+#      - perl: '5.8'
    fast_finish: true
    include:
      - perl: '5.26'
