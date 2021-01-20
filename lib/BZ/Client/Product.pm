@@ -16,8 +16,8 @@ use parent qw( BZ::Client::API );
 ## functions
 
 sub create {
-    my(undef, $client, $params) = @_;
-    return _create($client, 'Product.create', $params);
+    my($class, $client, $params) = @_;
+    return $class->_create($client, 'Product.create', $params);
 }
 
 sub update {

@@ -87,8 +87,8 @@ sub add {
 }
 
 sub update {
-    my(undef, $client, $params) = @_;
-    return _returns_array($client, 'Bug.update_attachment', $params, 'attachments');
+    my($class, $client, $params) = @_;
+    return $class->_returns_array($client, 'Bug.update_attachment', $params, 'attachments');
 }
 
 

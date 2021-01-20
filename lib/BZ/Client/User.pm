@@ -44,8 +44,8 @@ sub get {
 ## methods
 
 sub create {
-    my(undef, $client, $params) = @_;
-    return _create($client, 'User.create', $params);
+    my($class, $client, $params) = @_;
+    return $class->_create($client, 'User.create', $params);
 }
 
 sub update {
