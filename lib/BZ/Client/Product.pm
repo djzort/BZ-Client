@@ -22,7 +22,7 @@ sub create {
 
 sub update {
     my($class, $client, $params) = @_;
-    return $class->_returns_array($client, 'Product.update', $params, 'components');
+    return $class->_returns_array($client, 'Product.update', $params, 'products');
 }
 
 # convenience function
