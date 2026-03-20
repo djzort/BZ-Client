@@ -165,8 +165,8 @@ sub component {
     my $self = shift;
     if (@_) {
         $self->{'component'} = shift;
-    } e
-    lse {
+    }
+    else {
         return $self->{'component'}
     }
 }
