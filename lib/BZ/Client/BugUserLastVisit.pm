@@ -58,7 +58,7 @@ Update the last visit time for the specified bug and current user.
 
 =head3 History
 
-Marked as experimental in Bugzill 5.0.
+Marked as experimental in Bugzilla 5.0.
 
 =head3 Parameters
 
