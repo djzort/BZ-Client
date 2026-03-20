@@ -88,7 +88,6 @@ sub log {
     }
 }
 
-# FIXME nothing actually uses this?
 sub logger {
     my $self = shift;
     if (@_) {
