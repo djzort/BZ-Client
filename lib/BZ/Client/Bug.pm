@@ -125,7 +125,7 @@ sub alias {
     my $self = shift;
     if (@_) {
         my $alias = shift;
-        if (ref $alias eq 'ARRAY' && @$a) {
+        if (ref $alias eq 'ARRAY' && @{$alias}) {
             $self->{'alias'} = $alias->[0];
         }
         if (not ref $alias) {
