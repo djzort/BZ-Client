@@ -10,7 +10,7 @@ package BZ::Client::Bug::Attachment;
 
 use parent qw( BZ::Client::API );
 
-use File::Basename qw/ basename /;
+use File::Basename qw( basename );
 
 # See https://www.bugzilla.org/docs/tip/en/html/api/Bugzilla/WebService/Bug.html
 # These are in order as per the above

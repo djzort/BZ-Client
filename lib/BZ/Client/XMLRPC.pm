@@ -9,11 +9,11 @@ use warnings 'all';
 package BZ::Client::XMLRPC;
 
 
-use URI;
-use Encode qw/ encode_utf8 /;
+use URI ();
+use Encode qw( encode_utf8 );
 use XML::Writer;
-use HTTP::Tiny;
-use File::Spec;
+use HTTP::Tiny ();
+use File::Spec ();
 use BZ::Client::Exception;
 use BZ::Client::XMLRPC::Parser;
 use DateTime::Format::Strptime;
@@ -350,7 +350,7 @@ sub stringify {
 
 package BZ::Client::XMLRPC::base64;
 
-use MIME::Base64 qw( encode_base64 decode_base64 );
+use MIME::Base64 qw( decode_base64 encode_base64 );
 
 sub new {
     my($class, $value) = @_;
