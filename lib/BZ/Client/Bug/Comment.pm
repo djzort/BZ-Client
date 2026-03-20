@@ -43,7 +43,7 @@ sub get {
         }
     }
 
-    $client->log('debug', __PACKAGE__ . '::get: Got ' . %{$result});
+    $client->log('debug', __PACKAGE__ . '::get: Got keys: ' . join(', ', sort keys %{$result}));
 
     return wantarray ? %{$result} : $result
 }

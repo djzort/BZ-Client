@@ -70,7 +70,7 @@ sub search {
     for my $bug (@$bugs) {
         push(@result, $class->new(%{$bug}));
     }
-    $client->log('debug', $class . '::search: Found ' . join(',',@result));
+    $client->log('debug', $class . '::search: Found ' . join(',', map { $_->id // '?' } @result));
     return wantarray ? @result : \@result
 }
 
