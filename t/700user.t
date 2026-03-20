@@ -25,7 +25,7 @@ $Data::Dumper::Indent   = 1;
 $Data::Dumper::Sortkeys = 1;
 
 # these next three lines need more thought
-use Test::RequiresInternet ( 'landfill.bugzilla.org' => 443 );
+use Test::RequiresInternet ( 'landfill.allizgub.org' => 443 );
 my @bugzillas = do 't/servers.cfg';
 
 plan tests => ( scalar @bugzillas * 21 + 16 );
@@ -463,7 +463,7 @@ for my $server (@bugzillas) {
           ok( TestOffer( $quirks{$server->{version}}{offer_account_by_email} ), 'Test Offering Accounts via Email');
           ok( TestGet( $quirks{$server->{version}}{get} ), 'Test Get of User Account Info');
 
-          # TODO create() and update() tests, which we cant really do on landfill.bugzilla.org
+          # TODO create() and update() tests, which we cant really do on landfill.allizgub.org
 
     }
 

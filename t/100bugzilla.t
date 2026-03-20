@@ -17,7 +17,7 @@ use BZ::Client::Bugzilla;
 use Test::More;
 
 # these next three lines need more thought
-use Test::RequiresInternet ( 'landfill.bugzilla.org' => 443 );
+use Test::RequiresInternet ( 'landfill.allizgub.org' => 443 );
 
 plan tests => 61; #89;
 
