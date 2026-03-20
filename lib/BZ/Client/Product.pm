@@ -69,7 +69,7 @@ sub _get {
     }
     my @result;
     for my $product (@$products) {
-        push @result, $class->new(%$product);
+        push @result, $class->new(%{$product});
     }
     return wantarray ? @result : \@result
 }

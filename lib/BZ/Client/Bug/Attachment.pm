@@ -34,7 +34,7 @@ sub get {
         $class->error($client,
             'Invalid reply by server, expected hash of attachments.')
                 unless ($attachments and 'HASH' eq ref($attachments));
-        for my $id (keys %$attachments) {
+        for my $id (keys %{$attachments}) {
             $attachments->{$id}->{data} =
                 BZ::Client::XMLRPC::base64->new64($attachments->{$id}->{data});
             $attachments->{$id} = __PACKAGE__
@@ -46,17 +46,17 @@ sub get {
         $class->error($client,
             'Invalid reply by server, expected array of bugs.')
                 unless ($bugs and 'HASH' eq ref($bugs));
-        for my $id (keys %$bugs) {
+        for my $id (keys %{$bugs}) {
             $bugs->{$id} = [
-                map { __PACKAGE__->new( %$_  ) }
+                map { __PACKAGE__->new( %{$_}  ) }
                 map { $_->{data} = BZ::Client::XMLRPC::base64->new64($_->{data}) if $_->{data}; $_ }
                 @{$bugs->{$id}} ];
         }
     }
 
-    $client->log('debug', __PACKAGE__ . '::get: Got ' . %$result);
+    $client->log('debug', __PACKAGE__ . '::get: Got ' . %{$result});
 
-    return wantarray ? %$result : $result
+    return wantarray ? %{$result} : $result
 }
 
 sub add {

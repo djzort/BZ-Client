@@ -27,7 +27,7 @@ sub get {
             $class->error($client,
                 'Invalid reply by server, expected hash of comments.');
         }
-        for my $id (keys %$comments) {
+        for my $id (keys %{$comments}) {
             $comments->{$id} = __PACKAGE__->new( %{$comments->{$id}} );
         }
     }
@@ -37,15 +37,15 @@ sub get {
             $class->error($client,
                 'Invalid reply by server, expected array of bugs.');
         }
-        for my $id (keys %$bugs) {
+        for my $id (keys %{$bugs}) {
             $bugs->{$id} = [
-                map { __PACKAGE__->new( %$_  ) } @{$bugs->{$id}->{comments}} ];
+                map { __PACKAGE__->new( %{$_}  ) } @{$bugs->{$id}->{comments}} ];
         }
     }
 
-    $client->log('debug', __PACKAGE__ . '::get: Got ' . %$result);
+    $client->log('debug', __PACKAGE__ . '::get: Got ' . %{$result});
 
-    return wantarray ? %$result : $result
+    return wantarray ? %{$result} : $result
 }
 
 sub add {

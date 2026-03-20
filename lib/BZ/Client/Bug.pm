@@ -41,7 +41,7 @@ sub get {
     my $bugs = $class->_returns_array($client, 'Bug.get', $params, 'bugs');
     my @result;
     for my $bug (@$bugs) {
-        push(@result, $class->new(%$bug));
+        push(@result, $class->new(%{$bug}));
     }
     $client->log('debug', $class . '::get: Got ' . scalar(@result));
     return wantarray ? @result : \@result
@@ -57,7 +57,7 @@ sub possible_duplicates {
     my $bugs = $class->_returns_array($client, 'Bug.possible_duplicates', $params, 'bugs');
     my @result;
     for my $bug (@$bugs) {
-        push(@result, $class->new(%$bug));
+        push(@result, $class->new(%{$bug}));
     }
     $client->log('debug', $class . '::possible_duplicates: Got ' . scalar(@result));
     return wantarray ? @result : \@result
@@ -68,7 +68,7 @@ sub search {
     my $bugs = $class->_returns_array($client, 'Bug.search', $params, 'bugs');
     my @result;
     for my $bug (@$bugs) {
-        push(@result, $class->new(%$bug));
+        push(@result, $class->new(%{$bug}));
     }
     $client->log('debug', $class . '::search: Found ' . join(',',@result));
     return wantarray ? @result : \@result
@@ -94,7 +94,7 @@ sub update_see_also {
         $class->error($client, 'Invalid reply by server, expected hash of changed bug details.');
     }
     $client->log('debug', $class . '::update_see_also: Updated stuff');
-    return wantarray ? %$changes : $changes
+    return wantarray ? %{$changes} : $changes
 }
 
 sub update_tags {
@@ -106,7 +106,7 @@ sub update_tags {
         $class->error($client, 'Invalid reply by server, expected hash of changed bug details.');
     }
     $client->log('debug', $class . '::update_tags: Updated stuff');
-    return wantarray ? %$changes : $changes
+    return wantarray ? %{$changes} : $changes
 }
 
 ## methods

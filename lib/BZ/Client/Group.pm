@@ -27,7 +27,7 @@ sub update {
 sub get {
     my($class, $client, $params) = @_;
     my $result = $class->api_call($client, 'Group.get', $params);
-    return wantarray ? %$result : $result
+    return wantarray ? %{$result} : $result
 }
 
 1;

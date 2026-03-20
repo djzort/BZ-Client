@@ -21,7 +21,7 @@ sub extensions {
     if (!$extensions || 'HASH' ne ref($extensions)) {
         $class->error($client, 'Invalid reply by server, expected hash of extensions.');
     }
-    return wantarray ? %$extensions : $extensions
+    return wantarray ? %{$extensions} : $extensions
 }
 
 sub parameters {
@@ -34,7 +34,7 @@ sub parameters {
         $class->error($client, 'Invalid reply by server, expected hash of parameters.');
     }
     $client->log('debug', $class . '::parameters: Got ' . scalar keys %{$parameters});
-    return wantarray ? %$parameters : $parameters
+    return wantarray ? %{$parameters} : $parameters
 }
 
 sub last_audit_time {
@@ -55,7 +55,7 @@ sub time {
     $client->log('debug', $class . '::time: Asking');
     my $time = $class->api_call($client, 'Bugzilla.time');
     $client->log('debug', $class . "::time: Got $time");
-    return wantarray ? %$time : $time
+    return wantarray ? %{$time} : $time
 }
 
 sub timezone {

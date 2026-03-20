@@ -53,7 +53,7 @@ sub web_agent {
             unless ref $connect eq 'HASH';
         if (!defined($wa)) {
             $wa = HTTP::Tiny->new(
-                %$connect,
+                %{$connect},
                 agent => sprintf('BZ::Client::XMLRPC %s (perl %s; %s)',
                                  $BZ::Client::XMLRPC::VERSION, $^V, $^O)
             );
@@ -78,7 +78,7 @@ my %actions = (
         my($self, $writer, $value) = @_;
         $writer->startTag('value');
         $writer->startTag('struct');
-        for my $key (sort keys %$value) {
+        for my $key (sort keys %{$value}) {
             $writer->startTag('member');
             $writer->startTag('name');
             $writer->characters($key);

@@ -17,7 +17,7 @@ use parent qw( BZ::Client::API );
 sub get {
     my($class, $client, $params) = @_;
     my $result = $class->api_call($client, 'FlagType.get', $params);
-    return wantarray ? %$result : $result
+    return wantarray ? %{$result} : $result
 }
 
 sub create {

@@ -35,7 +35,7 @@ sub get {
     my $users = $class->_returns_array($client, 'User.get', $params, 'users');
     my @result;
     for my $user (@$users) {
-        push(@result, $class->new(%$user));
+        push(@result, $class->new(%{$user}));
     }
     $client->log('debug', $class . '::get: Got ' . scalar(@result));
     return wantarray ? @result : \@result
@@ -62,7 +62,7 @@ sub update {
     my $users = $class->_returns_array($client, 'User.update', $params, 'users');
     my @result;
     for my $user (@$users) {
-        push(@result, $class->new(%$user));
+        push(@result, $class->new(%{$user}));
     }
     $client->log('debug', $class . '::update: Got ' . scalar(@result));
     return wantarray ? @result : \@result
