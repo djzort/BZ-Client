@@ -19,9 +19,14 @@ use Test::More;
 # these next three lines need more thought
 use Test::RequiresInternet ( 'landfill.allizgub.org' => 443 );
 
-plan tests => 61; #89;
-
 my @bugzillas = do 't/servers.cfg';
+
+if (@bugzillas) {
+    plan tests => 61; #89;
+}
+else {
+    plan skip_all => 'No bugzilla servers configured';
+}
 
 my $tester;
 

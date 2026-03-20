@@ -24,7 +24,12 @@ $Data::Dumper::Sortkeys = 1;
 use Test::RequiresInternet ( 'landfill.allizgub.org' => 443 );
 my @bugzillas = do 't/servers.cfg';
 
-plan tests => ( scalar @bugzillas * 12 );
+if (@bugzillas) {
+    plan tests => ( scalar @bugzillas * 12 );
+}
+else {
+    plan skip_all => 'No bugzilla servers configured';
+}
 
 my $tester;
 
