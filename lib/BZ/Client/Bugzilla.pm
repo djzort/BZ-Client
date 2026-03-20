@@ -33,7 +33,7 @@ sub parameters {
     if (!$parameters || 'HASH' ne ref($parameters)) {
         $class->error($client, 'Invalid reply by server, expected hash of parameters.');
     }
-    $client->log('debug', $class . '::parameters: Got ' . scalar %$parameters);
+    $client->log('debug', $class . '::parameters: Got ' . scalar keys %{$parameters});
     return wantarray ? %$parameters : $parameters
 }
 
@@ -46,7 +46,7 @@ sub last_audit_time {
     if (!$last_audit_time || ! ref($last_audit_time)) {
         $class->error($client, 'Invalid reply by server, expected last_audit_time dateTime.');
     }
-    $client->log('debug', $class . "::parameters: Got $last_audit_time");
+    $client->log('debug', $class . "::last_audit_time: Got $last_audit_time");
     return $last_audit_time
 }
 
