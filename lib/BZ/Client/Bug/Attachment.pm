@@ -95,15 +95,7 @@ sub update {
 
 ## rw methods
 
-sub id {
-    my $self = shift;
-    if (@_) {
-        $self->{'id'} = shift;
-    }
-    else {
-        return $self->{'id'}
-    }
-}
+sub id { shift->_accessor('id', @_) }
 
 sub data {
     my $self = shift;
@@ -117,15 +109,7 @@ sub data {
     }
 }
 
-sub file_name {
-    my $self = shift;
-    if (@_) {
-        $self->{'file_name'} = shift;
-    }
-    else {
-        return $self->{'file_name'}
-    }
-}
+sub file_name { shift->_accessor('file_name', @_) }
 
 sub description { goto &summary }
 
@@ -139,55 +123,15 @@ sub summary {
     }
 }
 
-sub content_type {
-    my $self = shift;
-    if (@_) {
-        $self->{'content_type'} = shift;
-    }
-    else {
-        return $self->{'content_type'}
-    }
-}
+sub content_type { shift->_accessor('content_type', @_) }
 
-sub comment {
-    my $self = shift;
-    if (@_) {
-        $self->{'comment'} = shift;
-    }
-    else {
-        return $self->{'comment'}
-    }
-}
+sub comment { shift->_accessor('comment', @_) }
 
-sub is_patch {
-    my $self = shift;
-    if (@_) {
-        $self->{'is_patch'} = shift;
-    }
-    else {
-        return $self->{'is_patch'}
-    }
-}
+sub is_patch { shift->_accessor('is_patch', @_) }
 
-sub is_private {
-    my $self = shift;
-    if (@_) {
-        $self->{'is_private'} = shift;
-    }
-    else {
-        return $self->{'is_private'}
-    }
-}
+sub is_private { shift->_accessor('is_private', @_) }
 
-sub is_url {
-    my $self = shift;
-    if (@_) {
-        $self->{'is_url'} = shift;
-    }
-    else {
-        return $self->{'is_url'}
-    }
-}
+sub is_url { shift->_accessor('is_url', @_) }
 
 ## ro methods
 

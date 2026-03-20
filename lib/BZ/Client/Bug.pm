@@ -111,15 +111,7 @@ sub update_tags {
 
 ## methods
 
-sub id {
-    my $self = shift;
-    if (@_) {
-        $self->{'id'} = shift;
-    }
-    else {
-        return $self->{'id'}
-    }
-}
+sub id { shift->_accessor('id', @_) }
 
 sub alias {
     my $self = shift;
@@ -151,135 +143,31 @@ sub alias {
     }
 }
 
-sub assigned_to {
-    my $self = shift;
-    if (@_) {
-        $self->{'assigned_to'} = shift;
-    }
-    else {
-        return $self->{'assigned_to'}
-    }
-}
+sub assigned_to { shift->_accessor('assigned_to', @_) }
 
-sub component {
-    my $self = shift;
-    if (@_) {
-        $self->{'component'} = shift;
-    }
-    else {
-        return $self->{'component'}
-    }
-}
+sub component { shift->_accessor('component', @_) }
 
-sub creation_time {
-    my $self = shift;
-    if (@_) {
-        $self->{'creation_time'} = shift;
-    }
-    else {
-        return $self->{'creation_time'}
-    }
-}
+sub creation_time { shift->_accessor('creation_time', @_) }
 
-sub dupe_of {
-    my $self = shift;
-    if (@_) {
-        $self->{'dupe_of'} = shift;
-    }
-    else {
-        return $self->{'dupe_of'}
-    }
-}
+sub dupe_of { shift->_accessor('dupe_of', @_) }
 
-sub internals {
-    my $self = shift;
-    if (@_) {
-        $self->{'internals'} = shift;
-    }
-    else {
-        return $self->{'internals'}
-    }
-}
+sub internals { shift->_accessor('internals', @_) }
 
-sub is_open {
-    my $self = shift;
-    if (@_) {
-        $self->{'is_open'} = shift;
-    }
-    else {
-        return $self->{'is_open'}
-    }
-}
+sub is_open { shift->_accessor('is_open', @_) }
 
-sub last_change_time {
-    my $self = shift;
-    if (@_) {
-        $self->{'last_change_time'} = shift;
-    }
-    else {
-        return $self->{'last_change_time'}
-    }
-}
+sub last_change_time { shift->_accessor('last_change_time', @_) }
 
-sub priority {
-    my $self = shift;
-    if (@_) {
-        $self->{'priority'} = shift;
-    }
-    else {
-        return $self->{'priority'}
-    }
-}
+sub priority { shift->_accessor('priority', @_) }
 
-sub product {
-    my $self = shift;
-    if (@_) {
-        $self->{'product'} = shift;
-    }
-    else {
-        return $self->{'product'}
-    }
-}
+sub product { shift->_accessor('product', @_) }
 
-sub resolution {
-    my $self = shift;
-    if (@_) {
-        $self->{'resolution'} = shift;
-    }
-    else {
-        return $self->{'resolution'}
-    }
-}
+sub resolution { shift->_accessor('resolution', @_) }
 
-sub severity {
-    my $self = shift;
-    if (@_) {
-        $self->{'severity'} = shift;
-    }
-    else {
-        return $self->{'severity'}
-    }
-}
+sub severity { shift->_accessor('severity', @_) }
 
-sub status {
-    my $self = shift;
-    if (@_) {
-        $self->{'status'} = shift;
-    }
-    else {
-        return $self->{'status'}
-    }
-}
+sub status { shift->_accessor('status', @_) }
 
-sub summary {
-    my $self = shift;
-    if (@_) {
-        $self->{'summary'} = shift;
-    }
-    else {
-        return $self->{'summary'}
-    }
-}
+sub summary { shift->_accessor('summary', @_) }
 
 1;
 

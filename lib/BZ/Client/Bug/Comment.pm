@@ -72,15 +72,7 @@ sub render {
 
 ## rw methods
 
-sub bug_id {
-    my $self = shift;
-    if (@_) {
-        $self->{'bug_id'} = shift;
-    }
-    else {
-        return $self->{'bug_id'}
-    }
-}
+sub bug_id { shift->_accessor('bug_id', @_) }
 
 sub comment {
     my $self = shift;
@@ -95,25 +87,9 @@ sub comment {
 
 sub text { goto &comment }
 
-sub is_private {
-    my $self = shift;
-    if (@_) {
-        $self->{'is_private'} = shift;
-    }
-    else {
-        return $self->{'is_private'}
-    }
-}
+sub is_private { shift->_accessor('is_private', @_) }
 
-sub work_time {
-    my $self = shift;
-    if (@_) {
-        $self->{'work_time'} = shift;
-    }
-    else {
-        return $self->{'work_time'}
-    }
-}
+sub work_time { shift->_accessor('work_time', @_) }
 
 ## ro methods
 

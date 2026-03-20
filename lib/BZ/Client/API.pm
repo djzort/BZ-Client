@@ -56,6 +56,16 @@ sub _returns_array {
 
 1;
 
+# Simple accessor helper for subclasses
+sub _accessor {
+    my ($self, $field) = (shift, shift);
+    if (@_) {
+        $self->{$field} = shift;
+    } else {
+        return $self->{$field};
+    }
+}
+
 __END__
 
 =pod

@@ -68,105 +68,65 @@ sub update {
     return wantarray ? @result : \@result
 }
 
+# Internal helper for accessors
+sub _accessor {
+    my ($self, $field, $val) = @_;
+    if (@_ > 2) {
+        $self->{$field} = $val;
+    } else {
+        return $self->{$field};
+    }
+}
+
 # Accessors for common user fields
 sub id {
     my $self = shift;
-    if (@_) {
-        $self->{'id'} = shift;
-    }
-    else {
-        return $self->{'id'}
-    }
+    return $self->_accessor('id', @_ ? $_[0] : ());
 }
 
 sub name {
     my $self = shift;
-    if (@_) {
-        $self->{'name'} = shift;
-    }
-    else {
-        return $self->{'name'}
-    }
+    return $self->_accessor('name', @_ ? $_[0] : ());
 }
 
 sub email {
     my $self = shift;
-    if (@_) {
-        $self->{'email'} = shift;
-    }
-    else {
-        return $self->{'email'}
-    }
+    return $self->_accessor('email', @_ ? $_[0] : ());
 }
 
 sub real_name {
     my $self = shift;
-    if (@_) {
-        $self->{'real_name'} = shift;
-    }
-    else {
-        return $self->{'real_name'}
-    }
+    return $self->_accessor('real_name', @_ ? $_[0] : ());
 }
 
 sub login {
     my $self = shift;
-    if (@_) {
-        $self->{'login'} = shift;
-    }
-    else {
-        return $self->{'login'}
-    }
+    return $self->_accessor('login', @_ ? $_[0] : ());
 }
 
 sub can_login {
     my $self = shift;
-    if (@_) {
-        $self->{'can_login'} = shift;
-    }
-    else {
-        return $self->{'can_login'}
-    }
+    return $self->_accessor('can_login', @_ ? $_[0] : ());
 }
 
 sub email_enabled {
     my $self = shift;
-    if (@_) {
-        $self->{'email_enabled'} = shift;
-    }
-    else {
-        return $self->{'email_enabled'}
-    }
+    return $self->_accessor('email_enabled', @_ ? $_[0] : ());
 }
 
 sub groups {
     my $self = shift;
-    if (@_) {
-        $self->{'groups'} = shift;
-    }
-    else {
-        return $self->{'groups'}
-    }
+    return $self->_accessor('groups', @_ ? $_[0] : ());
 }
 
 sub saved_searches {
     my $self = shift;
-    if (@_) {
-        $self->{'saved_searches'} = shift;
-    }
-    else {
-        return $self->{'saved_searches'}
-    }
+    return $self->_accessor('saved_searches', @_ ? $_[0] : ());
 }
 
 sub last_visit {
     my $self = shift;
-    if (@_) {
-        $self->{'last_visit'} = shift;
-    }
-    else {
-        return $self->{'last_visit'}
-    }
+    return $self->_accessor('last_visit', @_ ? $_[0] : ());
 }
 
 1;
