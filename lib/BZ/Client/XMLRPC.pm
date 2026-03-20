@@ -18,11 +18,8 @@ use BZ::Client::Exception;
 use BZ::Client::XMLRPC::Parser;
 use DateTime::TimeZone;
 
-
-
 my $counter;
 my $tz = DateTime::TimeZone->new( name => 'UTC' );
-
 
 sub new {
     my $class = shift;

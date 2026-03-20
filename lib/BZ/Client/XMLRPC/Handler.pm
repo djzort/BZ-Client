@@ -64,7 +64,6 @@ sub characters {
 }
 
 sub end {
-    # my($self,$name) = @_;
     my $self = shift;
     my $l = $self->dec_level();
     if ($l == 0) {
