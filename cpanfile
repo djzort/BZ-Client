@@ -33,7 +33,6 @@ on develop => sub {
     requires "Dist::Zilla::Plugin::MetaJSON";
     requires "Dist::Zilla::Plugin::MetaTests";
     requires "Dist::Zilla::Plugin::ModuleBuild";
-    requires "Dist::Zilla::Plugin::TravisYML";
     requires "Dist::Zilla::Plugin::Covenant";
     requires "Dist::Zilla::Plugin::DOAP";
     requires "Dist::Zilla::Plugin::Test::Perl::Critic";
