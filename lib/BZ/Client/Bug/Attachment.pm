@@ -70,7 +70,8 @@ sub add {
             and -f $filename ) {
             $params->{data} = do {
                 local $/;
-                open( my $fh, '<', $filename );
+                open( my $fh, '<', $filename )
+                    or $class->error($client, "Cannot open $filename: $!");
                 binmode $fh;
                 <$fh>
             };
