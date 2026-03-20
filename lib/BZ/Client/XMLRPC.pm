@@ -16,15 +16,11 @@ use HTTP::Tiny ();
 use File::Spec ();
 use BZ::Client::Exception;
 use BZ::Client::XMLRPC::Parser;
-use DateTime::Format::Strptime;
 use DateTime::TimeZone;
 
 
 
 my $counter;
-my $fmt = DateTime::Format::Strptime->new(
-                    pattern   => '%C%Y-%m-%dT%T',
-                    time_zone => 'UTC' );
 my $tz = DateTime::TimeZone->new( name => 'UTC' );
 
 
@@ -147,7 +143,6 @@ my %actions = (
         my($self, $writer, $value) = @_;
         my $clone = $value->clone();
         $clone->set_time_zone($tz);
-        $clone->set_formatter($fmt);
         $writer->startTag('value');
         $writer->startTag('dateTime.iso8601');
         $writer->characters($clone->iso8601(). 'Z');
