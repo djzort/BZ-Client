@@ -68,6 +68,107 @@ sub update {
     return wantarray ? @result : \@result
 }
 
+# Accessors for common user fields
+sub id {
+    my $self = shift;
+    if (@_) {
+        $self->{'id'} = shift;
+    }
+    else {
+        return $self->{'id'}
+    }
+}
+
+sub name {
+    my $self = shift;
+    if (@_) {
+        $self->{'name'} = shift;
+    }
+    else {
+        return $self->{'name'}
+    }
+}
+
+sub email {
+    my $self = shift;
+    if (@_) {
+        $self->{'email'} = shift;
+    }
+    else {
+        return $self->{'email'}
+    }
+}
+
+sub real_name {
+    my $self = shift;
+    if (@_) {
+        $self->{'real_name'} = shift;
+    }
+    else {
+        return $self->{'real_name'}
+    }
+}
+
+sub login {
+    my $self = shift;
+    if (@_) {
+        $self->{'login'} = shift;
+    }
+    else {
+        return $self->{'login'}
+    }
+}
+
+sub can_login {
+    my $self = shift;
+    if (@_) {
+        $self->{'can_login'} = shift;
+    }
+    else {
+        return $self->{'can_login'}
+    }
+}
+
+sub email_enabled {
+    my $self = shift;
+    if (@_) {
+        $self->{'email_enabled'} = shift;
+    }
+    else {
+        return $self->{'email_enabled'}
+    }
+}
+
+sub groups {
+    my $self = shift;
+    if (@_) {
+        $self->{'groups'} = shift;
+    }
+    else {
+        return $self->{'groups'}
+    }
+}
+
+sub saved_searches {
+    my $self = shift;
+    if (@_) {
+        $self->{'saved_searches'} = shift;
+    }
+    else {
+        return $self->{'saved_searches'}
+    }
+}
+
+sub last_visit {
+    my $self = shift;
+    if (@_) {
+        $self->{'last_visit'} = shift;
+    }
+    else {
+        return $self->{'last_visit'}
+    }
+}
+
 1;
 
 __END__
@@ -233,7 +334,7 @@ I<email_enabled> (boolean) A boolean value to indicate if bug-related mail will 
 
 =item login_denied_text
 
-I<login_denied_text> (string) A text field that holds the reason for disabling a user from logging into bugzilla, if empty then the user account is enabled. Otherwise it is disabled/closed.
+I<login_denied_text> (string) A text field that holds the reason for disabling a user from logging into bugzilla, if empty then the user account is enabled. Otherwise, it is disabled/closed.
 
 =item groups
 
@@ -477,4 +578,21 @@ See L<BZ::Client::Exception>
 =head1 SEE ALSO
 
 L<BZ::Client>, L<BZ::Client::API>, L<Bugzilla API|https://www.bugzilla.org/docs/tip/en/html/api/Bugzilla/WebService/User.html>
+
+=head1 INSTANCE METHODS
+
+=head2 id, name, email, real_name, login, can_login, email_enabled, groups, saved_searches, last_visit
+
+  $id          = $user->id;
+  $name        = $user->name;
+  $email       = $user->email;
+  $real_name   = $user->real_name;
+  $login       = $user->login;
+  $can_login   = $user->can_login;
+  $enabled     = $user->email_enabled;
+  $groups      = $user->groups;
+  $searches    = $user->saved_searches;
+  $last_visit  = $user->last_visit;
+
+Returns or sets the corresponding field for the user object. These accessors are provided for consistency with other BZ::Client classes.
 
