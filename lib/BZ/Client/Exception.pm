@@ -7,6 +7,15 @@ use warnings 'all';
 
 package BZ::Client::Exception;
 
+use overload '""' => \&stringify, 'bool' => sub { 1 }, fallback => 1;
+
+sub stringify {
+    my $self = shift;
+    my $msg = $self->{'message'} // 'Unknown error';
+    $msg .= ' (HTTP ' . $self->{'http_code'} . ')' if $self->{'http_code'};
+    $msg .= ' (XMLRPC ' . $self->{'xmlrpc_code'} . ')' if $self->{'xmlrpc_code'};
+    return $msg
+}
 
 sub throw {
     my $class = shift;
