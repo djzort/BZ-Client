@@ -12,7 +12,6 @@ requires "File::Spec";
 requires "Encode";
 requires "URI";
 requires "DateTime::TimeZone";
-requires "DateTime::Format::Strptime";
 requires "DateTime::Format::ISO8601";
 requires "MIME::Base64";
 
