@@ -290,15 +290,13 @@ __END__
 
 =head1 BUGZILLA VERSIONS
 
-Please note that this L<BZ::Client> module is aimed at the XMLRPC API available in Bugzilla 5.0 and earlier.
+Important: this L<BZ::Client> module supports the L<XMLRPC API|https://bugzilla.readthedocs.io/en/latest/integrating/api/Bugzilla/WebService/Server/XMLRPC.html> available in Bugzilla 5.0 and earlier, it is deprecated in newer versions and will be removed in a future version of Bugzilla, but may still work.
 
-For 5.1 and later, which have a totally different REST API, please see L<Net::Bugzilla>.
+For Bugzilla 5.1 and later, there is a new L<WebService API|https://bugzilla.readthedocs.io/en/latest/api/index.html#apis>, please see L<WebService::Bugzilla>.
 
-As such, I welcome all patches (via pull request) for functionality relating to 5.0 and earlier.
+I welcome all patches (via pull request) for functionality relating to L<'maintained'|https://www.bugzilla.org/releases/> Bugzilla versions with XMLRPC support.
 
-I will only actively hunt down bugs relating to the 'maintained' Bugzilla server softwares. Please upgrade
-your server and duplicate the problem, or see the above commitment to accept patches to fix for older
-versions.
+Please upgrade your server and duplicate the problem, or see the above commitment to accept patches to fix for older versions.
 
 =head1 SYNOPSIS
 
@@ -491,7 +489,7 @@ Sets or gets the logging function. Argument is a coderef. Returns C<undef> if no
 Also can be set via L</new>, e.g.
 
  $client = BZ::Client->new( logger => sub { },
-                            url    => $url
+                            url    => $url,
                             user   => $user,
                             password => $password );
 
