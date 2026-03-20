@@ -45,11 +45,11 @@ sub _returns_array {
     my $sub = ( caller(1) )[3];
     $client->log('debug',$sub . ': Running');
     my $result = __PACKAGE__->api_call($client, $methodName, $params);
-    my $foo = $result->{$key};
+    my $items = $result->{$key};
     __PACKAGE__->error($client, "Invalid reply by server, expected array of $methodName details")
-        unless ($foo and 'ARRAY' eq ref $foo);
-    $client->log('debug', "$sub: Recieved results");
-    return wantarray ? @$foo : $foo
+        unless ($items and 'ARRAY' eq ref $items);
+    $client->log('debug', "$sub: Received results");
+    return wantarray ? @$items : $items
 }
 
 
