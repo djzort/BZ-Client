@@ -1,5 +1,15 @@
 Revision history for Perl extension BZ::Client.
 
+4.9 Thursday March 20 2026
+    - Fixed bugs and improved reliability in BZ::Client::Bugzilla and related modules
+    - Standardized accessor methods across modules using a shared helper
+    - Improved and unified exception handling, including stringification overloads
+    - Enhanced logging and error reporting throughout the client
+    - Reviewed and updated all POD documentation for accuracy and completeness
+    - Refactored code for style consistency and maintainability
+    - Reviewed and corrected formatting in BZ::Client::XMLRPC and other modules
+    - No breaking changes; all updates are backward compatible
+
 4.4004 Wednesday Janurary 20 07:36 2021
     - Fix GH#6 bug
 
