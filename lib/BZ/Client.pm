@@ -556,6 +556,18 @@ Bugzilla maintains demos of all supported versions and trunk at L<https://landfi
 
 You might consider using that for testing against live versions.
 
+=head1 DEPRECATED
+
+Bugzilla has deprecated the API this module uses and will in the near future remove it entirely, making
+this module useless. Once removed from supported Bugzilla versions, the author of this module will cease
+maintaining it.
+
+If you continue running an old bugzilla version obviously this module will remain useful. You are more than
+welcome to continue using it but once mainenance efforts have ceased no further fixes will be applied or
+releases produced. In which case you should maintain your own patched version internally.
+
+So please look to migrate your code to L<WebService::Bugzilla> ASAP.
+
 =head1 SEE ALSO
 
 L<BZ::Client::Exception>
