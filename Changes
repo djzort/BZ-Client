@@ -1,5 +1,9 @@
 Revision history for Perl extension BZ::Client.
 
+4.91 Thursday April 9 2026
+    - Mark as deprecated in line with bugzilla
+    - No other changes
+
 4.9 Thursday March 20 2026
     - Fixed bugs and improved reliability in BZ::Client::Bugzilla and related modules
     - Standardized accessor methods across modules using a shared helper
